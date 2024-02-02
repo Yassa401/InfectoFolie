@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     
     // Se connecte à la websocket du serveur une seule fois à l'ouverture de la page
-    const socket = new WebSocket("ws://" + window.location.hostname + ":4567" +"/ws");
+    const socket = new WebSocket("ws://" + window.location.hostname + ":" + window.location.port +"/ws");
 
     joystick.on("move", function (event, data) {
         const angle = data.angle.degree;
