@@ -28,28 +28,8 @@ public class GameFrame extends JFrame {
         setVisible(true);
     }
     
-    
-    public void repaintGamePanel() {
-    	gamePanel.repaint();
-    }
-    
     public GamePanel getGamePanel() {
     	return gamePanel ;
     }
 
-    /*
-    public static void main(String[] args) {
-    	Player player = new Player(100, 100, 5);
-    	Map<String, Player> players = new HashMap<String, Player>();
-    	players.put("souhail", player);
-    	player = new Player(150,150,5);
-    	players.put("yasser", player);
-    	
-    	
-    	SwingUtilities.invokeLater(() -> {
-            new GameFrame(players);
-        });
-    }
-    */
-    
 }

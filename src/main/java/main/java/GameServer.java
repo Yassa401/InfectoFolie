@@ -24,6 +24,7 @@ public class GameServer {
         Spark.init();
         Spark.awaitInitialization();
         
+        
         SwingUtilities.invokeLater(() -> {
             gameFrame = new GameFrame(players);
         });
@@ -53,12 +54,12 @@ public class GameServer {
             this.session = session;
             this.playerId = session.getRemoteAddress().toString();
             clients.put(playerId, this);
-            
             // Créer un nouveau joueur et l'ajouter à la liste des joueurs
             Player player = new Player(100, 100, IConfig.SPEED);
             players.put(playerId, player);
             
-            gameFrame.repaintGamePanel();
+            gameFrame.getGamePanel().ajoutJoueur(players);
+            gameFrame.getGamePanel().repaint();
         }
 
         @Override
