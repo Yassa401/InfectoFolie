@@ -6,7 +6,11 @@ import java.util.Map;
 
 // GamePanel.java
 public class GamePanel extends JPanel {
-    private Map<String, Player> players;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Map<String, Player> players;
 
     public GamePanel(Map<String, Player> players) {
     	this.setBackground(Color.BLACK);

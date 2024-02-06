@@ -1,14 +1,11 @@
 package main.java;
 
-import com.google.gson.Gson;
 import spark.Spark;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.SwingUtilities;
-
-import org.json.JSONObject;
 
 public class GameServer {
 
@@ -36,13 +33,4 @@ public class GameServer {
             client.getSession().getRemote().sendStringByFuture(message);
         }
     }
-
-    public static int getPlayerX(String playerId) {
-        return players.get(playerId).getX();
-    }
-
-    public static int getPlayerY(String playerId) {
-        return players.get(playerId).getY();
-    }
-
 }
