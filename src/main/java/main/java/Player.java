@@ -30,11 +30,13 @@ public class Player {
 
         // Calculer les déplacements sur les axes x et y
         int deltaX = (int) (distance * speed * Math.cos(radians));
-        int deltaY = (int) (distance * speed * Math.sin(radians));
+        int deltaY = (int) (distance * speed * Math.sin(radians) * -1);
 
         // Appliquer le déplacement
-        x += deltaX;
-        y += deltaY;
+        if( x+deltaX+IConfig.RADIUS < IConfig.LARGEUR_FENETRE && x+deltaX-IConfig.RADIUS > 0)
+        	x += deltaX;
+        if(y+deltaY+IConfig.RADIUS < IConfig.LONGUEUR_FENETRE && y+deltaY-IConfig.RADIUS > 0)
+        	y += deltaY;
     }
 }
 
