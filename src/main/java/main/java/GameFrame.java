@@ -8,7 +8,6 @@ import java.util.Map;
 // GameFrame.java
 public class GameFrame extends JFrame {
 
-    private Map<String, Player> players = new HashMap<>();
     private GamePanel gamePanel ;
     
     public GameFrame(Map<String, Player> players) {
@@ -22,8 +21,6 @@ public class GameFrame extends JFrame {
         // Ajoutez le panneau de jeu au cadre
         add(gamePanel);
         
-        repaintGamePanel();
-
         // Affichez le cadre
         setVisible(true);
     }
