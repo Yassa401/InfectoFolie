@@ -15,22 +15,17 @@ public class GameServer {
     static GameFrame gameFrame;
 
     public static void main(String[] args) {
+    	// INITIALISATION DE L'API SPARK POUR GERER LES EVENEMENTS DES CLIENTS
         Spark.staticFiles.location("/public");
         Spark.webSocket("/ws", WebSocketHandler.class);
-        
         Spark.init();
         Spark.awaitInitialization();
         
        
+        // LANCEMENT DE LA FENETRE DE JEU
         SwingUtilities.invokeLater(() -> {
             gameFrame = new GameFrame(players);
         });
         
-    }
-
-    public static void broadcast(String message) {
-        for (WebSocketHandler client : clients.values()) {
-            client.getSession().getRemote().sendStringByFuture(message);
-        }
     }
 }

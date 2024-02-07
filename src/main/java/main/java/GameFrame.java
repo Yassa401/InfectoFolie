@@ -19,7 +19,7 @@ public class GameFrame extends JFrame {
         gamePanel = new GamePanel(players);
 
         // Ajoutez le panneau de jeu au cadre
-        add(gamePanel);
+        getContentPane().add(gamePanel);
         
         // Affichez le cadre
         setVisible(true);

@@ -2,10 +2,13 @@ package main.java;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 // GamePanel.java
-public class GamePanel extends JPanel {
+public class GamePanel extends JPanel{
     /**
 	 * 
 	 */
@@ -14,9 +17,18 @@ public class GamePanel extends JPanel {
 
     public GamePanel(Map<String, Player> players) {
     	this.setBackground(Color.BLACK);
-        this.players = players;
+    	this.players = players;
+    	Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                // Force le rafraîchissement du JPanel
+                repaint();
+            }
+        }, 0, 20);
+    	
     }
-
+    
+    
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -32,7 +44,7 @@ public class GamePanel extends JPanel {
         int radius = player.getRadius();
         
 
-        g.setColor(Color.BLUE);
+        g.setColor(player.getCouleur());
         g.fillOval(x - radius, y - radius, 2 * radius, 2 * radius);
     }
     
