@@ -29,3 +29,13 @@ De plus, le jeu propose des caractéristiques uniques, impliquant l'interaction 
  - La protection des joueurs vivants 
  - La vitesse des zombies 
 
+## Tâches
+
+- [x] Etablir une connexion client-serveur
+    - [x] Lancement du serveur en java
+        - Spark api pour la gestion des webSockets
+    - [x] Connexion des clients sur le serveur
+        - page web utilisant HTML et JS
+    - [x] récupération et envoi des événements venant des clients
+        - Utilisation de javascript
+        - librairie nippleJs pour le joystick
