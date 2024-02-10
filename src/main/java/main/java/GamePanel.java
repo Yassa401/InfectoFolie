@@ -1,11 +1,11 @@
 package main.java;
 
+
+import java.util.*;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.util.Map;
+import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
 // GamePanel.java
 public class GamePanel extends JPanel{
@@ -14,20 +14,27 @@ public class GamePanel extends JPanel{
 	 */
 	private static final long serialVersionUID = 1L;
 	private Map<String, Player> players;
+    public static List<Obstacle> murs;
 
     public GamePanel(Map<String, Player> players) {
-    	this.setBackground(Color.BLACK);
-    	this.players = players;
-    	Timer timer = new Timer();
+        this.setBackground(Color.BLACK);
+        this.players = players;
+        Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 // Force le rafraîchissement du JPanel
                 repaint();
             }
         }, 0, 20);
-    	
+
+        murs = new ArrayList<>();
+        // Initialisation des murs
+        murs.add(new Obstacle(300, 100, IConfig.widthObs, IConfig.heightObs)); // Exemple de mur
+        // Ajoutez d'autres murs si nécessaire
+
     }
-    
+
+
     
     @Override
     protected void paintComponent(Graphics g) {
@@ -36,9 +43,16 @@ public class GamePanel extends JPanel{
         for (Player player : players.values()) {
             drawPlayer(g, player);
         }
+        for (Obstacle mur : murs) {
+            g.fillRect(mur.getX(), mur.getY(), mur.getWidth(), mur.getHeight());
+        }
     }
 
-    private void drawPlayer(Graphics g, Player player) {
+
+
+
+
+    public void drawPlayer(Graphics g, Player player) {
         int x = player.getX();
         int y = player.getY();
         int radius = player.getRadius();

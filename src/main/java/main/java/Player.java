@@ -36,6 +36,10 @@ public class Player {
      * @param distance : distance par rapport au centre du joystick (peut être utilisé pour la vitesse)
      */
     public void move(double angle, double distance) {
+        // Enregistrer la position actuelle du joueur
+        int oldX = x;
+        int oldY = y;
+
         // Convertir l'angle en radians
         double radians = Math.toRadians(angle);
 
@@ -43,13 +47,67 @@ public class Player {
         int deltaX = (int) (distance * speed * Math.cos(radians));
         int deltaY = (int) (distance * speed * Math.sin(radians) * -1);
 
-        // Appliquer le déplacement
-        if( x+deltaX+IConfig.RADIUS < IConfig.LARGEUR_FENETRE && x+deltaX-IConfig.RADIUS > 0)
-        	x += deltaX;
-        if(y+deltaY+2*IConfig.RADIUS < IConfig.LONGUEUR_FENETRE && y+deltaY > 0)
-        	y += deltaY;
+        // Appliquer le déplacement temporairement
+        int newX = x + deltaX;
+        int newY = y + deltaY;
+
+        // Vérifier les collisions avec les autres joueurs
+        for (Player autrePlayer : GameServer.players.values()) {
+            if (autrePlayer != this && verifCollision(newX, newY, autrePlayer)) {
+                // Annuler le déplacement en restaurant les positions précédentes du joueur
+                return; // Sortir de la méthode après avoir détecté une collision
+            }
+        }
+            for (Player player : GameServer.players.values()) {
+                if (verifCollisionMur(player)) {
+                    player.setX(oldX); // Réinitialise la position x du joueur à sa position précédente
+                    player.setY(oldY); // Réinitialise la position y du joueur à sa position précédente
+                }
+            }
+
+
+
+
+        // Vérifier les limites de la fenêtre
+        if (newX + IConfig.RADIUS < IConfig.LARGEUR_FENETRE && newX - IConfig.RADIUS > 0) {
+            x = newX;
+        }
+        if (newY + 2 * IConfig.RADIUS < IConfig.LONGUEUR_FENETRE && newY > 0) {
+            y = newY;
+        }
     }
-    
+
+    public boolean verifCollisionMur(Player player) {
+        for (Obstacle mur : GamePanel.murs) {
+            if (player.getX() < mur.getX() + mur.getWidth() &&
+                    player.getX() + player.getRadius() > mur.getX() &&
+                    player.getY() < mur.getY() + mur.getHeight() &&
+                    player.getY() + player.getRadius() > mur.getY()) {
+                // Collision détectée
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Calculer la ndistance entre autrePlayer et le player acutel
+     * @param newX : position x du joueur actuel
+     * @param newY : position y du joueur actuel
+     * @param autrePlayer : joueur avec qui il faut vérifier si il y a une collision ou non
+     */
+
+    public boolean verifCollision(int newX, int newY, Player autrePlayer) {
+        // Calculer la distance entre les centres des deux joueurs
+        int distanceX = newX - autrePlayer.getX();
+        int distanceY = newY - autrePlayer.getY();
+        double distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+        // Vérifier s'ils se chevauchent
+        return distance < (this.radius + autrePlayer.getRadius());
+    }
+
+
     /*
      * Renvoyer la couleur du joueur
      */
@@ -64,6 +122,14 @@ public class Player {
     	Random random = new Random();
     	couleur = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
     	
+    }
+
+    public int setX(int newx){
+        return this.x = newx;
+    }
+
+    public int setY(int newy){
+        return this.y = newy;
     }
 }
 
