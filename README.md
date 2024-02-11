@@ -39,3 +39,11 @@ De plus, le jeu propose des caractéristiques uniques, impliquant l'interaction 
     - [x] récupération et envoi des événements venant des clients
         - Utilisation de javascript
         - librairie nippleJs pour le joystick
+
+- [ ] Jouabilité
+    - [ ] Gérer la collision entre joueurs
+    - [ ] Gérer la collision entre joueurs et obstacle
+    - [ ] Fluidifier la jouabilité
+
+- [ ] Règles du jeu
+    - [ ] Etablir un timer pour une manche
