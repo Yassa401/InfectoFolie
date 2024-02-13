@@ -5,7 +5,8 @@ import spark.Spark;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.SwingUtilities;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 public class GameServer {
 
@@ -21,11 +22,15 @@ public class GameServer {
         Spark.init();
         Spark.awaitInitialization();
         
-       
-        // LANCEMENT DE LA FENETRE DE JEU
-        SwingUtilities.invokeLater(() -> {
-            gameFrame = new GameFrame(players);
-        });
+        gameFrame = new GameFrame(players);
+        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+        config.title = "InfectoFoli";
+        config.width = IConfig.LARGEUR_FENETRE;
+        config.height = IConfig.LONGUEUR_FENETRE;
+        new LwjglApplication(gameFrame, config);
+        
+            
+
         
     }
 }

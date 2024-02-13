@@ -22,7 +22,7 @@ public class WebSocketHandler{
         Player player = new Player(100, 100, IConfig.SPEED);
         GameServer.players.put(playerId, player);
         
-        GameServer.gameFrame.getGamePanel().ajoutJoueur(GameServer.players);
+        GameServer.gameFrame.actualiseJoueurs(GameServer.players);
     }
     
     @OnWebSocketClose

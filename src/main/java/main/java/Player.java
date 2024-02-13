@@ -1,6 +1,6 @@
 package main.java;
 
-import java.awt.Color;
+import com.badlogic.gdx.graphics.Color;
 import java.util.Random;
 
 public class Player {
@@ -41,12 +41,12 @@ public class Player {
 
         // Calculer les déplacements sur les axes x et y
         int deltaX = (int) (distance * speed * Math.cos(radians));
-        int deltaY = (int) (distance * speed * Math.sin(radians) * -1);
+        int deltaY = (int) (distance * speed * Math.sin(radians));
 
         // Appliquer le déplacement
-        if( x+deltaX+IConfig.RADIUS < IConfig.LARGEUR_FENETRE && x+deltaX-IConfig.RADIUS > 0)
+        if( x+deltaX+IConfig.RADIUS < IConfig.LARGEUR_FENETRE/2 && x+deltaX-IConfig.RADIUS > -IConfig.LARGEUR_FENETRE/2)
         	x += deltaX;
-        if(y+deltaY+2*IConfig.RADIUS < IConfig.LONGUEUR_FENETRE && y+deltaY > 0)
+        if(y+deltaY+2*IConfig.RADIUS < IConfig.LONGUEUR_FENETRE/2 && y+deltaY > -IConfig.LONGUEUR_FENETRE/2)
         	y += deltaY;
     }
     
@@ -62,7 +62,12 @@ public class Player {
      */
     public void randomCouleur() {
     	Random random = new Random();
-    	couleur = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
+    	couleur = new Color(
+    		    random.nextFloat(), // Composante rouge aléatoire entre 0 et 1
+    		    random.nextFloat(), // Composante verte aléatoire entre 0 et 1
+    		    random.nextFloat(), // Composante bleue aléatoire entre 0 et 1
+    		    1                  // Opacité à 100% (valeur entre 0 et 1)
+    		);
     	
     }
 }
