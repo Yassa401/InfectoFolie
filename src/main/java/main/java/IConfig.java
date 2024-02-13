@@ -10,5 +10,5 @@ public interface IConfig {
 	static final double SPEED = 0.5 ;
 
 	static int widthObs = 100;
-	static int heightObs = 50;
+	static int heightObs = 10;
 }

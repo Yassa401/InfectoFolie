@@ -58,12 +58,11 @@ public class Player {
                 return; // Sortir de la méthode après avoir détecté une collision
             }
         }
-            for (Player player : GameServer.players.values()) {
-                if (verifCollisionMur(player)) {
-                    player.setX(oldX); // Réinitialise la position x du joueur à sa position précédente
-                    player.setY(oldY); // Réinitialise la position y du joueur à sa position précédente
-                }
+        for (Player player : GameServer.players.values()) {
+            if (verifCollisionMur(player)) {
+                return ;
             }
+        }
 
 
 

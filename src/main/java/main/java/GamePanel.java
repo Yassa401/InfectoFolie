@@ -29,9 +29,17 @@ public class GamePanel extends JPanel{
 
         murs = new ArrayList<>();
         // Initialisation des murs
-        murs.add(new Obstacle(300, 100, IConfig.widthObs, IConfig.heightObs)); // Exemple de mur
-        // Ajoutez d'autres murs si nécessaire
+        murs.add(new Obstacle(0, 0, IConfig.LARGEUR_FENETRE, 10)); // Mur supérieur
+        murs.add(new Obstacle(0, 0, 10, IConfig.LONGUEUR_FENETRE)); // Mur gauche
+        murs.add(new Obstacle(0, IConfig.LONGUEUR_FENETRE - 10, IConfig.LARGEUR_FENETRE, 10)); // Mur inférieur
+        murs.add(new Obstacle(IConfig.LARGEUR_FENETRE - 10, 0, 10, IConfig.LONGUEUR_FENETRE)); // Mur droit
+        murs.add(new Obstacle(100, 200, 10, 100));
 
+        // Petit murs sur la carte
+        murs.add(new Obstacle(300, 50, 150, 10));
+        murs.add(new Obstacle(500, 250, 10, 150));
+        murs.add(new Obstacle(200, 400, 100, 10));
+        murs.add(new Obstacle(600, 100, 10, 100));
     }
 
 
@@ -44,6 +52,7 @@ public class GamePanel extends JPanel{
             drawPlayer(g, player);
         }
         for (Obstacle mur : murs) {
+            g.setColor(Color.GRAY);
             g.fillRect(mur.getX(), mur.getY(), mur.getWidth(), mur.getHeight());
         }
     }
