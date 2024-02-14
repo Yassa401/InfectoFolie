@@ -1,6 +1,8 @@
 package main.java;
 
 import com.badlogic.gdx.graphics.Color;
+
+import java.awt.geom.Rectangle2D;
 import java.util.Random;
 
 public class Player {
@@ -36,6 +38,10 @@ public class Player {
      * @param distance : distance par rapport au centre du joystick (peut être utilisé pour la vitesse)
      */
     public void move(double angle, double distance) {
+        // Enregistrer la position actuelle du joueur
+        int oldX = x;
+        int oldY = y;
+
         // Convertir l'angle en radians
         double radians = Math.toRadians(angle);
 
@@ -43,13 +49,56 @@ public class Player {
         int deltaX = (int) (distance * speed * Math.cos(radians));
         int deltaY = (int) (distance * speed * Math.sin(radians));
 
-        // Appliquer le déplacement
-        if( x+deltaX+IConfig.RADIUS < IConfig.LARGEUR_FENETRE/2 && x+deltaX-IConfig.RADIUS > -IConfig.LARGEUR_FENETRE/2)
-        	x += deltaX;
-        if(y+deltaY+2*IConfig.RADIUS < IConfig.LONGUEUR_FENETRE/2 && y+deltaY > -IConfig.LONGUEUR_FENETRE/2)
-        	y += deltaY;
+        // Appliquer le déplacement temporairement
+        int newX = x + deltaX;
+        int newY = y + deltaY;
+
+        // Vérifier les collisions avec les autres joueurs
+        for (Player autrePlayer : GameServer.players.values()) {
+            if (autrePlayer != this && verifCollision(newX, newY, autrePlayer)) {
+                // Annuler le déplacement en restaurant les positions précédentes du joueur
+                return; // Sortir de la méthode après avoir détecté une collision
+            }
+        }
+        
+        if (verifCollisionMur(newX, newY)) {
+                return ;
+        }
+
+
+        // Apres toutes les verifications
+        x = newX; y = newY;
     }
-    
+
+    public boolean verifCollisionMur(int newX, int newY) {
+        for (Rectangle2D mur : GameFrame.murs) {
+                // Collision détectée
+        		if (mur.intersects(newX, newY, getRadius(), getRadius())) {
+        			System.out.println("mur \n\n\n\n\n\n\n\n\n\n\n");
+        			return true;
+        		}
+        }
+        return false;
+    }
+
+    /**
+     * Calculer la ndistance entre autrePlayer et le player acutel
+     * @param newX : position x du joueur actuel
+     * @param newY : position y du joueur actuel
+     * @param autrePlayer : joueur avec qui il faut vérifier si il y a une collision ou non
+     */
+
+    public boolean verifCollision(int newX, int newY, Player autrePlayer) {
+        // Calculer la distance entre les centres des deux joueurs
+        int distanceX = newX - autrePlayer.getX();
+        int distanceY = newY - autrePlayer.getY();
+        double distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+        // Vérifier s'ils se chevauchent
+        return distance < (this.radius + autrePlayer.getRadius());
+    }
+
+
     /*
      * Renvoyer la couleur du joueur
      */
@@ -69,6 +118,14 @@ public class Player {
     		    1                  // Opacité à 100% (valeur entre 0 et 1)
     		);
     	
+    }
+
+    public int setX(int newx){
+        return this.x = newx;
+    }
+
+    public int setY(int newy){
+        return this.y = newy;
     }
 }
 

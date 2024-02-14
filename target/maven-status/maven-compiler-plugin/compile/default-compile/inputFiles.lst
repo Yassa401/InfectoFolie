@@ -1,5 +1,14 @@
+<<<<<<< HEAD
 C:\Users\Lenovo\eclipse-workspace\JeuServeur\src\main\java\main\java\IConfig.java
 C:\Users\Lenovo\eclipse-workspace\JeuServeur\src\main\java\main\java\WebSocketHandler.java
 C:\Users\Lenovo\eclipse-workspace\JeuServeur\src\main\java\main\java\Player.java
 C:\Users\Lenovo\eclipse-workspace\JeuServeur\src\main\java\main\java\GameFrame.java
 C:\Users\Lenovo\eclipse-workspace\JeuServeur\src\main\java\main\java\GameServer.java
+=======
+/home/ozan/JeuServeur/src/main/java/main/java/WebSocketHandler.java
+/home/ozan/JeuServeur/src/main/java/main/java/IConfig.java
+/home/ozan/JeuServeur/src/main/java/main/java/GamePanel.java
+/home/ozan/JeuServeur/src/main/java/main/java/GameServer.java
+/home/ozan/JeuServeur/src/main/java/main/java/Player.java
+/home/ozan/JeuServeur/src/main/java/main/java/GameFrame.java
+>>>>>>> ozan_collision_player
