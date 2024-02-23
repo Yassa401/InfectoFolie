@@ -1,7 +1,6 @@
 package main.java;
 
 import spark.Spark;
-
 import java.util.HashMap;
 import java.util.Map;
 

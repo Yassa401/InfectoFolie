@@ -55,23 +55,49 @@ public class Player {
 
         // Vérifier les collisions avec les autres joueurs
         for (Player autrePlayer : GameServer.players.values()) {
-            if (autrePlayer != this && verifCollision(newX, newY, autrePlayer)) {
+            if ((autrePlayer != this && verifCollision(newX, newY, autrePlayer))) {
                 // Annuler le déplacement en restaurant les positions précédentes du joueur
                 return; // Sortir de la méthode après avoir détecté une collision
             }
         }
         
+        
+        
+        
+        
+   
         if (verifCollisionMur(newX, newY)) {
-                return ;
+        	return;     
         }
-
+        
+        
 
         // Apres toutes les verifications
         x = newX; y = newY;
     }
 
     public boolean verifCollisionMur(int newX, int newY) {
-        for (Rectangle2D mur : GameFrame.murs) {
+    	if(GameFrame.murHaut.intersects(newX, newY, getRadius(),getRadius()) || GameFrame.murDroit.intersects(newX, newY, getRadius(),getRadius()) ) {
+        	// Teste chacun des coordonnées comme ça l'autre peut avoir une nouvelle valeur
+        	// si ça ne rentre pas dans l'obstacle (ça rend le déplacement plus fluide)
+    		System.out.println("ok ca rentre");
+        	if (GameFrame.murHaut.intersects(newX, getY(), getRadius(), getRadius()) || GameFrame.murDroit.intersects(newX, getY(), getRadius(), getRadius())) {
+    			if(GameFrame.murHaut.intersects(getX(), newY, getRadius(), getRadius()) || GameFrame.murDroit.intersects(getX(), newY, getRadius(), getRadius())  ) {
+    				return true ;
+    			}else {
+    				y = newY;
+    				return true;
+    			}
+    		}else {
+    			x = newX ;
+				System.out.println("mur \n\n\n");
+				return true;	
+    		}
+        }
+    	
+    	
+    	
+    	for (Rectangle2D mur : GameFrame.murs) {
                 // Collision détectée
         		/*if (mur.intersects(newX, getY(), getRadius(), getRadius())) {
         			if(mur.intersects(getX(), newY, getRadius(), getRadius())) {
@@ -95,6 +121,8 @@ public class Player {
         				}
         			}
         		}*/
+        	
+        	
         	// Teste avec les deux nouvelles coordonnees d'abord
 	        if(mur.intersects(newX, newY, getRadius(),getRadius())) {
 	        	// Teste chacun des coordonnées comme ça l'autre peut avoir une nouvelle valeur

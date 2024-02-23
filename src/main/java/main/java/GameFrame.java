@@ -19,16 +19,22 @@ public class GameFrame extends ApplicationAdapter {
     private Map<String, Player> players ;
     public static List<Rectangle2D> murs;
     
+    public static Rectangle2D murHaut = new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2, IConfig.LONGUEUR_FENETRE/2-10, IConfig.LARGEUR_FENETRE, 10); // Mur supérieur
+    public static Rectangle2D murGauche =new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2, -IConfig.LONGUEUR_FENETRE/2, 10, IConfig.LONGUEUR_FENETRE); // Mur gauche
+    public static Rectangle2D murBas = new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2, -IConfig.LONGUEUR_FENETRE/2, IConfig.LARGEUR_FENETRE, 10); // Mur inférieur
+    public static Rectangle2D murDroit = new Rectangle2D.Float(IConfig.LARGEUR_FENETRE/2-10, -IConfig.LONGUEUR_FENETRE/2, 10, IConfig.LONGUEUR_FENETRE); // Mur droitG
+
+    
     GameFrame(Map<String, Player> players){
     	this.players = players;
     	
     	murs = new ArrayList<>();
         // Initialisation des murs
-    	murs.add(new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2, IConfig.LONGUEUR_FENETRE/2-10, IConfig.LARGEUR_FENETRE, 10)); // Mur supérieur
+    	/*murs.add(new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2, IConfig.LONGUEUR_FENETRE/2-10, IConfig.LARGEUR_FENETRE, 10)); // Mur supérieur
         murs.add(new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2, -IConfig.LONGUEUR_FENETRE/2, 10, IConfig.LONGUEUR_FENETRE)); // Mur gauche
         murs.add(new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2, -IConfig.LONGUEUR_FENETRE/2, IConfig.LARGEUR_FENETRE, 10)); // Mur inférieur
         murs.add(new Rectangle2D.Float(IConfig.LARGEUR_FENETRE/2-10, -IConfig.LONGUEUR_FENETRE/2, 10, IConfig.LONGUEUR_FENETRE)); // Mur droitG
-
+*/
         
         murs.add(new Rectangle2D.Double(0,0,50,10));
     }
@@ -53,7 +59,12 @@ public class GameFrame extends ApplicationAdapter {
             shapeRenderer.setColor(Color.GRAY);
             shapeRenderer.rect((float)mur.getX(), (float)mur.getY(), (float)mur.getWidth(), (float)mur.getHeight());
         }
-
+        
+        shapeRenderer.rect((float)murHaut.getX(), (float)murHaut.getY(), (float)murHaut.getWidth(), (float)murHaut.getHeight());
+        shapeRenderer.rect((float)murBas.getX(), (float)murBas.getY(), (float)murBas.getWidth(), (float)murBas.getHeight());
+        shapeRenderer.rect((float)murDroit.getX(), (float)murDroit.getY(), (float)murDroit.getWidth(), (float)murDroit.getHeight());
+        shapeRenderer.rect((float)murGauche.getX(), (float)murGauche.getY(), (float)murGauche.getWidth(), (float)murGauche.getHeight());
+        
         shapeRenderer.end();
     }
 
