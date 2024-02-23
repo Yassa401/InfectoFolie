@@ -25,12 +25,12 @@ public class GameFrame extends ApplicationAdapter {
     	murs = new ArrayList<>();
         // Initialisation des murs
     	murs.add(new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2, IConfig.LONGUEUR_FENETRE/2-10, IConfig.LARGEUR_FENETRE, 10)); // Mur supérieur
-        murs.add(new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2, -IConfig.LONGUEUR_FENETRE/2, 10, IConfig.LONGUEUR_FENETRE)); // Mur gauche
-        murs.add(new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2, -IConfig.LONGUEUR_FENETRE/2, IConfig.LARGEUR_FENETRE, 10)); // Mur inférieur
-        murs.add(new Rectangle2D.Float(IConfig.LARGEUR_FENETRE/2-10, -IConfig.LONGUEUR_FENETRE/2, 10, IConfig.LONGUEUR_FENETRE)); // Mur droitG
+        murs.add(new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2,(float)(-IConfig.LONGUEUR_FENETRE/2.5), 10, IConfig.LONGUEUR_FENETRE)); // Mur gauche
+        murs.add(new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2, (float)(-IConfig.LONGUEUR_FENETRE/2.5), IConfig.LARGEUR_FENETRE, 10)); // Mur inférieur
+        murs.add(new Rectangle2D.Float(IConfig.LARGEUR_FENETRE/2-10, (float)(-IConfig.LONGUEUR_FENETRE/2.5), 10, IConfig.LONGUEUR_FENETRE)); // Mur droitG
 
         
-        murs.add(new Rectangle2D.Double(0,0,50,10));
+        murs.add(new Rectangle2D.Double(-60,100,-IConfig.LARGEUR_FENETRE,10));
     }
     @Override
     public void create () {
@@ -40,7 +40,7 @@ public class GameFrame extends ApplicationAdapter {
 
     @Override
     public void render () {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClearColor(245, 236, 236, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
@@ -50,7 +50,7 @@ public class GameFrame extends ApplicationAdapter {
             drawCircle(player);
         }
         for (Rectangle2D mur : murs) {
-            shapeRenderer.setColor(Color.GRAY);
+            shapeRenderer.setColor(Color.FIREBRICK);
             shapeRenderer.rect((float)mur.getX(), (float)mur.getY(), (float)mur.getWidth(), (float)mur.getHeight());
         }
 

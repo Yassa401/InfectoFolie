@@ -29,8 +29,5 @@ public class GameServer {
         config.height = IConfig.LONGUEUR_FENETRE;
         new LwjglApplication(gameFrame, config);
         
-            
-
-        
     }
 }
