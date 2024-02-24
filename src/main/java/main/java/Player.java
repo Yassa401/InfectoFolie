@@ -77,12 +77,12 @@ public class Player {
     }
 
     public boolean verifCollisionMur(int newX, int newY) {
-    	if(GameFrame.murHaut.intersects(newX, newY, getRadius(),getRadius()) || GameFrame.murDroit.intersects(newX, newY, getRadius(),getRadius()) ) {
+    	if(GameFrame.murHaut.intersects(newX, newY, getRadius(),getRadius()) || GameFrame.murDroit.intersects(newX, newY, getRadius(),getRadius()) || GameFrame.murGauche.intersects(newX, newY, getRadius(),getRadius()) || GameFrame.murBas.intersects(newX, newY, getRadius(),getRadius())) {
         	// Teste chacun des coordonnées comme ça l'autre peut avoir une nouvelle valeur
         	// si ça ne rentre pas dans l'obstacle (ça rend le déplacement plus fluide)
     		System.out.println("ok ca rentre");
-        	if (GameFrame.murHaut.intersects(newX, getY(), getRadius(), getRadius()) || GameFrame.murDroit.intersects(newX, getY(), getRadius(), getRadius())) {
-    			if(GameFrame.murHaut.intersects(getX(), newY, getRadius(), getRadius()) || GameFrame.murDroit.intersects(getX(), newY, getRadius(), getRadius())  ) {
+        	if (GameFrame.murHaut.intersects(newX, getY(), getRadius(), getRadius()) || GameFrame.murDroit.intersects(newX, getY(), getRadius(), getRadius()) || GameFrame.murGauche.intersects(newX, newY, getRadius(),getRadius()) || GameFrame.murBas.intersects(newX, newY, getRadius(),getRadius())) {
+    			if(GameFrame.murHaut.intersects(getX(), newY, getRadius(), getRadius()) || GameFrame.murDroit.intersects(getX(), newY, getRadius(), getRadius()) || GameFrame.murGauche.intersects(newX, newY, getRadius(),getRadius()) || GameFrame.murBas.intersects(newX, newY, getRadius(),getRadius()))  {
     				return true ;
     			}else {
     				y = newY;
