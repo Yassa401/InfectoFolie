@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
 public class GameFrame extends ApplicationAdapter {
 	private ShapeRenderer shapeRenderer;
     private Viewport viewport;
@@ -25,14 +26,19 @@ public class GameFrame extends ApplicationAdapter {
     
     BitmapFont font;
     Chrono chrono;
-    SpriteBatch batch;	
+    SpriteBatch batch;  // pour dessiner les polices	
     GlyphLayout layout;	// pour obtenir la taille du texte afin de dessiner un cercle/rect autour
     
     private int nbLivingPlayers;
     private int nbDeadPlayers;
     
-    GameFrame(Map<String, Player> players){
-    	this.players = players;
+    private Game game;
+    
+    //GameFrame(Map<String, Player> players){
+    	//this.players = players;
+    GameFrame(Game g){
+    	this.game = g;
+    	this.players = g.getPlayers();
     	
     	murs = new ArrayList<>();
         // Initialisation des murs
@@ -44,9 +50,9 @@ public class GameFrame extends ApplicationAdapter {
         
         murs.add(new Rectangle2D.Double(-60,100,-IConfig.LARGEUR_FENETRE,10));
         
-        
-        this.nbLivingPlayers = players.size();
-        this.nbDeadPlayers = 0;
+        // récupéer le nb joueurs vivants/morts
+        this.nbLivingPlayers = this.game.getNbLivingPlayers();
+        this.nbDeadPlayers = this.game.getNbDeadPlayers();
         
     }
     @Override
@@ -59,11 +65,7 @@ public class GameFrame extends ApplicationAdapter {
         
 	     // initialisation de la police
 	    font = new BitmapFont();
-        
-	    
-
         font.getData().setScale(2f, 2.2f);
-        //font.getData().setScale(2);
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 	    
 	    // initialiser le timer dans un thread, sinon bloque le thread principale
@@ -73,8 +75,6 @@ public class GameFrame extends ApplicationAdapter {
 	    });
 	    timerThread.start();
 	    
-	    
-
     }
     
     
@@ -103,29 +103,21 @@ public class GameFrame extends ApplicationAdapter {
             shapeRenderer.rect((float)mur.getX(), (float)mur.getY(), (float)mur.getWidth(), (float)mur.getHeight());
         }   
         
-        /* Dessiner les figures des textes (timer, deadPlayers, livingPlayers) */
-        shapeRenderer.setColor(Color.BLACK);  // Couleur du cercle
-        layout.setText(font, texteTimer); // Calcule la taille du texte
-        //shapeRenderer.rect((float) coordsTimer[0] - 15, coordsTimer[1] - layout.height - 10, layout.width + 30, layout.height + 20);
-        this.roundedRect(shapeRenderer, (float) coordsTimer[0] - 15, coordsTimer[1] - 40, 198, 60, 10);
-        shapeRenderer.end();
+        // dessiner le cadre du timer
+        this.drawTimer(coordsTimer);
         
+        // dessiner le cadre des LP et DP
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line); // pour obtenir des cercles creux
-        shapeRenderer.setColor(Color.GREEN);  
-        layout.setText(font, texteLP); 
-        shapeRenderer.circle(coordsLP[0] + layout.width / 2, coordsLP[1] -layout.height / 2, layout.width / 2 + 5);
-        
-        shapeRenderer.setColor(Color.RED); 
-        layout.setText(font, texteDP);
-        shapeRenderer.circle(coordsDP[0] + layout.width / 2, coordsDP[1] -layout.height / 2, layout.width / 2 + 5);
+        this.drawCircleFont(coordsLP, texteLP, Color.GREEN);
+        this.drawCircleFont(coordsDP, texteDP, Color.RED);
         shapeRenderer.end();
         
-        // Décalage de l'origine du "SpriteBatch" vers le centre de la fenêtre 
+        // translater l'origine du "batch" vers le centre de la fenêtre pour que coords shapeRenderer = coords batch 
         Matrix4 translationMatrix = new Matrix4();
         translationMatrix.translate(IConfig.LARGEUR_FENETRE / 2, IConfig.LONGUEUR_FENETRE / 2, 0);
         batch.setTransformMatrix(translationMatrix);
         
-        // Dessin des textes (timer, ...)
+        // Dessin des textes (timer, LP, DP)
         batch.begin();
         font.setColor(Color.WHITE);
         font.draw(batch, this.chrono.getTimer(), coordsTimer[0], coordsTimer[1]);
@@ -161,24 +153,36 @@ public class GameFrame extends ApplicationAdapter {
     	this.players = players ;
     }
     
+    private void drawTimer(int coordsTimer[]) {
+    	shapeRenderer.setColor(Color.BLACK); 
+        this.roundedRect((float) coordsTimer[0] - 15, coordsTimer[1] - 40, 198, 60, 10);
+        shapeRenderer.end();
+    }
+    
+    private void drawCircleFont(int[] coords, String texte, Color c) {
+        shapeRenderer.setColor(c);  
+        layout.setText(font, texte); 
+        shapeRenderer.circle(coords[0] + layout.width / 2, coords[1] -layout.height / 2, layout.width / 2 + 5);
+    }
+    
     
     /**
-    * Draws a rectangle with rounded corners of the given radius. 
+    * Dessine un rectangle avec des coins arrondis (pas de méthode native pour ça) 
     */ 
-    public void roundedRect(ShapeRenderer render, float x, float y, float width, float height, float radius){
+    public void roundedRect(float x, float y, float width, float height, float radius){
         // rectangle central
-        render.rect(x + radius, y + radius, width - 2*radius, height - 2*radius);
+        shapeRenderer.rect(x + radius, y + radius, width - 2*radius, height - 2*radius);
         
         // quatres rectangles lattéraux dans le sens horaire
-        render.rect(x + radius, y, width - 2*radius, radius);
-        render.rect(x + width - radius, y + radius, radius, height - 2*radius);
-        render.rect(x + radius, y + height - radius, width - 2*radius, radius);
-        render.rect(x, y + radius, radius, height - 2*radius);
+        shapeRenderer.rect(x + radius, y, width - 2*radius, radius);
+        shapeRenderer.rect(x + width - radius, y + radius, radius, height - 2*radius);
+        shapeRenderer.rect(x + radius, y + height - radius, width - 2*radius, radius);
+        shapeRenderer.rect(x, y + radius, radius, height - 2*radius);
         
         // quatres arcs dans le sens horaire
-        render.arc(x + radius, y + radius, radius, 180f, 90f);
-        render.arc(x + width - radius, y + radius, radius, 270f, 90f);
-        render.arc(x + width - radius, y + height - radius, radius, 0f, 90f);
-        render.arc(x + radius, y + height - radius, radius, 90f, 90f);
+        shapeRenderer.arc(x + radius, y + radius, radius, 180f, 90f);
+        shapeRenderer.arc(x + width - radius, y + radius, radius, 270f, 90f);
+        shapeRenderer.arc(x + width - radius, y + height - radius, radius, 0f, 90f);
+        shapeRenderer.arc(x + radius, y + height - radius, radius, 90f, 90f);
     }
 }

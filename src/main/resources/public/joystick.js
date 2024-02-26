@@ -28,6 +28,15 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("WebSocket connection is closed.");
         }
     }
+    
+    // récupérer et afficher le timer
+	socket.addEventListener("message", (event) => {
+		const data = JSON.parse(event.data);
+		
+		// attribuer le timer à la page
+		const timer = data.timer;
+		document.querySelector(".circle").textContent = timer;
+	});
 });
 
 console.log(window.location.hostname);

@@ -14,6 +14,7 @@ public class GameServer {
     static final Map<String, Player> players = new HashMap<>();
     
     static GameFrame gameFrame;
+    static Game game;
 
     public static void main(String[] args) {
     	// INITIALISATION DE L'API SPARK POUR GERER LES EVENEMENTS DES CLIENTS
@@ -22,7 +23,10 @@ public class GameServer {
         Spark.init();
         Spark.awaitInitialization();
         
-        gameFrame = new GameFrame(players);
+        //gameFrame = new GameFrame(players);
+        game = new Game(players);
+        gameFrame = new GameFrame(game);
+        
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.title = "InfectoFoli";
         config.width = IConfig.LARGEUR_FENETRE;

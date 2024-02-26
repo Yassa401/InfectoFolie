@@ -28,7 +28,8 @@ public class WebSocketHandler{
         Player player = new Player(100, 100, IConfig.SPEED);
         GameServer.players.put(playerId, player);
         
-        GameServer.gameFrame.actualiseJoueurs(GameServer.players);
+        //GameServer.gameFrame.actualiseJoueurs(GameServer.players);
+        GameServer.game.setPlayers(GameServer.players);
         
         // Gestion du timer
         timer = new Timer();
