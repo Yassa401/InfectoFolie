@@ -16,8 +16,7 @@ public class Player {
         this.x = initialX;
         this.y = initialY;
         this.speed = speed;
-        randomCouleur();
-        
+        this.couleur = Color.CYAN;
     }
     
     public int getX() {

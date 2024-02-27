@@ -1,5 +1,9 @@
 package main.java;
 
+import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -12,6 +16,8 @@ public class WebSocketHandler{
     private org.eclipse.jetty.websocket.api.Session session;
     private String playerId;
     
+    private Timer timer;
+    
     @OnWebSocketConnect
     public void onConnect(Session user) throws Exception {
         System.out.println("New connection: " + user.getRemoteAddress());
@@ -22,7 +28,27 @@ public class WebSocketHandler{
         Player player = new Player(100, 100, IConfig.SPEED);
         GameServer.players.put(playerId, player);
         
-        GameServer.gameFrame.actualiseJoueurs(GameServer.players);
+        //GameServer.gameFrame.actualiseJoueurs(GameServer.players);
+        GameServer.game.setPlayers(GameServer.players);
+        
+        // Gestion du timer
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+        	@Override
+        	public void run() {
+        		// vérifier si le timer est en cours d'exécution
+        		if(Chrono.isRunning()) {
+	        		// envoie du timer au client
+	        		JSONObject jsonObj = new JSONObject();
+	        		jsonObj.put("timer", Chrono.getSecondes()); System.out.println(Chrono.getSecondes());
+	        		try {
+	        			session.getRemote().sendString(jsonObj.toString());
+	        		} catch (IOException e) {
+	        			e.printStackTrace();
+	        		}
+        		}
+        	}
+        }, 0, 20);
     }
     
     @OnWebSocketClose
@@ -30,6 +56,11 @@ public class WebSocketHandler{
         System.out.println("Connection closed: " + user.getRemoteAddress() + " Code: " + statusCode + ", Reason: " + reason);
         GameServer.clients.remove(user.getRemoteAddress().toString());
     	GameServer.players.remove(user.getRemoteAddress().toString());
+    	
+    	// A la fermeture de la connexion, arréter le timer
+    	if(timer != null) {
+    		timer.cancel();
+    	}
     }
     
     @OnWebSocketMessage

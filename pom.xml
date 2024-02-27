@@ -59,8 +59,42 @@
             <version>1.9.11</version>
             <classifier>natives-desktop</classifier>
 		</dependency>
+	
 
     </dependencies>
     
-
+	<!--  Ajout du plugin "maven-assembly"  -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.3.0</version>
+				
+				<!--  Configuration du plugin  -->
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>main.java.GameServer</mainClass> <!--  Spécifier la classe Main  -->
+						</manifest>
+					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef> <!--  inclure toutes les dépendances -->
+					</descriptorRefs>
+				</configuration>
+				
+				<!--  Définir l'exécution du plugin  -->
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>	<!--  L'exécuter à la phase de packaging  -->
+						<goals>
+							<goal>single</goal> <!--  L'exécuter une seule fois -->
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	
 </project>

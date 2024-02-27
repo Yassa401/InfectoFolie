@@ -1,5 +1,13 @@
+<<<<<<< HEAD
 /home/ozan/Bureau/JeuServeur/src/main/java/main/java/WebSocketHandler.java
 /home/ozan/Bureau/JeuServeur/src/main/java/main/java/GameServer.java
 /home/ozan/Bureau/JeuServeur/src/main/java/main/java/Player.java
 /home/ozan/Bureau/JeuServeur/src/main/java/main/java/IConfig.java
 /home/ozan/Bureau/JeuServeur/src/main/java/main/java/GameFrame.java
+=======
+\\WSL.LOCALHOST\Ubuntu\home\ghost\JeuServeur\src\main\java\main\java\GameServer.java
+\\WSL.LOCALHOST\Ubuntu\home\ghost\JeuServeur\src\main\java\main\java\Player.java
+\\WSL.LOCALHOST\Ubuntu\home\ghost\JeuServeur\src\main\java\main\java\WebSocketHandler.java
+\\WSL.LOCALHOST\Ubuntu\home\ghost\JeuServeur\src\main\java\main\java\GameFrame.java
+\\WSL.LOCALHOST\Ubuntu\home\ghost\JeuServeur\src\main\java\main\java\IConfig.java
+>>>>>>> feat/manette
