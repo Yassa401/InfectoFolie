@@ -47,12 +47,12 @@ public class GameFrame extends ApplicationAdapter {
     	
     	murs = new ArrayList<>();
         // Initialisation des murs
-    	/*murs.add(murHaut); // Mur supérieur
+    	murs.add(murHaut); // Mur supérieur
         murs.add(murGauche); // Mur gauche
         murs.add(murBas); // Mur inférieur
         murs.add(murDroit); // Mur droitG
-		*/
-        murs.add(new Rectangle2D.Double(-60,100,-IConfig.LARGEUR_FENETRE,10));
+		
+        murs.add(new Rectangle2D.Float(-60,100,IConfig.LARGEUR_FENETRE/3,10));
         
         // récupéer le nb joueurs vivants/morts
         this.nbLivingPlayers = this.game.getNbLivingPlayers();

@@ -33,7 +33,7 @@ public class Game {
 	}
 	
 	// méthode qui effectue le jeu
-	public void paly() {
+	public void play() {
 		//...
 	}
 
