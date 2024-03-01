@@ -12,24 +12,46 @@ public class Player {
     private Color couleur;
     private int radius = IConfig.RADIUS ;
     
+    private int statut;		// 0 : non-inf, 1 : inf, 2 : mort
+    
     public Player(int initialX, int initialY, double speed) {
         this.x = initialX;
         this.y = initialY;
         this.speed = speed;
         this.couleur = Color.CYAN;
+        
+        this.statut = 0;	// par défaut
     }
     
     public int getX() {
         return x;
+    }
+    
+    public int setX(int newx){
+        return this.x = newx;
     }
 
     public int getY() {
         return y;
     }
     
+    public int setY(int newy){
+        return this.y = newy;
+    }
+    
     public int getRadius() {
     	return radius;
     }
+    
+    public int getStatut() {
+    	return this.statut;
+    }
+    
+    public void setStatut(int s) {
+    	this.statut = s;
+    }
+    
+    
     
     /**
      * Calculer la nouvelle position selon l'angle du joystick
@@ -149,12 +171,5 @@ public class Player {
     	
     }
 
-    public int setX(int newx){
-        return this.x = newx;
-    }
-
-    public int setY(int newy){
-        return this.y = newy;
-    }
 }
 
