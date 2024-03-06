@@ -37,5 +37,64 @@
         	<artifactId>json</artifactId>
         	<version>20210307</version> <!-- Assurez-vous de spécifier la dernière version disponible -->
     	</dependency>
+    	
+	    	<!-- LibGDX core -->
+	    <dependency>
+	        <groupId>com.badlogicgames.gdx</groupId>
+	        <artifactId>gdx</artifactId>
+	        <version>1.9.12</version>
+	    </dependency>
+	
+	    <!-- LibGDX Desktop backend -->
+	    <dependency>
+	        <groupId>com.badlogicgames.gdx</groupId>
+	        <artifactId>gdx-backend-lwjgl</artifactId>
+	        <version>1.9.12</version>
+	        
+	    </dependency>
+
+		<dependency>
+            <groupId>com.badlogicgames.gdx</groupId>
+            <artifactId>gdx-platform</artifactId>
+            <version>1.9.11</version>
+            <classifier>natives-desktop</classifier>
+		</dependency>
+	
+
     </dependencies>
+    
+	<!--  Ajout du plugin "maven-assembly"  -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.3.0</version>
+				
+				<!--  Configuration du plugin  -->
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>main.java.GameServer</mainClass> <!--  Spécifier la classe Main  -->
+						</manifest>
+					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef> <!--  inclure toutes les dépendances -->
+					</descriptorRefs>
+				</configuration>
+				
+				<!--  Définir l'exécution du plugin  -->
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>	<!--  L'exécuter à la phase de packaging  -->
+						<goals>
+							<goal>single</goal> <!--  L'exécuter une seule fois -->
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	
 </project>
