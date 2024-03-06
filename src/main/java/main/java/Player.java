@@ -13,7 +13,8 @@ public class Player {
     private int radius = IConfig.RADIUS ;
     
     private int statut;		// 0 : non-inf, 1 : inf, 2 : mort
-    
+    private static int nbPlayers = 0;
+    private int numPlayer;
     public Player(int initialX, int initialY, double speed) {
         this.x = initialX;
         this.y = initialY;
@@ -21,6 +22,8 @@ public class Player {
         this.couleur = Color.CYAN;
         
         this.statut = 0;	// par défaut
+        nbPlayers++;
+        this.numPlayer = nbPlayers; // numPlayer vaut nbPlayers actuel
     }
     
     public int getX() {
@@ -49,6 +52,10 @@ public class Player {
     
     public void setStatut(int s) {
     	this.statut = s;
+    }
+    
+    public int getNumPlayer() {
+    	return this.numPlayer;
     }
     
     
@@ -155,6 +162,10 @@ public class Player {
      */
     Color getCouleur() {
     	return couleur ;
+    }
+    
+    public void setCouleur(Color c) {
+    	this.couleur = c;
     }
     
     /*

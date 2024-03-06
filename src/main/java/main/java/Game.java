@@ -3,6 +3,8 @@ package main.java;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.Color;
+
 public class Game {
 	private Map<String, Player> players ;
 	
@@ -76,7 +78,8 @@ public class Game {
 	
 	// infecte un joueurs (changer son statut et sa couleur)
 	public void infectPlayer(Player p) {
-		
+		p.setCouleur(Color.RED);
+		p.setStatut(1);		
 	}
 	
 	// utilise les joueurs pour une partit du jeu
@@ -88,5 +91,12 @@ public class Game {
 	public void play() {
 		//...
 	}
+	/*
+	public static void main(String ...args) {
+		Player p1 = new Player(0, 0, 0.5);
+		Player p2 = new Player(0, 0, 0.5);
+		Player p3 = new Player(0, 0, 0.5);
+		System.out.println(p1.getNumPlayer() + ",   "+ p2.getNumPlayer() + ",   "+p3.getNumPlayer());
+	}*/
 
 }

@@ -69,7 +69,7 @@ public class GameFrame extends ApplicationAdapter {
         
 	     // initialisation de la police
 	    font = new BitmapFont();
-        font.getData().setScale(2f, 2.2f);
+        //font.getData().setScale(2f, 2.2f);
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 	    
 	    // initialiser le timer dans un thread, sinon bloque le thread principale
@@ -84,14 +84,6 @@ public class GameFrame extends ApplicationAdapter {
     
     @Override
     public void render () {
-    	String texteLP = this.nbLivingPlayers + "00"; // à gérer quand on aura le bon nb joueurs
-        String texteDP = this.nbDeadPlayers + "00";
-        String texteTimer = this.chrono.getTimer();
-        
-        // coordonnées des figures
-        int[] coordsTimer = {-50, -IConfig.LONGUEUR_FENETRE/2 + 50};
-        int[] coordsLP = {-IConfig.LARGEUR_FENETRE/2 + 200, -IConfig.LONGUEUR_FENETRE/2 + 50};
-        int[] coordsDP = {-IConfig.LARGEUR_FENETRE/2 + 350, -IConfig.LONGUEUR_FENETRE/2 + 50};
         
         Gdx.gl.glClearColor(245, 236, 236, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -99,13 +91,9 @@ public class GameFrame extends ApplicationAdapter {
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         
-        for (Player player : players.values()) {
-            drawCircle(player);
-        }
         for (Rectangle2D mur : murs) {
             shapeRenderer.setColor(Color.FIREBRICK); 
             shapeRenderer.rect((float)mur.getX(), (float)mur.getY(), (float)mur.getWidth(), (float)mur.getHeight());
-
         }
         
         shapeRenderer.rect((float)murHaut.getX(), (float)murHaut.getY(), (float)murHaut.getWidth(), (float)murHaut.getHeight());
@@ -113,31 +101,25 @@ public class GameFrame extends ApplicationAdapter {
         shapeRenderer.rect((float)murDroit.getX(), (float)murDroit.getY(), (float)murDroit.getWidth(), (float)murDroit.getHeight());
         shapeRenderer.rect((float)murGauche.getX(), (float)murGauche.getY(), (float)murGauche.getWidth(), (float)murGauche.getHeight());
         
-        // dessiner le cadre du timer
-        this.drawTimer(coordsTimer);
-        
-        // dessiner le cadre des LP et DP
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line); // pour obtenir des cercles creux
-        this.drawCircleFont(coordsLP, texteLP, Color.GREEN);
-        this.drawCircleFont(coordsDP, texteDP, Color.RED);
         shapeRenderer.end();
+        
+        
         
         // translater l'origine du "batch" vers le centre de la fenêtre pour que coords shapeRenderer = coords batch 
         Matrix4 translationMatrix = new Matrix4();
         translationMatrix.translate(IConfig.LARGEUR_FENETRE / 2, IConfig.LONGUEUR_FENETRE / 2, 0);
         batch.setTransformMatrix(translationMatrix);
         
-        // Dessin des textes (timer, LP, DP)
-        batch.begin();
-        font.setColor(Color.WHITE);
-        font.draw(batch, this.chrono.getTimer(), coordsTimer[0], coordsTimer[1]);
-        //font.setColor(Color.BLACK);
-        font.draw(batch, texteLP, coordsLP[0], coordsLP[1]);
-        font.draw(batch, texteDP, coordsDP[0], coordsDP[1]);
+        // Déssiner les joueurs
+        for (Player player : players.values()) {
+            drawPlayer(player);
+        }
+        
+        // Dessiner le menu d'en-bas
+        drawBottomMenu();
         
         // faire une translation inverse pour obtenir la matrice d'origine du SpriteBatch
         batch.setTransformMatrix(new Matrix4().translate(-IConfig.LARGEUR_FENETRE / 2, -IConfig.LONGUEUR_FENETRE / 2, 0));
-        batch.end();
     }
 
     
@@ -159,6 +141,18 @@ public class GameFrame extends ApplicationAdapter {
         shapeRenderer.circle((float)player.getX(), (float)player.getY(), player.getRadius());
     }
     
+    private void drawPlayer(Player p) {
+    	shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+    	shapeRenderer.setColor(p.getCouleur());
+        shapeRenderer.circle((float) p.getX(), (float) p.getY(), p.getRadius());
+    	shapeRenderer.end();
+    	
+    	batch.begin();
+    	layout.setText(font, p.getNumPlayer()+""); 
+        font.draw(batch, p.getNumPlayer()+"", (float) p.getX() - layout.width / 2, (float) p.getY() + layout.height / 2);
+        batch.end();
+    }
+    
     void actualiseJoueurs(Map<String, Player> players) {
     	this.players = players ;
     }
@@ -166,13 +160,55 @@ public class GameFrame extends ApplicationAdapter {
     private void drawTimer(int coordsTimer[]) {
     	shapeRenderer.setColor(Color.BLACK); 
         this.roundedRect((float) coordsTimer[0] - 15, coordsTimer[1] - 40, 198, 60, 10);
-        shapeRenderer.end();
     }
     
     private void drawCircleFont(int[] coords, String texte, Color c) {
         shapeRenderer.setColor(c);  
         layout.setText(font, texte); 
         shapeRenderer.circle(coords[0] + layout.width / 2, coords[1] -layout.height / 2, layout.width / 2 + 5);
+    }
+    
+    private void drawBottomMenu() {
+    	String texteLP = this.nbLivingPlayers + "00"; // à gérer quand on aura le bon nb joueurs
+        String texteDP = this.nbDeadPlayers + "00";
+        String texteTimer = this.chrono.getTimer();
+        
+        // coordonnées des figures
+        int[] coordsTimer = {-50, -IConfig.LONGUEUR_FENETRE/2 + 50};
+        int[] coordsLP = {-IConfig.LARGEUR_FENETRE/2 + 200, -IConfig.LONGUEUR_FENETRE/2 + 50};
+        int[] coordsDP = {-IConfig.LARGEUR_FENETRE/2 + 350, -IConfig.LONGUEUR_FENETRE/2 + 50};
+        
+        // dessiner le timer
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.BLACK); 
+        this.roundedRect((float) coordsTimer[0] - 15, coordsTimer[1] - 40, 198, 60, 10);
+        shapeRenderer.end();        
+        
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line); // pour obtenir des cercles creux
+        
+        // dessiner le cadre des LP
+        shapeRenderer.setColor(Color.GREEN);  
+        layout.setText(font, texteLP); 
+        shapeRenderer.circle(coordsLP[0] + layout.width / 2, coordsLP[1] -layout.height / 2, layout.width / 2 + 5);
+        
+        // dessiner le cadre des DP
+        shapeRenderer.setColor(Color.RED);  
+        layout.setText(font, texteDP); 
+        shapeRenderer.circle(coordsDP[0] + layout.width / 2, coordsDP[1] -layout.height / 2, layout.width / 2 + 5);
+        shapeRenderer.end();
+        
+        // Dessiner les textes (timer, LP, DP)
+        batch.begin();
+        font.setColor(Color.WHITE);
+        font.getData().setScale(2f, 2.2f);	// augmenter la taille de la police
+        
+        font.draw(batch, this.chrono.getTimer(), coordsTimer[0], coordsTimer[1]);
+        //font.setColor(Color.BLACK);
+        font.draw(batch, texteLP, coordsLP[0], coordsLP[1]);
+        font.draw(batch, texteDP, coordsDP[0], coordsDP[1]);
+        
+        batch.end();
+        
     }
     
     
