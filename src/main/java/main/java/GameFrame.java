@@ -69,7 +69,6 @@ public class GameFrame extends ApplicationAdapter {
         
 	     // initialisation de la police
 	    font = new BitmapFont();
-        //font.getData().setScale(2f, 2.2f);
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 	    
 	    // initialiser le timer dans un thread, sinon bloque le thread principale
@@ -84,38 +83,21 @@ public class GameFrame extends ApplicationAdapter {
     
     @Override
     public void render () {
-        
         Gdx.gl.glClearColor(245, 236, 236, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         
-        for (Rectangle2D mur : murs) {
-            shapeRenderer.setColor(Color.FIREBRICK); 
-            shapeRenderer.rect((float)mur.getX(), (float)mur.getY(), (float)mur.getWidth(), (float)mur.getHeight());
-        }
-        
-        shapeRenderer.rect((float)murHaut.getX(), (float)murHaut.getY(), (float)murHaut.getWidth(), (float)murHaut.getHeight());
-        shapeRenderer.rect((float)murBas.getX(), (float)murBas.getY(), (float)murBas.getWidth(), (float)murBas.getHeight());
-        shapeRenderer.rect((float)murDroit.getX(), (float)murDroit.getY(), (float)murDroit.getWidth(), (float)murDroit.getHeight());
-        shapeRenderer.rect((float)murGauche.getX(), (float)murGauche.getY(), (float)murGauche.getWidth(), (float)murGauche.getHeight());
-        
-        shapeRenderer.end();
-        
-        
+        // les mûrs
+        drawWalls();
         
         // translater l'origine du "batch" vers le centre de la fenêtre pour que coords shapeRenderer = coords batch 
         Matrix4 translationMatrix = new Matrix4();
         translationMatrix.translate(IConfig.LARGEUR_FENETRE / 2, IConfig.LONGUEUR_FENETRE / 2, 0);
         batch.setTransformMatrix(translationMatrix);
         
-        // Déssiner les joueurs
-        for (Player player : players.values()) {
-            drawPlayer(player);
-        }
-        
-        // Dessiner le menu d'en-bas
+        // dessiner les joueurs et le menu bas
+        drawPlayers();
         drawBottomMenu();
         
         // faire une translation inverse pour obtenir la matrice d'origine du SpriteBatch
@@ -141,31 +123,35 @@ public class GameFrame extends ApplicationAdapter {
         shapeRenderer.circle((float)player.getX(), (float)player.getY(), player.getRadius());
     }
     
-    private void drawPlayer(Player p) {
+    private void drawWalls() {
     	shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-    	shapeRenderer.setColor(p.getCouleur());
-        shapeRenderer.circle((float) p.getX(), (float) p.getY(), p.getRadius());
+        for (Rectangle2D mur : murs) {
+            shapeRenderer.setColor(Color.FIREBRICK); 
+            shapeRenderer.rect((float)mur.getX(), (float)mur.getY(), (float)mur.getWidth(), (float)mur.getHeight());
+        }
+        shapeRenderer.end();
+    }
+    
+    private void drawPlayers() {
+    	// Déssiner les joueurs
+    	shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        for (Player p : players.values()) {
+            shapeRenderer.setColor(p.getCouleur());
+            shapeRenderer.circle((float) p.getX(), (float) p.getY(), p.getRadius());
+        }
     	shapeRenderer.end();
     	
+    	// Dessiner les numéros des joueurs
     	batch.begin();
-    	layout.setText(font, p.getNumPlayer()+""); 
-        font.draw(batch, p.getNumPlayer()+"", (float) p.getX() - layout.width / 2, (float) p.getY() + layout.height / 2);
+    	for (Player p : players.values()) {
+    		layout.setText(font, p.getNumPlayer()+""); 
+            font.draw(batch, p.getNumPlayer()+"", (float) p.getX() - layout.width / 2, (float) p.getY() + layout.height / 2);
+        }
         batch.end();
     }
     
     void actualiseJoueurs(Map<String, Player> players) {
     	this.players = players ;
-    }
-    
-    private void drawTimer(int coordsTimer[]) {
-    	shapeRenderer.setColor(Color.BLACK); 
-        this.roundedRect((float) coordsTimer[0] - 15, coordsTimer[1] - 40, 198, 60, 10);
-    }
-    
-    private void drawCircleFont(int[] coords, String texte, Color c) {
-        shapeRenderer.setColor(c);  
-        layout.setText(font, texte); 
-        shapeRenderer.circle(coords[0] + layout.width / 2, coords[1] -layout.height / 2, layout.width / 2 + 5);
     }
     
     private void drawBottomMenu() {
@@ -210,7 +196,6 @@ public class GameFrame extends ApplicationAdapter {
         batch.end();
         
     }
-    
     
     /**
     * Dessine un rectangle avec des coins arrondis (pas de méthode native pour ça) 
