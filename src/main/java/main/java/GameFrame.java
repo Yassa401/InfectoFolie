@@ -34,13 +34,9 @@ public class GameFrame extends ApplicationAdapter {
     SpriteBatch batch;  // pour dessiner les polices	
     GlyphLayout layout;	// pour obtenir la taille du texte afin de dessiner un cercle/rect autour
     
-    private int nbLivingPlayers;
-    private int nbDeadPlayers;
-    
     private Game game;
+    private Rectangle2D startButton = new Rectangle2D.Float(300, -IConfig.LONGUEUR_FENETRE/2 + 10, 150, 60);
     
-    //GameFrame(Map<String, Player> players){
-    	//this.players = players;
     GameFrame(Game g){
     	this.game = g;
     	this.players = g.getPlayers();
@@ -54,9 +50,7 @@ public class GameFrame extends ApplicationAdapter {
 		
         murs.add(new Rectangle2D.Float(-60,100,IConfig.LARGEUR_FENETRE/3,10));
         
-        // récupéer le nb joueurs vivants/morts
-        this.nbLivingPlayers = this.game.getNbLivingPlayers();
-        this.nbDeadPlayers = this.game.getNbDeadPlayers();
+        
         
     }
     @Override
@@ -72,11 +66,11 @@ public class GameFrame extends ApplicationAdapter {
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 	    
 	    // initialiser le timer dans un thread, sinon bloque le thread principale
-	    Thread timerThread = new Thread(() -> {
-	    	chrono = new Chrono();
+        //chrono = new Chrono();
+	    /*Thread timerThread = new Thread(() -> {
 	        chrono.startTimer();
 	    });
-	    timerThread.start();
+	    timerThread.start();*/
 	    
     }
     
@@ -96,14 +90,16 @@ public class GameFrame extends ApplicationAdapter {
         translationMatrix.translate(IConfig.LARGEUR_FENETRE / 2, IConfig.LONGUEUR_FENETRE / 2, 0);
         batch.setTransformMatrix(translationMatrix);
         
+        clickHandler();
+        
         // dessiner les joueurs et le menu bas
         drawPlayers();
         drawBottomMenu();
         
+        
         // faire une translation inverse pour obtenir la matrice d'origine du SpriteBatch
         batch.setTransformMatrix(new Matrix4().translate(-IConfig.LARGEUR_FENETRE / 2, -IConfig.LONGUEUR_FENETRE / 2, 0));
     }
-
     
     @Override
     public void resize(int width, int height) {
@@ -155,9 +151,13 @@ public class GameFrame extends ApplicationAdapter {
     }
     
     private void drawBottomMenu() {
-    	String texteLP = this.nbLivingPlayers + "00"; // à gérer quand on aura le bon nb joueurs
-        String texteDP = this.nbDeadPlayers + "00";
-        String texteTimer = this.chrono.getTimer();
+    	// récupéer le nb joueurs vivants/morts
+        String nbLivingPlayers = this.game.getNbLivingPlayers();
+        String nbDeadPlayers = this.game.getNbDeadPlayers();
+        
+    	String texteLP = nbLivingPlayers;
+        String texteDP = nbDeadPlayers;
+        String texteTimer = Chrono.getTimer();
         
         // coordonnées des figures
         int[] coordsTimer = {-50, -IConfig.LONGUEUR_FENETRE/2 + 50};
@@ -167,7 +167,11 @@ public class GameFrame extends ApplicationAdapter {
         // dessiner le timer
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.BLACK); 
-        this.roundedRect((float) coordsTimer[0] - 15, coordsTimer[1] - 40, 198, 60, 10);
+        this.roundedRect((float) coordsTimer[0] - 15, (float) coordsTimer[1] - 40, 198, 60, 10);
+
+        // dessiner le bouton start
+        shapeRenderer.setColor(Color.GREEN); 
+        this.roundedRect((float) startButton.getX(), (float) startButton.getY(), (float)startButton.getWidth(), (float)startButton.getHeight(), 10);
         shapeRenderer.end();        
         
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line); // pour obtenir des cercles creux
@@ -181,6 +185,7 @@ public class GameFrame extends ApplicationAdapter {
         shapeRenderer.setColor(Color.RED);  
         layout.setText(font, texteDP); 
         shapeRenderer.circle(coordsDP[0] + layout.width / 2, coordsDP[1] -layout.height / 2, layout.width / 2 + 5);
+        
         shapeRenderer.end();
         
         // Dessiner les textes (timer, LP, DP)
@@ -193,8 +198,29 @@ public class GameFrame extends ApplicationAdapter {
         font.draw(batch, texteLP, coordsLP[0], coordsLP[1]);
         font.draw(batch, texteDP, coordsDP[0], coordsDP[1]);
         
+        // texte du bouton start
+        font.draw(batch, "Start", (float) startButton.getX() + 40, (float) startButton.getY() + 45);
+        
         batch.end();
         
+    }
+    
+    private void clickHandler() {
+    	if(Gdx.input.justTouched()) { 
+    		//if(startButton.getBounds2D().contains(Gdx.input.getX(), Gdx.input.getY())) {
+    		// to optimise
+    		int coordsSB[] = {950, 740, 1100, 790}; 
+    		int sX = Gdx.input.getX();
+    		int sY = Gdx.input.getY();
+    		if(sX >= coordsSB[0] && sX <= coordsSB[2] && sY >= coordsSB[1] && sY <= coordsSB[3]) {
+    			// lancer le timer
+    		    Thread timerThread = new Thread(() -> {
+    		    	game.play(); // juste pour le test (pour mettre Chrono.running à true)
+    		        Chrono.startTimer();
+    		    });
+    		    timerThread.start();
+    		}
+    	}
     }
     
     /**
