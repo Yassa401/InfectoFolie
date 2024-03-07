@@ -7,7 +7,7 @@ public interface IConfig {
 	
 	static final int RADIUS = 18 ;
 	
-	static final double SPEED = 0.5 ;
+	static final double SPEED = 0.25 ;
 
 	static int widthObs = 100;
 	static int heightObs = 10;

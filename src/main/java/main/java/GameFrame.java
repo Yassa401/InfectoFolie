@@ -48,7 +48,7 @@ public class GameFrame extends ApplicationAdapter {
         murs.add(murBas); // Mur inférieur
         murs.add(murDroit); // Mur droitG
 		
-        murs.add(new Rectangle2D.Float(-60,100,IConfig.LARGEUR_FENETRE/3,10));
+        murs.add(new Rectangle2D.Float(-60,200,IConfig.LARGEUR_FENETRE/3,10));
         
         
         
