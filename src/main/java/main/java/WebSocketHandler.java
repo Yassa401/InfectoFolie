@@ -66,7 +66,7 @@ public class WebSocketHandler{
     @OnWebSocketMessage
     public void onMessage(Session session, String message) {
     	// Handle incoming text messages
-        System.out.println("Received message: " + message);
+        //System.out.println("Received message: " + message);
 
         // Convertir la chaîne JSON en objet JSONObject
         JSONObject jsonObject = new JSONObject(message);

@@ -129,7 +129,6 @@ public class Player {
 		    			}
 		    		}else {
 	        			x = newX ;
-	    				System.out.println("mur \n\n\n");
 	    				return true;	
 		    		}
 		        }
