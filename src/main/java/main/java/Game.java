@@ -50,21 +50,11 @@ public class Game {
 	public int getNbPlayers2Infect() {
 		int nbPlayers = this.players.size();
 		int nb2infec = 0;
-		
-		if(nbPlayers <= 5) {
-			nb2infec = 1;
-		}
-		else if(nbPlayers <= 20) {
-			nb2infec = 3;
-		}
-		else if(nbPlayers <= 40) {
-			nb2infec = 5;
-		}
-		else if(nbPlayers <= 70) {
-			nb2infec = 7;
-		}
-		else if(nbPlayers <= 100) {
-			nb2infec = 10;
+
+		if(nbPlayers <= 5){
+			nb2infec =1;
+		}else {
+			nb2infec = (int) (nbPlayers * (30 / 100));
 		}
 
 		return nb2infec;
@@ -85,10 +75,17 @@ public class Game {
 	}
 	
 	// infecte un joueurs (changer son statut et sa couleur)
-	public void infectPlayer(Player p) {
+	public static void infectPlayer(Player p) {
 		p.setCouleur(Color.RED);
 		p.setStatut(1);		
 	}
+
+	public static void healPlayer(Player p) {
+		p.setCouleur(p.getColorInit());
+		p.setStatut(2);
+	}
+
+
 	
 	// infecte les joueurs pour une partit du jeu
 	public void infectPlayers() {
