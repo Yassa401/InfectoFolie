@@ -9,8 +9,12 @@ public class Player {
     private int x;
     private int y;
     private double speed;
-    private Color couleur;
+    private Color couleur ;
+
+    private Color couleurInit ;
     private int radius = IConfig.RADIUS ;
+
+    private int peutEtreInfect;
     
     private int statut;		// 0 : non-inf, 1 : inf, 2 : mort
     private static int nbPlayers = 0;
@@ -19,7 +23,9 @@ public class Player {
         this.x = initialX;
         this.y = initialY;
         this.speed = speed;
-        this.couleur = Color.CYAN;
+        this.randomCouleur();
+        couleurInit = couleur;
+        this.peutEtreInfect = -1;
         
         this.statut = 0;	// par défaut
         nbPlayers++;
@@ -32,6 +38,10 @@ public class Player {
     
     public int setX(int newx){
         return this.x = newx;
+    }
+
+    public Color getColorInit(){
+        return this.couleurInit;
     }
 
     public int getY() {
@@ -84,6 +94,14 @@ public class Player {
         // Vérifier les collisions avec les autres joueurs
         for (Player autrePlayer : GameServer.players.values()) {
             if ((autrePlayer != this && verifCollision(newX, newY, autrePlayer))) {
+                if ((this.getStatut() == 1 && autrePlayer.getStatut() != 1)) {
+                    Game.infectPlayer(autrePlayer);
+                    this.peutEtreInfect = Chrono.getSecondes();
+                    Game.healPlayer(this);
+                }else if ((this.getStatut() != 1 && autrePlayer.getStatut() == 1 && this.peutEtreInfect - Chrono.getSecondes() > 2 )){
+                    Game.infectPlayer(this);
+                    Game.healPlayer(autrePlayer);
+                }
                 // Annuler le déplacement en restaurant les positions précédentes du joueur
                 return; // Sortir de la méthode après avoir détecté une collision
             }
@@ -166,6 +184,8 @@ public class Player {
     public void setCouleur(Color c) {
     	this.couleur = c;
     }
+
+
     
     /*
      * Associer une couleur ALEATOIRE au joueur (appelé dans le constructeur
