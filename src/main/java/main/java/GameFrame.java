@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -34,7 +35,7 @@ public class GameFrame extends ApplicationAdapter {
     SpriteBatch batch;  // pour dessiner les polices	
     GlyphLayout layout;	// pour obtenir la taille du texte afin de dessiner un cercle/rect autour
     
-    private Game game;
+    protected Game game;
     private Rectangle2D startButton = new Rectangle2D.Float(300, -IConfig.LONGUEUR_FENETRE/2 + 10, 150, 60);
     
     GameFrame(Game g){
@@ -49,10 +50,8 @@ public class GameFrame extends ApplicationAdapter {
         murs.add(murDroit); // Mur droitG
 		
         murs.add(new Rectangle2D.Float(-60,200,IConfig.LARGEUR_FENETRE/3,10));
-        
-        
-        
     }
+    
     @Override
     public void create () {
         shapeRenderer = new ShapeRenderer();
@@ -64,14 +63,6 @@ public class GameFrame extends ApplicationAdapter {
 	     // initialisation de la police
 	    font = new BitmapFont();
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-	    
-	    // initialiser le timer dans un thread, sinon bloque le thread principale
-        //chrono = new Chrono();
-	    /*Thread timerThread = new Thread(() -> {
-	        chrono.startTimer();
-	    });
-	    timerThread.start();*/
-	    
     }
     
     
@@ -89,8 +80,10 @@ public class GameFrame extends ApplicationAdapter {
         Matrix4 translationMatrix = new Matrix4();
         translationMatrix.translate(IConfig.LARGEUR_FENETRE / 2, IConfig.LONGUEUR_FENETRE / 2, 0);
         batch.setTransformMatrix(translationMatrix);
-        
-        clickHandler();
+
+        play();
+        //clickHandler(); // gère le click du bouton start et lance le timer
+        //updateGame();	// après un tour elimine les infectés et relance le jeu
         
         // dessiner les joueurs et le menu bas
         drawPlayers();
@@ -213,14 +206,60 @@ public class GameFrame extends ApplicationAdapter {
     		int sX = Gdx.input.getX();
     		int sY = Gdx.input.getY();
     		if(sX >= coordsSB[0] && sX <= coordsSB[2] && sY >= coordsSB[1] && sY <= coordsSB[3]) {
+    			game.canPlay = true;	// pour empêcher le lancement updateGame() avec le bouton start
+    			Chrono.running = true;	// permettre le lancement du timer
+    	    	game.infectPlayers();	// infecte les joueurs au lancement
     			// lancer le timer
-    		    Thread timerThread = new Thread(() -> {
-    		    	game.play(); // juste pour le test (pour mettre Chrono.running à true)
-    		        Chrono.startTimer();
-    		    });
-    		    timerThread.start();
+    			launchTimerThread();
     		}
     	}
+    }
+    
+    // lance le Thread du timer
+    private void launchTimerThread() {    	
+    	Thread timerThread = new Thread(() -> {
+	        Chrono.startTimer();
+	    });
+	    timerThread.start();
+    }
+    
+    private void updateGame() {
+    	//game.infectPlayers();
+    	if(!Chrono.isRunning() && game.getPlayers().size() > 1 && game.canPlay) {
+			game.updateNbPlayers();			
+			// attendre une demi seconde
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			Chrono.running = true;	// pour relancer le timer
+	    	game.infectPlayers();	// infecté de nouveaux joueurs
+	    	
+	    	// relancer le timer
+			launchTimerThread();
+		}
+    }
+    
+    private void play() {
+    	clickHandler();
+    	
+    	if(!Chrono.isRunning() && game.getPlayers().size() > 1 && game.canPlay) {
+			game.updateNbPlayers();			
+			// attendre une demi seconde
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			Chrono.running = true;	// pour relancer le timer
+	    	game.infectPlayers();	// infecté de nouveaux joueurs
+	    	
+	    	// relancer le timer
+			launchTimerThread();
+		}
     }
     
     /**
@@ -242,4 +281,6 @@ public class GameFrame extends ApplicationAdapter {
         shapeRenderer.arc(x + width - radius, y + height - radius, radius, 0f, 90f);
         shapeRenderer.arc(x + radius, y + height - radius, radius, 90f, 90f);
     }
+    
+    
 }
