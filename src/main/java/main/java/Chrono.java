@@ -7,7 +7,8 @@ public class Chrono {
     private static final DecimalFormat decimalFormat2 = new DecimalFormat("000"); // pour les ms
     private static long startTime;
     public static boolean running = false;
-    private static int totalTime = 5000; //20000; 
+
+    private static int totalTime = IConfig.time;
     private static long remainingTime = totalTime;
     private static String timer = "00.00.20.000";
     private static int hours = 0, minutes = 0;
@@ -36,7 +37,6 @@ public class Chrono {
             updateTimer(remainingTime);
             
             timer = formatTime(remainingTime);
-            //System.out.println("(" + timer + ")");
 
             try {
                 Thread.sleep(1); // Attendre 1ms avant la prochaine itération pour éviter d'utiliser trop de ressources CPU

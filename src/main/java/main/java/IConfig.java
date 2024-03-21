@@ -11,4 +11,8 @@ public interface IConfig {
 
 	static int widthObs = 100;
 	static int heightObs = 10;
+
+	static int cooldown = 2;
+
+	static int time = 20000;
 }

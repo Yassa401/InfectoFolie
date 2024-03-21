@@ -43,7 +43,8 @@ public class WebSocketHandler{
         		if(Chrono.isRunning()) {
 	        		// envoie du timer au client
 	        		JSONObject jsonObj = new JSONObject();
-	        		jsonObj.put("timer", Chrono.getSecondes()); System.out.println(Chrono.getSecondes());
+	        		jsonObj.put("timer", Chrono.getSecondes()); //
+                    // System.out.println(Chrono.getSecondes());
 	        		try {
 	        			session.getRemote().sendString(jsonObj.toString());
 	        		} catch (IOException e) {
