@@ -28,7 +28,7 @@ public class WebSocketHandler{
         this.playerId = user.getRemoteAddress().toString();
         GameServer.clients.put(playerId, this);
         // Créer un nouveau joueur et l'ajouter à la liste des joueurs
-        Player player = new Player(r.nextInt(IConfig.LARGEUR_FENETRE/2) - (int)(IConfig.LARGEUR_FENETRE /2.5), r.nextInt(IConfig.LONGUEUR_FENETRE/2) - (IConfig.LONGUEUR_FENETRE/2) , IConfig.SPEED);
+        Player player = new Player(r.nextInt(IConfig.LARGEUR_FENETRE/2) - (int)(IConfig.LARGEUR_FENETRE /2), r.nextInt(IConfig.LONGUEUR_FENETRE/2) - (IConfig.LONGUEUR_FENETRE/2) + 100 , IConfig.SPEED);
         GameServer.players.put(playerId, player);
         
         //GameServer.gameFrame.actualiseJoueurs(GameServer.players);

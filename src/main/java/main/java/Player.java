@@ -191,14 +191,19 @@ public class Player {
      * Associer une couleur ALEATOIRE au joueur (appelé dans le constructeur
      */
     public void randomCouleur() {
-    	Random random = new Random();
-    	couleur = new Color(
-    		    random.nextFloat(), // Composante rouge aléatoire entre 0 et 1
-    		    random.nextFloat(), // Composante verte aléatoire entre 0 et 1
-    		    random.nextFloat(), // Composante bleue aléatoire entre 0 et 1
-    		    1                  // Opacité à 100% (valeur entre 0 et 1)
-    		);
-    	
+        Random random = new Random();
+        float red;
+        do {
+            red = random.nextFloat();
+        } while (red == 240f / 255f);
+
+        couleur = new Color(
+                red,
+                random.nextFloat(),
+                random.nextFloat(),
+                1
+        );
+
     }
 
 }
