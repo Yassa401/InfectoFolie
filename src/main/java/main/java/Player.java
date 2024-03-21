@@ -25,7 +25,7 @@ public class Player {
         this.speed = speed;
         this.randomCouleur();
         couleurInit = couleur;
-        this.peutEtreInfect = -1;
+        this.peutEtreInfect = 100;
         
         this.statut = 0;	// par défaut
         nbPlayers++;
@@ -94,14 +94,14 @@ public class Player {
         // Vérifier les collisions avec les autres joueurs
         for (Player autrePlayer : GameServer.players.values()) {
             if ((autrePlayer != this && verifCollision(newX, newY, autrePlayer))) {
-                if ((this.getStatut() == 1 && autrePlayer.getStatut() != 1)) {
+                if ((this.getStatut() == 1 && autrePlayer.getStatut() != 1) && (autrePlayer.peutEtreInfect - Chrono.getSecondes()) >= IConfig.cooldown ) {
                     Game.infectPlayer(autrePlayer);
                     this.peutEtreInfect = Chrono.getSecondes();
                     Game.healPlayer(this);
-                }else if ((this.getStatut() != 1 && autrePlayer.getStatut() == 1 && this.peutEtreInfect - Chrono.getSecondes() > 2 )){
+                }/*else if ((this.getStatut() != 1 && autrePlayer.getStatut() == 1 )){
                     Game.infectPlayer(this);
                     Game.healPlayer(autrePlayer);
-                }
+                }*/
                 // Annuler le déplacement en restaurant les positions précédentes du joueur
                 return; // Sortir de la méthode après avoir détecté une collision
             }
