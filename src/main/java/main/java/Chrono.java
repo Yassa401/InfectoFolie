@@ -36,7 +36,6 @@ public class Chrono {
             updateTimer(remainingTime);
             
             timer = formatTime(remainingTime);
-            //System.out.println("(" + timer + ")");
 
             try {
                 Thread.sleep(1); // Attendre 1ms avant la prochaine itération pour éviter d'utiliser trop de ressources CPU
