@@ -13,6 +13,8 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 
+import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.StdErrLog;
 public class GameServer {
 
     static final Map<String, WebSocketHandler> clients = new HashMap<>();
@@ -22,13 +24,10 @@ public class GameServer {
     static Game game;
 
     public static void main(String[] args) {
-    	
-    	// Récupérer le logger racine de Spark
-        Logger rootLogger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 
-        // Configurer le niveau de journalisation à ERROR pour Spark
-        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-        rootLogger.setLevel(Level.ERROR);
+        StdErrLog logger = new StdErrLog();
+        logger.setDebugEnabled(false);
+        Log.setLog(logger);
     	
     	// INITIALISATION DE L'API SPARK POUR GERER LES EVENEMENTS DES CLIENTS
         Spark.staticFiles.location("/public");
