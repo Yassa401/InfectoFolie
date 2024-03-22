@@ -9,27 +9,66 @@ public class Player {
     private int x;
     private int y;
     private double speed;
-    private Color couleur;
+    private Color couleur ;
+
+    private Color couleurInit ;
     private int radius = IConfig.RADIUS ;
+
+    private int peutEtreInfect;
     
+    private int statut;		// 0 : non-inf, 1 : inf, 2 : mort
+    private static int nbPlayers = 0;
+    private int numPlayer;
     public Player(int initialX, int initialY, double speed) {
         this.x = initialX;
         this.y = initialY;
         this.speed = speed;
-        this.couleur = Color.CYAN;
+        this.randomCouleur();
+        couleurInit = couleur;
+        this.peutEtreInfect = 100;
+        
+        this.statut = 0;	// par défaut
+        nbPlayers++;
+        this.numPlayer = nbPlayers; // numPlayer vaut nbPlayers actuel
     }
     
     public int getX() {
         return x;
+    }
+    
+    public int setX(int newx){
+        return this.x = newx;
+    }
+
+    public Color getColorInit(){
+        return this.couleurInit;
     }
 
     public int getY() {
         return y;
     }
     
+    public int setY(int newy){
+        return this.y = newy;
+    }
+    
     public int getRadius() {
     	return radius;
     }
+    
+    public int getStatut() {
+    	return this.statut;
+    }
+    
+    public void setStatut(int s) {
+    	this.statut = s;
+    }
+    
+    public int getNumPlayer() {
+    	return this.numPlayer;
+    }
+    
+    
     
     /**
      * Calculer la nouvelle position selon l'angle du joystick
@@ -55,6 +94,14 @@ public class Player {
         // Vérifier les collisions avec les autres joueurs
         for (Player autrePlayer : GameServer.players.values()) {
             if ((autrePlayer != this && verifCollision(newX, newY, autrePlayer))) {
+                if ((this.getStatut() == 1 && autrePlayer.getStatut() != 1) && (autrePlayer.peutEtreInfect - Chrono.getSecondes()) >= IConfig.cooldown ) {
+                    Game.infectPlayer(autrePlayer);
+                    this.peutEtreInfect = Chrono.getSecondes();
+                    Game.healPlayer(this);
+                }/*else if ((this.getStatut() != 1 && autrePlayer.getStatut() == 1 )){
+                    Game.infectPlayer(this);
+                    Game.healPlayer(autrePlayer);
+                }*/
                 // Annuler le déplacement en restaurant les positions précédentes du joueur
                 return; // Sortir de la méthode après avoir détecté une collision
             }
@@ -100,7 +147,6 @@ public class Player {
 		    			}
 		    		}else {
 	        			x = newX ;
-	    				System.out.println("mur \n\n\n");
 	    				return true;	
 		    		}
 		        }
@@ -135,26 +181,30 @@ public class Player {
     	return couleur ;
     }
     
+    public void setCouleur(Color c) {
+    	this.couleur = c;
+    }
+
+
+    
     /*
      * Associer une couleur ALEATOIRE au joueur (appelé dans le constructeur
      */
     public void randomCouleur() {
-    	Random random = new Random();
-    	couleur = new Color(
-    		    random.nextFloat(), // Composante rouge aléatoire entre 0 et 1
-    		    random.nextFloat(), // Composante verte aléatoire entre 0 et 1
-    		    random.nextFloat(), // Composante bleue aléatoire entre 0 et 1
-    		    1                  // Opacité à 100% (valeur entre 0 et 1)
-    		);
-    	
+        Random random = new Random();
+        float red;
+        do {
+            red = random.nextFloat();
+        } while (red == 240f / 255f);
+
+        couleur = new Color(
+                red,
+                random.nextFloat(),
+                random.nextFloat(),
+                1
+        );
+
     }
 
-    public int setX(int newx){
-        return this.x = newx;
-    }
-
-    public int setY(int newy){
-        return this.y = newy;
-    }
 }
 

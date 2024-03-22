@@ -6,20 +6,21 @@ public class Chrono {
     private static final DecimalFormat decimalFormat1 = new DecimalFormat("00");  // pour h, min, s
     private static final DecimalFormat decimalFormat2 = new DecimalFormat("000"); // pour les ms
     private static long startTime;
-    private static boolean running;
-    private static int totalTime = 20000; 
-    private long remainingTime = totalTime;
-    private String timer;
+    public static boolean running = false;
+
+    private static int totalTime = IConfig.time;
+    private static long remainingTime = totalTime;
+    private static String timer = "00.00.20.000";
     private static int hours = 0, minutes = 0;
     private static int seconds = 0;	// en static pour l'envoyer au client
     
 
-    public void startTimer() {
+    public static void startTimer() {
     	long currentTime;
     	long elapsedTime;
     	
         startTime = System.currentTimeMillis();
-        running = true;
+        //running = true;
 
         while (running) {
             currentTime = System.currentTimeMillis();
@@ -29,14 +30,13 @@ public class Chrono {
             remainingTime = totalTime - elapsedTime;
             
             if(remainingTime <= 0) {
-            	this.running = false;
+            	running = false;
             	remainingTime = 0;
             }
             
             updateTimer(remainingTime);
             
             timer = formatTime(remainingTime);
-            //System.out.println("(" + timer + ")");
 
             try {
                 Thread.sleep(1); // Attendre 1ms avant la prochaine itération pour éviter d'utiliser trop de ressources CPU
@@ -63,7 +63,7 @@ public class Chrono {
         return seconds;
     }
     
-    public String getTimer() {
+    public static String getTimer() {
     	return timer; 
     }
     

@@ -4,9 +4,17 @@ import spark.Spark;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.LoggerFactory;
+
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+
+import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.StdErrLog;
 public class GameServer {
 
     static final Map<String, WebSocketHandler> clients = new HashMap<>();
@@ -16,6 +24,11 @@ public class GameServer {
     static Game game;
 
     public static void main(String[] args) {
+
+        StdErrLog logger = new StdErrLog();
+        logger.setDebugEnabled(false);
+        Log.setLog(logger);
+    	
     	// INITIALISATION DE L'API SPARK POUR GERER LES EVENEMENTS DES CLIENTS
         Spark.staticFiles.location("/public");
         Spark.webSocket("/ws", WebSocketHandler.class);

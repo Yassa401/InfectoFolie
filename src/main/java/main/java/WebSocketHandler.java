@@ -1,6 +1,7 @@
 package main.java;
 
 import java.io.IOException;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -13,6 +14,8 @@ import org.json.JSONObject;
 
 @WebSocket
 public class WebSocketHandler{
+
+    Random r = new Random();
     private org.eclipse.jetty.websocket.api.Session session;
     private String playerId;
     
@@ -25,7 +28,7 @@ public class WebSocketHandler{
         this.playerId = user.getRemoteAddress().toString();
         GameServer.clients.put(playerId, this);
         // Créer un nouveau joueur et l'ajouter à la liste des joueurs
-        Player player = new Player(100, 100, IConfig.SPEED);
+        Player player = new Player(r.nextInt(IConfig.LARGEUR_FENETRE/2) - (int)(IConfig.LARGEUR_FENETRE /2), r.nextInt(IConfig.LONGUEUR_FENETRE/2) - (IConfig.LONGUEUR_FENETRE/2) + 100 , IConfig.SPEED);
         GameServer.players.put(playerId, player);
         
         //GameServer.gameFrame.actualiseJoueurs(GameServer.players);
@@ -40,7 +43,8 @@ public class WebSocketHandler{
         		if(Chrono.isRunning()) {
 	        		// envoie du timer au client
 	        		JSONObject jsonObj = new JSONObject();
-	        		jsonObj.put("timer", Chrono.getSecondes()); System.out.println(Chrono.getSecondes());
+	        		jsonObj.put("timer", Chrono.getSecondes()); //
+                    // System.out.println(Chrono.getSecondes());
 	        		try {
 	        			session.getRemote().sendString(jsonObj.toString());
 	        		} catch (IOException e) {
@@ -66,7 +70,7 @@ public class WebSocketHandler{
     @OnWebSocketMessage
     public void onMessage(Session session, String message) {
     	// Handle incoming text messages
-        System.out.println("Received message: " + message);
+        //System.out.println("Received message: " + message);
 
         // Convertir la chaîne JSON en objet JSONObject
         JSONObject jsonObject = new JSONObject(message);
