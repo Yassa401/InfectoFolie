@@ -1,13 +1,7 @@
 package main.java;
 
-import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,6 +12,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
+import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class GameFrame extends ApplicationAdapter {
 	private ShapeRenderer shapeRenderer;
@@ -186,7 +185,7 @@ public class GameFrame extends ApplicationAdapter {
         font.setColor(Color.WHITE);
         font.getData().setScale(2f, 2.2f);	// augmenter la taille de la police
         
-        font.draw(batch, this.chrono.getTimer(), coordsTimer[0], coordsTimer[1]);
+        font.draw(batch, Chrono.getTimer(), coordsTimer[0], coordsTimer[1]);
         //font.setColor(Color.BLACK);
         font.draw(batch, texteLP, coordsLP[0], coordsLP[1]);
         font.draw(batch, texteDP, coordsDP[0], coordsDP[1]);
