@@ -12,10 +12,12 @@ public class Game {
 	private Map<String, Player> players ;
 	private DecimalFormat decimalFormat = new DecimalFormat("000");
 	public boolean canPlay;
+	public boolean inPause;
 	
 	public Game(Map<String, Player> p) {
 		this.players = p;
 		this.canPlay = false;
+		this.inPause = false;
 	}
 	
 	public Map<String, Player> getPlayers() {

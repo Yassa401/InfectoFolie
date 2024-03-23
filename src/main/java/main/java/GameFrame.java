@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class GameFrame extends ApplicationAdapter {
+public class GameFrame extends ApplicationAdapter{
 	private ShapeRenderer shapeRenderer;
     private Viewport viewport;
     private Map<String, Player> players ;
@@ -244,14 +244,38 @@ public class GameFrame extends ApplicationAdapter {
     private void play() {
     	clickHandler();
     	
-    	if(!Chrono.isRunning() && game.getPlayers().size() > 1 && game.canPlay) {
-			game.updateNbPlayers();			
+    	if(!Chrono.isRunning() && game.getPlayers().size() > 1 && game.canPlay) {   // Fin d'une manche
+    		
+			game.updateNbPlayers();		
+			
 			// attendre une demi seconde
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			
+			// Initialisation de la pause
+			// Remise du chrono au nombre de secondes qu'il trouve dans 'pauseTime' de IConfig
+			Chrono.doPause();
+			game.canPlay = false;
+			game.inPause = true;
+			
+			// Lancement de la pause
+			Chrono.running = true;
+			launchTimerThread();
+    	}
+    	
+    	if(!Chrono.isRunning() && game.getPlayers().size() > 1 && !game.canPlay && game.inPause) {   // Fin d'une pause
+    		game.inPause = false;
+    		game.canPlay = true;
+    		
+    		for(Player p:players.values()) {   // Pour chaque joueur, on reset le cooldown
+    			p.setPeutEtreInfect(1000);
+    		}
+    		
+    		// Remise du chrono au nombre de secondes qu'il trouve dans 'time' de IConfig
+    		Chrono.doRound();
 			
 			Chrono.running = true;	// pour relancer le timer
 	    	game.infectPlayers();	// infecté de nouveaux joueurs

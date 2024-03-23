@@ -46,7 +46,7 @@ public class Chrono {
         }
     }
     
-    private static void updateTimer(long millis) {
+    public static void updateTimer(long millis) {
         seconds = (int) (millis / 1000) % 60;
         minutes = (int) ((millis / (1000 * 60)) % 60);
         hours = (int) ((millis / (1000 * 60 * 60)) % 24);
@@ -73,5 +73,17 @@ public class Chrono {
     
     public static void stopTimer() {
         running = false;
+    }
+    
+    public static void doPause() {
+    	totalTime = IConfig.pauseTime;
+    	timer = "00.00.05.000";
+    	startTimer();
+    }
+    
+    public static void doRound() {
+    	totalTime = IConfig.time;
+    	timer = "00.00.20.00";
+    	startTimer();
     }
 }

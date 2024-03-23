@@ -25,7 +25,7 @@ public class Player {
         this.speed = speed;
         this.randomCouleur();
         couleurInit = couleur;
-        this.peutEtreInfect = 100;
+        this.peutEtreInfect = 1000;
         
         this.statut = 0;	// par défaut
         nbPlayers++;
@@ -66,6 +66,10 @@ public class Player {
     
     public int getNumPlayer() {
     	return this.numPlayer;
+    }
+    
+    public void setPeutEtreInfect(int nouvelleValeur) {
+    	this.peutEtreInfect = nouvelleValeur; 
     }
     
     

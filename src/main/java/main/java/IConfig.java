@@ -15,4 +15,5 @@ public interface IConfig {
 	static int cooldown = 2;
 
 	static int time = 20000;
+	static int pauseTime = 5000;
 }
