@@ -1,20 +1,13 @@
 package main.java;
 
-import spark.Spark;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.slf4j.LoggerFactory;
-
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.StdErrLog;
+import spark.Spark;
+
+import java.util.HashMap;
+import java.util.Map;
 public class GameServer {
 
     static final Map<String, WebSocketHandler> clients = new HashMap<>();
@@ -28,6 +21,7 @@ public class GameServer {
 
     public static void main(String[] args) {
 
+        // Desactive les messages du log
         StdErrLog logger = new StdErrLog();
         logger.setDebugEnabled(false);
         Log.setLog(logger);
@@ -38,7 +32,6 @@ public class GameServer {
         Spark.init();
         Spark.awaitInitialization();
         
-        //gameFrame = new GameFrame(players);
         game = new Game(players);
         gameFrame = new GameFrame(game);
         

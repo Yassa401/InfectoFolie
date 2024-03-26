@@ -8,11 +8,11 @@ import java.util.Random;
 public class Player {
     private int x;
     private int y;
-    private double speed;
+    private final double speed;
     private Color couleur ;
 
-    private Color couleurInit ;
-    private int radius = IConfig.RADIUS ;
+    private final Color couleurInit ;
+    private final int radius = IConfig.RADIUS ;
 
     private int peutEtreInfect;
     
@@ -33,7 +33,7 @@ public class Player {
     }
     
     public int getX() {
-        return x;
+        return this.x;
     }
     
     public int setX(int newx){
@@ -44,16 +44,14 @@ public class Player {
         return this.couleurInit;
     }
 
-    public int getY() {
-        return y;
-    }
+    public int getY() { return this.y; }
     
     public int setY(int newy){
         return this.y = newy;
     }
     
     public int getRadius() {
-    	return radius;
+    	return this.radius;
     }
     
     public int getStatut() {
@@ -80,10 +78,6 @@ public class Player {
      * @param distance : distance par rapport au centre du joystick (peut être utilisé pour la vitesse)
      */
     public void move(double angle, double distance) {
-        // Enregistrer la position actuelle du joueur
-        int oldX = x;
-        int oldY = y;
-
         // Convertir l'angle en radians
         double radians = Math.toRadians(angle);
 
@@ -123,7 +117,7 @@ public class Player {
         
 
         // Apres toutes les verifications
-        x = newX; y = newY;
+        this.setX(newX);  this.setY(newY);
     }
 
     public boolean verifCollisionMur(int newX, int newY) {
@@ -182,15 +176,13 @@ public class Player {
      * Renvoyer la couleur du joueur
      */
     Color getCouleur() {
-    	return couleur ;
+    	return this.couleur ;
     }
     
     public void setCouleur(Color c) {
     	this.couleur = c;
     }
 
-
-    
     /*
      * Associer une couleur ALEATOIRE au joueur (appelé dans le constructeur
      */
