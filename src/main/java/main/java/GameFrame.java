@@ -1,5 +1,10 @@
 package main.java;
 
+import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -10,13 +15,9 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
-import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class GameFrame extends ApplicationAdapter{
 	private ShapeRenderer shapeRenderer;
@@ -35,8 +36,8 @@ public class GameFrame extends ApplicationAdapter{
     GlyphLayout layout;	// pour obtenir la taille du texte afin de dessiner un cercle/rect autour
     
     protected Game game;
-    private Rectangle2D startButton = new Rectangle2D.Float((float) (IConfig.LARGEUR_FENETRE/4.33), -IConfig.LONGUEUR_FENETRE/2 + 10, 
-    														(float) (IConfig.LARGEUR_FENETRE/8.67), (float)(IConfig.LONGUEUR_FENETRE/13.33));
+    private Rectangle2D startButton; // = new Rectangle2D.Float((float) (IConfig.LARGEUR_FENETRE/4.33), -IConfig.LONGUEUR_FENETRE/2 + 10, 
+    								//							(float) (IConfig.LARGEUR_FENETRE/8.67), (float)(IConfig.LONGUEUR_FENETRE/13.33));
     
     GameFrame(Game g){
     	this.game = g;
@@ -87,9 +88,11 @@ public class GameFrame extends ApplicationAdapter{
         drawPlayers();
         drawBottomMenu();
         
-        
         // faire une translation inverse pour obtenir la matrice d'origine du SpriteBatch
-        batch.setTransformMatrix(new Matrix4().translate(-IConfig.LARGEUR_FENETRE / 2, -IConfig.LONGUEUR_FENETRE / 2, 0));
+        Matrix4 inverseTranslationMatrix = new Matrix4();
+        translationMatrix.translate(-IConfig.LARGEUR_FENETRE / 2, -IConfig.LONGUEUR_FENETRE / 2, 0);
+        batch.setTransformMatrix(inverseTranslationMatrix);
+        
     }
     
     @Override
@@ -155,15 +158,23 @@ public class GameFrame extends ApplicationAdapter{
         float[] coordsLP = {(float) (-IConfig.LARGEUR_FENETRE/2 + IConfig.LARGEUR_FENETRE/6.5), -IConfig.LONGUEUR_FENETRE/2 + IConfig.LONGUEUR_FENETRE/16};
         float[] coordsDP = {(float) (-IConfig.LARGEUR_FENETRE/2 + IConfig.LARGEUR_FENETRE/3.7), -IConfig.LONGUEUR_FENETRE/2 + IConfig.LONGUEUR_FENETRE/16};
         
+        // Calcul des coordonnées du bouton en fonction de la taille actuelle de la fenêtre
+        float buttonWidth = viewport.getWorldWidth() / 8.67f;
+        float buttonHeight = viewport.getWorldHeight() / 13.33f;
+        float buttonX = viewport.getWorldWidth() / 4.33f;
+        float buttonY = -viewport.getWorldHeight() / 2 + 10;
+
+        startButton = new Rectangle2D.Float(buttonX, buttonY, buttonWidth, buttonHeight);
+        
         // dessiner le timer
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.BLACK); 
         this.roundedRect((float) coordsTimer[0] - 15, (float) coordsTimer[1] - 40, 198, 60, 10);
-
+        
         // dessiner le bouton start
         shapeRenderer.setColor(Color.GREEN); 
-        this.roundedRect((float) startButton.getX(), (float) startButton.getY(), (float)startButton.getWidth(), (float)startButton.getHeight(), 10);
-        shapeRenderer.end();        
+        this.roundedRect((float) startButton.getX(), (float) startButton.getY(), (float)startButton.getWidth(), (float)startButton.getHeight(), 10); 
+        shapeRenderer.end();      
         
         /* Comme il n'existe pas une moyen par déf. pour augmenter l'épaisseur d'un cercle de type line, on va dessiner 2 cercles
          * de type filled l'un par dessus de l'autre pour simuler l'effet de l'épaisseur */
@@ -206,18 +217,15 @@ public class GameFrame extends ApplicationAdapter{
     }
     
     private void clickHandler() {
-    	if(Gdx.input.justTouched()) { 
-    		//Rappel
-    		//private Rectangle2D startButton = new Rectangle2D.Float(infGauche.x, infGauche.y, supDroite.x, supDroite.y);
-    		//int coordsSB[] = {supGauche.x, supGauche.y, infDroite.x, infDroite.y};
-    		double coordsSB[] = {IConfig.LARGEUR_FENETRE/2 + this.startButton.getX(), 
-								 IConfig.LONGUEUR_FENETRE/2 + (-this.startButton.getY()) - this.startButton.getHeight(), 
-								 IConfig.LARGEUR_FENETRE/2 + this.startButton.getX() + this.startButton.getWidth(), 
-								 IConfig.LONGUEUR_FENETRE/2 + (-this.startButton.getY()) 
-    							};
-    		int sX = Gdx.input.getX();
-    		int sY = Gdx.input.getY();
-    		if(sX >= coordsSB[0] && sX <= coordsSB[2] && sY >= coordsSB[1] && sY <= coordsSB[3]) {
+    	if(Gdx.input.justTouched()) {     		
+    		// Convertir les coordonnées de la souris en coordonnées de monde
+            float mouseX = Gdx.input.getX();
+            float mouseY = Gdx.input.getY();
+            Vector3 worldCoordinates = new Vector3(mouseX, mouseY, 0); // 0 pas besoin de coordonnées en profondeur
+            viewport.getCamera().unproject(worldCoordinates);
+
+            // Vérifier si les coordonnées de la souris sont à l'intérieur du rectangle du bouton "startButton"
+            if (startButton.contains(worldCoordinates.x, worldCoordinates.y)) {
     			game.canPlay = true;	// pour empêcher le lancement updateGame() avec le bouton start
     			Chrono.running = true;	// permettre le lancement du timer
     	    	game.infectPlayers();	// infecte les joueurs au lancement
