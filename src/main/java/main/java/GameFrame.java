@@ -35,7 +35,8 @@ public class GameFrame extends ApplicationAdapter{
     GlyphLayout layout;	// pour obtenir la taille du texte afin de dessiner un cercle/rect autour
     
     protected Game game;
-    private Rectangle2D startButton = new Rectangle2D.Float(300, -IConfig.LONGUEUR_FENETRE/2 + 10, 150, 60);
+    private Rectangle2D startButton = new Rectangle2D.Float((float) (IConfig.LARGEUR_FENETRE/4.33), -IConfig.LONGUEUR_FENETRE/2 + 10, 
+    														(float) (IConfig.LARGEUR_FENETRE/8.67), (float)(IConfig.LONGUEUR_FENETRE/13.33));
     
     GameFrame(Game g){
     	this.game = g;
@@ -81,8 +82,6 @@ public class GameFrame extends ApplicationAdapter{
         batch.setTransformMatrix(translationMatrix);
 
         play();
-        //clickHandler(); // gère le click du bouton start et lance le timer
-        //updateGame();	// après un tour elimine les infectés et relance le jeu
         
         // dessiner les joueurs et le menu bas
         drawPlayers();
@@ -199,9 +198,14 @@ public class GameFrame extends ApplicationAdapter{
     
     private void clickHandler() {
     	if(Gdx.input.justTouched()) { 
-    		//if(startButton.getBounds2D().contains(Gdx.input.getX(), Gdx.input.getY())) {
-    		// to optimise
-    		int coordsSB[] = {950, 740, 1100, 790}; 
+    		//Rappel
+    		//private Rectangle2D startButton = new Rectangle2D.Float(infGauche.x, infGauche.y, supDroite.x, supDroite.y);
+    		//int coordsSB[] = {supGauche.x, supGauche.y, infDroite.x, infDroite.y};
+    		double coordsSB[] = {IConfig.LARGEUR_FENETRE/2 + this.startButton.getX(), 
+								 IConfig.LONGUEUR_FENETRE/2 + (-this.startButton.getY()) - this.startButton.getHeight(), 
+								 IConfig.LARGEUR_FENETRE/2 + this.startButton.getX() + this.startButton.getWidth(), 
+								 IConfig.LONGUEUR_FENETRE/2 + (-this.startButton.getY()) 
+    							};
     		int sX = Gdx.input.getX();
     		int sY = Gdx.input.getY();
     		if(sX >= coordsSB[0] && sX <= coordsSB[2] && sY >= coordsSB[1] && sY <= coordsSB[3]) {
@@ -220,25 +224,6 @@ public class GameFrame extends ApplicationAdapter{
 	        Chrono.startTimer();
 	    });
 	    timerThread.start();
-    }
-    
-    private void updateGame() {
-    	//game.infectPlayers();
-    	if(!Chrono.isRunning() && game.getPlayers().size() > 1 && game.canPlay) {
-			game.updateNbPlayers();			
-			// attendre une demi seconde
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			
-			Chrono.running = true;	// pour relancer le timer
-	    	game.infectPlayers();	// infecté de nouveaux joueurs
-	    	
-	    	// relancer le timer
-			launchTimerThread();
-		}
     }
     
     private void play() {
