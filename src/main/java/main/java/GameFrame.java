@@ -151,9 +151,9 @@ public class GameFrame extends ApplicationAdapter{
         String texteTimer = Chrono.getTimer();
         
         // coordonnées des figures
-        int[] coordsTimer = {-50, -IConfig.LONGUEUR_FENETRE/2 + 50};
-        int[] coordsLP = {-IConfig.LARGEUR_FENETRE/2 + 200, -IConfig.LONGUEUR_FENETRE/2 + 50};
-        int[] coordsDP = {-IConfig.LARGEUR_FENETRE/2 + 350, -IConfig.LONGUEUR_FENETRE/2 + 50};
+        int[] coordsTimer = {-IConfig.LARGEUR_FENETRE/26, -IConfig.LONGUEUR_FENETRE/2 + IConfig.LONGUEUR_FENETRE/16};
+        float[] coordsLP = {(float) (-IConfig.LARGEUR_FENETRE/2 + IConfig.LARGEUR_FENETRE/6.5), -IConfig.LONGUEUR_FENETRE/2 + IConfig.LONGUEUR_FENETRE/16};
+        float[] coordsDP = {(float) (-IConfig.LARGEUR_FENETRE/2 + IConfig.LARGEUR_FENETRE/3.7), -IConfig.LONGUEUR_FENETRE/2 + IConfig.LONGUEUR_FENETRE/16};
         
         // dessiner le timer
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -165,19 +165,28 @@ public class GameFrame extends ApplicationAdapter{
         this.roundedRect((float) startButton.getX(), (float) startButton.getY(), (float)startButton.getWidth(), (float)startButton.getHeight(), 10);
         shapeRenderer.end();        
         
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line); // pour obtenir des cercles creux
+        /* Comme il n'existe pas une moyen par déf. pour augmenter l'épaisseur d'un cercle de type line, on va dessiner 2 cercles
+         * de type filled l'un par dessus de l'autre pour simuler l'effet de l'épaisseur */
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         
         // dessiner le cadre des LP
-        shapeRenderer.setColor(Color.GREEN);  
+        shapeRenderer.setColor(Color.GREEN);
+        // cercle 1 arrière
+        shapeRenderer.circle(coordsLP[0] + layout.width / 2, coordsLP[1] -layout.height / 2, layout.width / 2 + 8); // margin du texte 8
+        // cercle 2 du texte (par dessus)
+        shapeRenderer.setColor(Color.WHITE);  
         layout.setText(font, texteLP); 
-        shapeRenderer.circle(coordsLP[0] + layout.width / 2, coordsLP[1] -layout.height / 2, layout.width / 2 + 5);
-        
+        shapeRenderer.circle(coordsLP[0] + layout.width / 2, coordsLP[1] -layout.height / 2, layout.width / 2 + 3); // margin du texte 3
+                
         // dessiner le cadre des DP
         shapeRenderer.setColor(Color.RED);  
+        shapeRenderer.circle(coordsDP[0] + layout.width / 2, coordsDP[1] -layout.height / 2, layout.width / 2 + 8);
+        shapeRenderer.setColor(Color.WHITE);  
         layout.setText(font, texteDP); 
-        shapeRenderer.circle(coordsDP[0] + layout.width / 2, coordsDP[1] -layout.height / 2, layout.width / 2 + 5);
+        shapeRenderer.circle(coordsDP[0] + layout.width / 2, coordsDP[1] -layout.height / 2, layout.width / 2 + 3);
         
         shapeRenderer.end();
+        
         
         // Dessiner les textes (timer, LP, DP)
         batch.begin();
