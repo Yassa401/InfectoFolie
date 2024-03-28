@@ -4,7 +4,10 @@ document.addEventListener("DOMContentLoaded", function () {
         zone: joystickContainer,
         mode: "static",
         position: { top: "80%", left: "50%" },
-        color: "#000000"
+        color: "#000000",
+        restOpacity: 0.5,
+        fadeTime: 250,
+        threshold: 0.04
     });
 
     // Se connecte à la websocket du serveur une seule fois à l'ouverture de la page
