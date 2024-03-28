@@ -217,7 +217,7 @@ public class GameFrame extends ApplicationAdapter{
     }
     
     private void clickHandler() {
-    	if(Gdx.input.justTouched()) {     		
+    	if(Gdx.input.justTouched()) {
     		// Convertir les coordonnées de la souris en coordonnées de monde
             float mouseX = Gdx.input.getX();
             float mouseY = Gdx.input.getY();
@@ -226,6 +226,7 @@ public class GameFrame extends ApplicationAdapter{
 
             // Vérifier si les coordonnées de la souris sont à l'intérieur du rectangle du bouton "startButton"
             if (startButton.contains(worldCoordinates.x, worldCoordinates.y)) {
+                GameServer.partieCommence = true ; // empêcher les joueurs de se connecter quand la partie commence
     			game.canPlay = true;	// pour empêcher le lancement updateGame() avec le bouton start
     			Chrono.running = true;	// permettre le lancement du timer
     	    	game.infectPlayers();	// infecte les joueurs au lancement

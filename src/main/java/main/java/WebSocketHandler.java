@@ -23,17 +23,18 @@ public class WebSocketHandler{
     
     @OnWebSocketConnect
     public void onConnect(Session user) throws Exception {
-        System.out.println("New connection: " + user.getRemoteAddress());
-        this.session = user;
-        this.playerId = user.getRemoteAddress().toString();
-        GameServer.clients.put(playerId, this);
-        // Créer un nouveau joueur et l'ajouter à la liste des joueurs
-        Player player = new Player(r.nextInt(IConfig.LARGEUR_FENETRE/2) - (int)(IConfig.LARGEUR_FENETRE /2), r.nextInt(IConfig.LONGUEUR_FENETRE/2) - (IConfig.LONGUEUR_FENETRE/2) + 100 , IConfig.SPEED);
-        GameServer.players.put(playerId, player);
-        
-        //GameServer.gameFrame.actualiseJoueurs(GameServer.players);
-        GameServer.game.setPlayers(GameServer.players);
-        
+        if(!GameServer.partieCommence) {
+            System.out.println("New connection: " + user.getRemoteAddress());
+            this.session = user;
+            this.playerId = user.getRemoteAddress().toString();
+            GameServer.clients.put(playerId, this);
+            // Créer un nouveau joueur et l'ajouter à la liste des joueurs
+            Player player = new Player(r.nextInt(IConfig.LARGEUR_FENETRE / 2) - (int) (IConfig.LARGEUR_FENETRE / 2), r.nextInt(IConfig.LONGUEUR_FENETRE / 2) - (IConfig.LONGUEUR_FENETRE / 2) + 100, IConfig.SPEED);
+            GameServer.players.put(playerId, player);
+
+            //GameServer.gameFrame.actualiseJoueurs(GameServer.players);
+            GameServer.game.setPlayers(GameServer.players);
+        }
         // Gestion du timer
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
