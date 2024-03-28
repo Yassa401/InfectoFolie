@@ -135,8 +135,6 @@ public class Game {
 		p.setCouleur(p.getColorInit());
 		p.setStatut(2);
 	}
-
-
 	
 	// infecte les joueurs pour une partit du jeu
 	public void infectPlayers() {
@@ -153,15 +151,4 @@ public class Game {
 			}
 		}
 	}
-	
-	// méthode qui effectue le jeu
-	public void play() {
-		/*
-		Chrono.running = true;
-		this.infectPlayers();
-		//...
-		this.updateNbPlayers();
-		*/
-	}
-
 }
