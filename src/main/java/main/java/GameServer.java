@@ -23,6 +23,9 @@ public class GameServer {
     static GameFrame gameFrame;
     static Game game;
 
+    // Si true, empêche les joueurs de se connecter au jeu
+    static boolean partieCommence = false ;
+
     public static void main(String[] args) {
 
         StdErrLog logger = new StdErrLog();

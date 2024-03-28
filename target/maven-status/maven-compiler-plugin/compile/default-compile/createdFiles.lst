@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 main\java\IConfig.class
 main\java\Chrono.class
 main\java\WebSocketHandler$1.class
@@ -6,3 +7,9 @@ main\java\Player.class
 main\java\Game.class
 main\java\GameFrame.class
 main\java\GameServer.class
+=======
+main/java/IConfig.class
+main/java/WebSocketHandler$1.class
+main/java/WebSocketHandler.class
+main/java/Chrono.class
+>>>>>>> d70c507 (Bloquer les connexions quand la partie commence)
