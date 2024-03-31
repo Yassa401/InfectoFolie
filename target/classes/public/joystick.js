@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const joystickContainer = document.getElementById("joystick-container");
     const joystick = nipplejs.create({
         zone: joystickContainer,
-        mode: "dynamic",
+        mode: "static",
         position: { top: "80%", left: "50%" },
         color: "#000000",
         restOpacity: 0.5,

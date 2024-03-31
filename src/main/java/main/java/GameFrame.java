@@ -128,12 +128,30 @@ public class GameFrame extends ApplicationAdapter{
     }
     
     private void drawPlayers() {
-    	// Déssiner les joueurs
     	shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for (Player p : players.values()) {
+    	
+    	
+    	for (Player p : players.values()) {
             shapeRenderer.setColor(p.getCouleur());
             shapeRenderer.circle((float) p.getX(), (float) p.getY(), p.getRadius());
+            
+            // si les joueurs est un infecté
+            if (p.getStatut() == 1) { 
+                shapeRenderer.setColor(Color.RED); // couleur rouge
+                
+                // taille des arcs
+                float radius = p.getRadius() + 5; 
+                int arcs = 16;  // nombre d'arcs 
+                for (int i = 0; i < arcs; i++) {
+                    float angle = (360f / arcs) * i; // placement des arcs
+                    float angle2 = (360f / arcs) * 0.4f; // largeur des arcs
+                    
+                    // dessine des arcs autour du personnages
+                    shapeRenderer.arc((float) p.getX(), (float) p.getY(), radius, angle, angle2);
+                }
+            }
         }
+    	
     	shapeRenderer.end();
     	
     	// Dessiner les numéros des joueurs
