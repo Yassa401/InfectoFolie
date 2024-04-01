@@ -36,8 +36,7 @@ public class GameFrame extends ApplicationAdapter{
     GlyphLayout layout;	// pour obtenir la taille du texte afin de dessiner un cercle/rect autour
     
     protected Game game;
-    private Rectangle2D startButton; // = new Rectangle2D.Float((float) (IConfig.LARGEUR_FENETRE/4.33), -IConfig.LONGUEUR_FENETRE/2 + 10, 
-    								//							(float) (IConfig.LARGEUR_FENETRE/8.67), (float)(IConfig.LONGUEUR_FENETRE/13.33));
+    private Rectangle2D startButton; 
     
     GameFrame(Game g){
     	this.game = g;
@@ -130,7 +129,6 @@ public class GameFrame extends ApplicationAdapter{
     private void drawPlayers() {
     	shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
     	
-    	
     	for (Player p : players.values()) {
             shapeRenderer.setColor(p.getCouleur());
             shapeRenderer.circle((float) p.getX(), (float) p.getY(), p.getRadius());
@@ -157,8 +155,10 @@ public class GameFrame extends ApplicationAdapter{
     	// Dessiner les numéros des joueurs
     	batch.begin();
     	for (Player p : players.values()) {
-    		layout.setText(font, p.getNumPlayer()+""); 
-            font.draw(batch, p.getNumPlayer()+"", (float) p.getX() - layout.width / 2, (float) p.getY() + layout.height / 2);
+    		if(p.getStatut() != 2) {
+    			layout.setText(font, p.getNumPlayer()+""); 
+                font.draw(batch, p.getNumPlayer()+"", (float) p.getX() - layout.width / 2, (float) p.getY() + layout.height / 2);
+    		}
         }
         batch.end();
     }
@@ -167,27 +167,36 @@ public class GameFrame extends ApplicationAdapter{
     	this.players = players ;
     }
     
+    void drawCircleFrame(float coords[], String format, Color c1, Color c2) {
+    	shapeRenderer.setColor(c1);  
+        layout.setText(font, format); 
+        // cercle 1 arrière
+        shapeRenderer.circle(coords[0] + layout.width / 2, coords[1] -layout.height / 2, layout.width / 2 + 8);
+        // cercle 2 du texte (par dessus)
+        shapeRenderer.setColor(c2);  
+        shapeRenderer.circle(coords[0] + layout.width / 2, coords[1] -layout.height / 2, layout.width / 2 + 3);
+    }
+    
     private void drawBottomMenu() {
-    	// récupéer le nb joueurs vivants/morts
-        String nbLivingPlayers = this.game.getNbLivingPlayers();
-        String nbDeadPlayers = this.game.getNbDeadPlayers();
+    	// récupéer le nb joueurs nonInf/inf/dead
+        String nbUninfected = this.game.getNbUninfectedPlayers();
+        String nbInfected = this.game.getNbInfectedPlayers();
+        String nbDead = this.game.getNbDeadPlayers(); //this.game.getNbDeadPlayers();
         
-    	String texteLP = nbLivingPlayers;
-        String texteDP = nbDeadPlayers;
+    	String texteUninfected = nbUninfected;
+        String texteInfected = nbInfected;
+        String texteDead = nbDead;
         String texteTimer = Chrono.getTimer();
+        String nbPlayerFormat = "000";
         
         // coordonnées des figures
         int[] coordsTimer = {-IConfig.LARGEUR_FENETRE/26, -IConfig.LONGUEUR_FENETRE/2 + IConfig.LONGUEUR_FENETRE/16};
-        float[] coordsLP = {(float) (-IConfig.LARGEUR_FENETRE/2 + IConfig.LARGEUR_FENETRE/6.5), -IConfig.LONGUEUR_FENETRE/2 + IConfig.LONGUEUR_FENETRE/16};
-        float[] coordsDP = {(float) (-IConfig.LARGEUR_FENETRE/2 + IConfig.LARGEUR_FENETRE/3.7), -IConfig.LONGUEUR_FENETRE/2 + IConfig.LONGUEUR_FENETRE/16};
+        float[] coordsUninfected = {(float) (-IConfig.LARGEUR_FENETRE/2 + IConfig.LARGEUR_FENETRE/6.5), -IConfig.LONGUEUR_FENETRE/2 + IConfig.LONGUEUR_FENETRE/16};
+        float[] coordsInfected = {(float) (-IConfig.LARGEUR_FENETRE/2 + IConfig.LARGEUR_FENETRE/4.2), -IConfig.LONGUEUR_FENETRE/2 + IConfig.LONGUEUR_FENETRE/16};
+        float[] coordsDead = {(float) (-IConfig.LARGEUR_FENETRE/2 + IConfig.LARGEUR_FENETRE/3.1), -IConfig.LONGUEUR_FENETRE/2 + IConfig.LONGUEUR_FENETRE/16};
         
         // Calcul des coordonnées du bouton en fonction de la taille actuelle de la fenêtre
-        float buttonWidth = viewport.getWorldWidth() / 8.67f;
-        float buttonHeight = viewport.getWorldHeight() / 13.33f;
-        float buttonX = viewport.getWorldWidth() / 4.33f;
-        float buttonY = -viewport.getWorldHeight() / 2 + 10;
-
-        startButton = new Rectangle2D.Float(buttonX, buttonY, buttonWidth, buttonHeight);
+        startButton = new Rectangle2D.Float(viewport.getWorldWidth() / 4.33f, -viewport.getWorldHeight() / 2 + 10, viewport.getWorldWidth() / 8.67f, viewport.getWorldHeight() / 13.33f);
         
         // dessiner le timer
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -196,45 +205,26 @@ public class GameFrame extends ApplicationAdapter{
         
         // dessiner le bouton start
         shapeRenderer.setColor(Color.GREEN); 
-        this.roundedRect((float) startButton.getX(), (float) startButton.getY(), (float)startButton.getWidth(), (float)startButton.getHeight(), 10); 
-        shapeRenderer.end();      
+        this.roundedRect((float) startButton.getX(), (float) startButton.getY(), (float)startButton.getWidth(), (float)startButton.getHeight(), 10);  
+              
+        // dessiner les cadres des nb joueurs
+        drawCircleFrame(coordsUninfected, nbPlayerFormat, Color.GREEN, Color.WHITE);
+        drawCircleFrame(coordsInfected, nbPlayerFormat, Color.RED, Color.WHITE);
+        drawCircleFrame(coordsDead, nbPlayerFormat, Color.LIGHT_GRAY, Color.WHITE);        
+        shapeRenderer.end();        
         
-        /* Comme il n'existe pas une moyen par déf. pour augmenter l'épaisseur d'un cercle de type line, on va dessiner 2 cercles
-         * de type filled l'un par dessus de l'autre pour simuler l'effet de l'épaisseur */
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        
-        // dessiner le cadre des LP
-        shapeRenderer.setColor(Color.GREEN);
-        // cercle 1 arrière
-        shapeRenderer.circle(coordsLP[0] + layout.width / 2, coordsLP[1] -layout.height / 2, layout.width / 2 + 8); // margin du texte 8
-        // cercle 2 du texte (par dessus)
-        shapeRenderer.setColor(Color.WHITE);  
-        layout.setText(font, texteLP); 
-        shapeRenderer.circle(coordsLP[0] + layout.width / 2, coordsLP[1] -layout.height / 2, layout.width / 2 + 3); // margin du texte 3
-                
-        // dessiner le cadre des DP
-        shapeRenderer.setColor(Color.RED);  
-        shapeRenderer.circle(coordsDP[0] + layout.width / 2, coordsDP[1] -layout.height / 2, layout.width / 2 + 8);
-        shapeRenderer.setColor(Color.WHITE);  
-        layout.setText(font, texteDP); 
-        shapeRenderer.circle(coordsDP[0] + layout.width / 2, coordsDP[1] -layout.height / 2, layout.width / 2 + 3);
-        
-        shapeRenderer.end();
-        
-        
-        // Dessiner les textes (timer, LP, DP)
+        // Dessiner les textes (timer, nonInf, ...)
         batch.begin();
         font.setColor(Color.WHITE);
         font.getData().setScale(2f, 2.2f);	// augmenter la taille de la police
         
         font.draw(batch, Chrono.getTimer(), coordsTimer[0], coordsTimer[1]);
-        //font.setColor(Color.BLACK);
-        font.draw(batch, texteLP, coordsLP[0], coordsLP[1]);
-        font.draw(batch, texteDP, coordsDP[0], coordsDP[1]);
+        font.draw(batch, texteUninfected, coordsUninfected[0], coordsUninfected[1]);
+        font.draw(batch, texteInfected, coordsInfected[0], coordsInfected[1]);
+        font.draw(batch, texteDead, coordsDead[0], coordsDead[1]);
         
         // texte du bouton start
-        font.draw(batch, "Start", (float) startButton.getX() + 40, (float) startButton.getY() + 45);
-        
+        font.draw(batch, "Start", (float) startButton.getX() + 40, (float) startButton.getY() + 45);        
         batch.end();
         
     }
@@ -270,9 +260,9 @@ public class GameFrame extends ApplicationAdapter{
     private void play() {
     	clickHandler();
     	
-    	if(!Chrono.isRunning() && game.getPlayers().size() > 1 && game.canPlay) {   // Fin d'une manche
+    	if(!Chrono.isRunning() && game.getLivingPlayers().size() > 0 && game.canPlay) {   // Fin d'une manche
     		
-			game.updateNbPlayers();		
+			game.updateStatus();		
 			
 			// attendre une demi seconde
 			try {
