@@ -128,8 +128,6 @@ public class GameFrame extends ApplicationAdapter{
     
     private void drawPlayers() {
     	shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-<<<<<<< HEAD
-    	
     	
     	for (Player p : players.values()) {
             shapeRenderer.setColor(p.getCouleur());
@@ -149,12 +147,6 @@ public class GameFrame extends ApplicationAdapter{
                     // dessine des arcs autour du personnages
                     shapeRenderer.arc((float) p.getX(), (float) p.getY(), radius, angle, angle2);
                 }
-=======
-        for (Player p : players.values()) {
-            if(p.getStatut() != 2) {
-            	shapeRenderer.setColor(p.getCouleur());
-                shapeRenderer.circle((float) p.getX(), (float) p.getY(), p.getRadius());
->>>>>>> 0195891 (Update menu bas <NonInf__Inf__Dead> + nettoyage méthode drawBottomMenu())
             }
         }
     	
