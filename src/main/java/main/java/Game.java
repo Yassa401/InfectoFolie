@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.Color;
 
 public class Game {
 	private Map<String, Player> players ;
-	private int nbDeadPlayers;
 	private DecimalFormat decimalFormat = new DecimalFormat("000");
 	public boolean canPlay;
 	public boolean inPause;
@@ -30,10 +29,10 @@ public class Game {
 		this.players = players;
 	}
 	
-	public String getNbLivingPlayers() {
+	public String getNbUninfectedPlayers() {
 		int res = 0;
 		for(Map.Entry<String, Player> entry : this.players.entrySet()) {
-			if(entry.getValue().getStatut() != 2) {
+			if(entry.getValue().getStatut() == 0) {
 				res++;
 			}
 		}
@@ -42,17 +41,34 @@ public class Game {
 		return decimalFormat.format(res);
 	}
 	
-	public String getNbDeadPlayers() {		
+	public String getNbInfectedPlayers() {		
+		int res = 0;
+		for(Map.Entry<String, Player> entry : this.players.entrySet()) {
+			if(entry.getValue().getStatut() == 1) {
+				res++;
+			}
+		}
+		// renvoie le résultat au format "000"
+		return decimalFormat.format(res);
+	}
+	
+	public String getNbDeadPlayers() {	
+		int res = 0;
+		for(Player p : this.players.values()) {
+			if(p.getStatut() == 2) {
+				res++;
+			}
+		}
 		// renvoie le résultat au format "000
-		return decimalFormat.format(this.nbDeadPlayers);
+		return decimalFormat.format(res);
 	}
 	
 	// Renvoie le nb de joueurs à infecté pour une partie
 	public int getNbPlayers2Infect() {
-		int nbPlayers = this.players.size();
+		int nbPlayers = this.getLivingPlayers().size();
 		int nb2infec = 0;
 		
-		if(nbPlayers > 1) { // ? l'infecté (game over after the round) ou pas
+		if(nbPlayers > 0) {
 			if(nbPlayers <= 5) {
 				nb2infec = 1;
 			}
@@ -75,10 +91,10 @@ public class Game {
 	
 	// renvoie les aléatoirement les identifiants (numéro du joueur) des joueurs à infecter
 	public ArrayList<Integer> getIdPlayers2infecte(){
-		// Récup et mélanger la liste des players
+		// Récup et mélanger la liste des players vivants
 		ArrayList<Integer> idPlayers = new ArrayList<>();
-		ArrayList<Player> listPlayers = new ArrayList<>(this.players.values());	// récup les players
-		Collections.shuffle(listPlayers);										// mélanger la liste de players
+		ArrayList<Player> listPlayers = this.getLivingPlayers();	// récup les living players
+		Collections.shuffle(listPlayers);							// mélanger la liste de players
 		
 		// Récup le nb de players à infecter
 		int nbPlayer2infecte = this.getNbPlayers2Infect();
@@ -93,18 +109,23 @@ public class Game {
 		return idPlayers;
 	}
 	
-	// méthode qui met à jour le nb des jours au cours du jeu (élimine les infectés)
-	public void updateNbPlayers() {
-		// utiliser iterator, car on ne peut supp un element dans liste qu'on parcours
-		Iterator<Map.Entry<String, Player>> iterator = this.players.entrySet().iterator();
-		while(iterator.hasNext()) {
-			Map.Entry<String, Player> entry = iterator.next();
-			if(entry.getValue().getStatut() == 1) {
-				entry.getValue().setStatut(2);
-				this.nbDeadPlayers++;
-				iterator.remove();
+	public ArrayList<Player> getLivingPlayers(){
+		ArrayList<Player> res = new ArrayList<>();
+		for(Player p : this.players.values()) {
+			if(p.getStatut() != 2) {
+				res.add(p);
 			}
-		}		
+		}
+		return res;
+	}
+	
+	// méthode qui fait passer le statut des joueurs de inf (1) à mort (2)
+	public void updateStatus() {
+		for(Player p : this.getLivingPlayers()) {
+			if(p.getStatut() == 1) {
+				p.setStatut(2);
+			}
+		}
 	}
 	
 	// infecte un joueurs (changer son statut et sa couleur)
@@ -117,7 +138,7 @@ public class Game {
 	public void infectPlayers() {
 		int cpt = 0;
 		for(int id : this.getIdPlayers2infecte()) {
-			for(Player p : this.players.values()) {
+			for(Player p : this.getLivingPlayers()) {
 				if(p.getNumPlayer() == id) {
 					this.infectPlayer(p);
 					break; // pas besoin de continuer la boucle
