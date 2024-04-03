@@ -32,6 +32,14 @@ public class WebSocketHandler{
             Player player = new Player(r.nextInt(IConfig.LARGEUR_FENETRE / 2) - (int) (IConfig.LARGEUR_FENETRE / 2), r.nextInt(IConfig.LONGUEUR_FENETRE / 2) - (IConfig.LONGUEUR_FENETRE / 2) + 100, IConfig.SPEED);
             GameServer.players.put(playerId, player);
 
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("playerNumber", player.getNumPlayer());
+            try {
+                session.getRemote().sendString(jsonObj.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             //GameServer.gameFrame.actualiseJoueurs(GameServer.players);
             GameServer.game.setPlayers(GameServer.players);
         }
