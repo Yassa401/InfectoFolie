@@ -36,12 +36,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	socket.addEventListener("message", (event) => {
 		const data = JSON.parse(event.data);
 
-        if(data.timer) {
-            // attribuer le timer à la page
-            const timer = data.timer;
-            document.querySelector(".circle").textContent = timer;
-        }
-
         if (data.playerNumber) {
             document.querySelector(".circle").textContent = data.playerNumber;
         }
