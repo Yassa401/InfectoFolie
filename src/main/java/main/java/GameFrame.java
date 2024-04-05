@@ -130,8 +130,10 @@ public class GameFrame extends ApplicationAdapter{
     	shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
     	
     	for (Player p : players.values()) {
-            shapeRenderer.setColor(p.getCouleur());
-            shapeRenderer.circle((float) p.getX(), (float) p.getY(), p.getRadius());
+            if(p.getStatut() != 2) {
+                shapeRenderer.setColor(p.getCouleur());
+                shapeRenderer.circle((float) p.getX(), (float) p.getY(), p.getRadius());
+            }
             
             // si les joueurs est un infecté
             if (p.getStatut() == 1) { 
