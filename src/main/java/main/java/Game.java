@@ -68,7 +68,7 @@ public class Game {
 		int nbPlayers = this.getLivingPlayers().size();
 		int nb2infec = 0;
 		
-		if(nbPlayers > 0) {
+		if(nbPlayers > 1) {
 			if(nbPlayers <= 5) {
 				nb2infec = 1;
 			}

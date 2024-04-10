@@ -181,7 +181,8 @@ public class GameFrame extends ApplicationAdapter{
         float[] coordsDead = {(float) (-IConfig.LARGEUR_FENETRE/2 + IConfig.LARGEUR_FENETRE/3.1), -IConfig.LONGUEUR_FENETRE/2 + IConfig.LONGUEUR_FENETRE/16};
         
         // Calcul des coordonnées du bouton en fonction de la taille actuelle de la fenêtre
-        startButton = new Rectangle2D.Float(viewport.getWorldWidth() / 4.33f, -viewport.getWorldHeight() / 2 + 10, viewport.getWorldWidth() / 8.67f, viewport.getWorldHeight() / 13.33f);
+        //startButton = new Rectangle2D.Float(viewport.getWorldWidth() / 4.33f, -viewport.getWorldHeight() / 2 + 10, viewport.getWorldWidth() / 8.67f, viewport.getWorldHeight() / 13.33f);
+        startButton = new Rectangle2D.Float(viewport.getWorldWidth() / 4.33f, -viewport.getWorldHeight() / 2 + viewport.getWorldHeight()/80, viewport.getWorldWidth() / 8.67f, viewport.getWorldHeight() / 13.33f);
         
         // dessiner le timer
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -215,7 +216,7 @@ public class GameFrame extends ApplicationAdapter{
     }
     
     private void clickHandler() {
-    	if(Gdx.input.justTouched()) {
+    	if(Gdx.input.justTouched() && !GameServer.partieCommence) {
     		// Convertir les coordonnées de la souris en coordonnées de monde
             float mouseX = Gdx.input.getX();
             float mouseY = Gdx.input.getY();
