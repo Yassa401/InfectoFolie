@@ -86,6 +86,12 @@ public class Game {
 			}
 		}
 
+		else {
+			// il y a qu'un seul
+			GameServer.partieCommence = false;
+
+
+		}
 		return nb2infec;
 	}
 	
@@ -131,7 +137,7 @@ public class Game {
 	// infecte un joueurs (changer son statut et sa couleur)
 	public static void infectPlayer(Player p) {
 		p.setCouleur(Color.RED);
-		p.setStatut(1);		
+		p.setStatut(1);
 	}
 	
 	// infecte les joueurs pour une partit du jeu
@@ -149,6 +155,6 @@ public class Game {
 
 	public static void healPlayer(Player p) {
 		p.setCouleur(p.getColorInit());
-		p.setStatut(2);
+		p.setStatut(0);
 	}
 }

@@ -135,14 +135,31 @@ public class GameFrame extends ApplicationAdapter{
     }
     
     private void drawPlayers() {
-    	// Déssiner les joueurs
     	shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for (Player p : players.values()) {
+    	
+    	for (Player p : players.values()) {
             if(p.getStatut() != 2) {
-            	shapeRenderer.setColor(p.getCouleur());
+                shapeRenderer.setColor(p.getCouleur());
                 shapeRenderer.circle((float) p.getX(), (float) p.getY(), p.getRadius());
             }
+            
+            // si les joueurs est un infecté
+            if (p.getStatut() == 1) { 
+                shapeRenderer.setColor(Color.RED); // couleur rouge
+                
+                // taille des arcs
+                float radius = p.getRadius() + 5; 
+                int arcs = 16;  // nombre d'arcs 
+                for (int i = 0; i < arcs; i++) {
+                    float angle = (360f / arcs) * i; // placement des arcs
+                    float angle2 = (360f / arcs) * 0.4f; // largeur des arcs
+                    
+                    // dessine des arcs autour du personnages
+                    shapeRenderer.arc((float) p.getX(), (float) p.getY(), radius, angle, angle2);
+                }
+            }
         }
+    	
     	shapeRenderer.end();
     	
     	// Dessiner les numéros des joueurs
@@ -175,7 +192,7 @@ public class GameFrame extends ApplicationAdapter{
         String nbUninfected = this.game.getNbUninfectedPlayers();
         String nbInfected = this.game.getNbInfectedPlayers();
         String nbDead = this.game.getNbDeadPlayers();
-        
+
     	String texteUninfected = nbUninfected;
         String texteInfected = nbInfected;
         String texteDead = nbDead;
@@ -190,10 +207,7 @@ public class GameFrame extends ApplicationAdapter{
         
         // Calcul des coordonnées du bouton en fonction de la taille actuelle de la fenêtre
         startButton = new Rectangle2D.Float(viewport.getWorldWidth() / 4.33f, -viewport.getWorldHeight() / 2 + viewport.getWorldHeight()/80, viewport.getWorldWidth() / 8.67f, viewport.getWorldHeight() / 13.33f);
-        
-        int width = (int) viewport.getWorldWidth();
-        int height = (int) viewport.getWorldHeight();
-        
+                
         // dessiner le timer
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.BLACK); 

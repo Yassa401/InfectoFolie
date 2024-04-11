@@ -29,8 +29,36 @@ public class WebSocketHandler{
             this.playerId = user.getRemoteAddress().toString();
             GameServer.clients.put(playerId, this);
             // Créer un nouveau joueur et l'ajouter à la liste des joueurs
-            Player player = new Player(r.nextInt(IConfig.LARGEUR_FENETRE / 2) - (int) (IConfig.LARGEUR_FENETRE / 2), r.nextInt(IConfig.LONGUEUR_FENETRE / 2) - (IConfig.LONGUEUR_FENETRE / 2) + 100, IConfig.SPEED);
+            int x, y;
+            boolean collision;
+            do {
+                collision = false;
+
+                x = r.nextInt(IConfig.LARGEUR_FENETRE / 2 + 590) - (int) (IConfig.LARGEUR_FENETRE / 2) + 30;
+                y = r.nextInt(IConfig.LONGUEUR_FENETRE / 2 + 260) - (int) (IConfig.LONGUEUR_FENETRE / 2) + 110;
+
+                for (Player otherPlayer : GameServer.players.values()){
+                    int distanceX = x - otherPlayer.getX();
+                    int distanceY = y - otherPlayer.getY();
+                    double distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+                    if (distance < (IConfig.RADIUS * 2 + 2)) {
+                        collision = true;
+                        break;
+                    }
+                }
+
+            } while (collision);
+
+            Player player = new Player(x, y, IConfig.SPEED);
             GameServer.players.put(playerId, player);
+
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("playerNumber", player.getNumPlayer());
+            try {
+                session.getRemote().sendString(jsonObj.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             //GameServer.gameFrame.actualiseJoueurs(GameServer.players);
             GameServer.game.setPlayers(GameServer.players);
