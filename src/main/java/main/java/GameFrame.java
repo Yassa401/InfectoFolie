@@ -1,6 +1,7 @@
 package main.java;
 
 import java.awt.geom.Rectangle2D;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class GameFrame extends ApplicationAdapter{
         murs.add(murDroit); // Mur droitG
 		
         murs.add(new Rectangle2D.Float(- IConfig.LARGEUR_FENETRE/8 +240 ,IConfig.LONGUEUR_FENETRE/4 ,IConfig.LARGEUR_FENETRE/6 + 100,10));
-         murs.add(new Rectangle2D.Float(IConfig.LARGEUR_FENETRE/3 -250,(float)(-IConfig.LONGUEUR_FENETRE/30 - 200), 10, IConfig.LONGUEUR_FENETRE/3 ));
+        murs.add(new Rectangle2D.Float(IConfig.LARGEUR_FENETRE/3 -250,(float)(-IConfig.LONGUEUR_FENETRE/30 - 200), 10, IConfig.LONGUEUR_FENETRE/3 ));
         
         murs.add(new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/3,(float)(-IConfig.LONGUEUR_FENETRE/30), 10, IConfig.LONGUEUR_FENETRE/3));
         murs.add(new Rectangle2D.Float(- IConfig.LARGEUR_FENETRE/8 - 200 ,-IConfig.LONGUEUR_FENETRE/4 ,IConfig.LARGEUR_FENETRE/6 + 100,10));

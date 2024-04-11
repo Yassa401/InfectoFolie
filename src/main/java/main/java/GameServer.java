@@ -13,6 +13,7 @@ public class GameServer {
     static final Map<String, WebSocketHandler> clients = new HashMap<>();
     static final Map<String, Player> players = new HashMap<>();
     
+    static IntroFrame lobby;
     static GameFrame gameFrame;
     static Game game;
 
@@ -33,13 +34,9 @@ public class GameServer {
         Spark.awaitInitialization();
         
         game = new Game(players);
-        gameFrame = new GameFrame(game);
+        lobby = new IntroFrame();
+        lobby.setVisible(true);
         
-        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.title = "InfectoFoli";
-        config.width = IConfig.LARGEUR_FENETRE;
-        config.height = IConfig.LONGUEUR_FENETRE;
-        new LwjglApplication(gameFrame, config);
-        
+       
     }
 }
