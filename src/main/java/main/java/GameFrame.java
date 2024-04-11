@@ -240,7 +240,7 @@ public class GameFrame extends ApplicationAdapter{
     }
     
     private void clickHandler() {
-    	if(Gdx.input.justTouched() && !GameServer.partieCommence) {
+    	if(Gdx.input.justTouched() && !GameServer.partieCommence && game.getPlayers().size() > 1) {
     		// Convertir les coordonnées de la souris en coordonnées de monde
             float mouseX = Gdx.input.getX();
             float mouseY = Gdx.input.getY();
