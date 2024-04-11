@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -37,6 +38,7 @@ public class GameFrame extends ApplicationAdapter{
     
     protected Game game;
     private Rectangle2D startButton; 
+    private boolean isFullScreen = false;
     
     GameFrame(Game g){
     	this.game = g;
@@ -102,6 +104,12 @@ public class GameFrame extends ApplicationAdapter{
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+        
+        if (IConfig.LARGEUR_FENETRE < width) {
+            isFullScreen = true;
+        } else {
+            isFullScreen = false;
+        }
     }
 
     @Override
@@ -166,7 +174,7 @@ public class GameFrame extends ApplicationAdapter{
     	// récupéer le nb joueurs nonInf/inf/dead
         String nbUninfected = this.game.getNbUninfectedPlayers();
         String nbInfected = this.game.getNbInfectedPlayers();
-        String nbDead = this.game.getNbDeadPlayers(); //this.game.getNbDeadPlayers();
+        String nbDead = this.game.getNbDeadPlayers();
         
     	String texteUninfected = nbUninfected;
         String texteInfected = nbInfected;
@@ -181,8 +189,10 @@ public class GameFrame extends ApplicationAdapter{
         float[] coordsDead = {(float) (-IConfig.LARGEUR_FENETRE/2 + IConfig.LARGEUR_FENETRE/3.1), -IConfig.LONGUEUR_FENETRE/2 + IConfig.LONGUEUR_FENETRE/16};
         
         // Calcul des coordonnées du bouton en fonction de la taille actuelle de la fenêtre
-        //startButton = new Rectangle2D.Float(viewport.getWorldWidth() / 4.33f, -viewport.getWorldHeight() / 2 + 10, viewport.getWorldWidth() / 8.67f, viewport.getWorldHeight() / 13.33f);
         startButton = new Rectangle2D.Float(viewport.getWorldWidth() / 4.33f, -viewport.getWorldHeight() / 2 + viewport.getWorldHeight()/80, viewport.getWorldWidth() / 8.67f, viewport.getWorldHeight() / 13.33f);
+        
+        int width = (int) viewport.getWorldWidth();
+        int height = (int) viewport.getWorldHeight();
         
         // dessiner le timer
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -222,7 +232,13 @@ public class GameFrame extends ApplicationAdapter{
             float mouseY = Gdx.input.getY();
             Vector3 worldCoordinates = new Vector3(mouseX, mouseY, 0); // 0 pas besoin de coordonnées en profondeur
             viewport.getCamera().unproject(worldCoordinates);
-
+            
+            // quand on passer en mode plein écran, on adapte les coordonnées
+            if(isFullScreen) {
+            	worldCoordinates.x += 45; // ? à dynamiser
+            	startButton = new Rectangle2D.Float(viewport.getWorldWidth() / 4.33f, -viewport.getWorldHeight() / 2 + viewport.getWorldHeight()/80, viewport.getWorldWidth() / 10.30f, viewport.getWorldHeight() / 13.33f);
+            }
+            
             // Vérifier si les coordonnées de la souris sont à l'intérieur du rectangle du bouton "startButton"
             if (startButton.contains(worldCoordinates.x, worldCoordinates.y)) {
                 GameServer.partieCommence = true ; // empêcher les joueurs de se connecter quand la partie commence
