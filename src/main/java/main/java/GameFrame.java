@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class GameFrame extends ApplicationAdapter{
 	private ShapeRenderer shapeRenderer;
     private Viewport viewport;
-    private Map<String, Player> players ;
+    public static Map<String, Player> players ;
     public static List<Rectangle2D> murs;
     
     public static Rectangle2D murHaut = new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2, IConfig.LONGUEUR_FENETRE/2-10, IConfig.LARGEUR_FENETRE, 10); // Mur supérieur

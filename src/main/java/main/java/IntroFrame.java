@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class IntroFrame extends JFrame {
+	private JLabel playerCountLabel;
     public IntroFrame() {
         setTitle("Game Settings");
         setSize(IConfig.LARGEUR_FENETRE, IConfig.LONGUEUR_FENETRE);
@@ -29,27 +30,39 @@ public class IntroFrame extends JFrame {
         	}
         });
         
- /*       
-     // Déclaration du JLabel comme attribut de la classe pour y accéder facilement
-        private JLabel playerCountLabel;
+        if(GameFrame.players == null) {
+        	
 
-        // Initialisation et configuration du JLabel dans le constructeur ou une méthode d'initialisation
-        public IntroFrame() {
-            ...
-            playerCountLabel = new JLabel("Joueurs en ligne: 0");
-            playerCountLabel.setBounds(20, IConfig.LONGUEUR_FENETRE - 70, 200, 50); // Ajustez selon votre layout
-            this.add(playerCountLabel, BorderLayout.SOUTH);
-            ...
+            playerCountLabel = new JLabel("Joueurs en ligne: 0" );
+        }else {
+
+        	playerCountLabel = new JLabel("Joueurs en ligne: " + GameFrame.players.size());
         }
-*/
+        playerCountLabel.setBounds(IConfig.LARGEUR_FENETRE/2 - 150 , IConfig.LONGUEUR_FENETRE/2 - 50 + 150, 300, 100);
+        add(playerCountLabel);
+        
+      
+        
+        
+        JButton config = new JButton("Configuration");
+        config.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		Configuration c = new Configuration();
+        		c.setVisible(true);
+        	}
+        });
+        
+        config.setBounds((IConfig.LARGEUR_FENETRE/2 - 150),(IConfig.LONGUEUR_FENETRE/2 +100),300,100);
+            
+        
+
         
         startButton.setBounds((IConfig.LARGEUR_FENETRE/2 - 150),(IConfig.LONGUEUR_FENETRE/2 - 50),300,100);
-        
-        // Adding components to the frame
-        add(configPanel);
+        add(config);
         add(startButton);
         add(playerCountLabel);
     }
+    
 
     
 }
