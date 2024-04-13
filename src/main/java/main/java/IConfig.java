@@ -17,12 +17,12 @@ public class IConfig {
 	public static int time = 20000;
 	public static int pauseTime = 5000;
 	
-    public static void setWidthObs(int newValue) {
-        widthObs = newValue;
+    public static void setSpeed(double newValue) {
+        SPEED = newValue;
     }
 
-    public static void setHeightObs(int newValue) {
-        heightObs = newValue;
+    public static void setRadius(int newValue) {
+        RADIUS = newValue;
     }
 
     public static void setCooldown(int newValue) {

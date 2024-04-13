@@ -1,4 +1,5 @@
 package main.java;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 
@@ -8,61 +9,61 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class IntroFrame extends JFrame {
-	private JLabel playerCountLabel;
-    public IntroFrame() {
+	private static final long serialVersionUID = 1L;
+	private JLabel nbPlayers;
+
+	public IntroFrame() {
         setTitle("Game Settings");
-        setSize(IConfig.LARGEUR_FENETRE, IConfig.LONGUEUR_FENETRE);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setUndecorated(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
-
+        
+        JPanel Panel = new JPanel();
+        Panel.setLayout(new BoxLayout(Panel, BoxLayout.Y_AXIS));
+        Panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        Panel.setBackground(Color.GRAY); 
+        
         JButton startButton = new JButton("Commencer");
-        startButton.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		GameServer.gameFrame = new GameFrame(GameServer.game);
-        		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        		config.title = "InfectoFoli";
-        		config.width = IConfig.LARGEUR_FENETRE;
-        		config.height = IConfig.LONGUEUR_FENETRE;
-        		new LwjglApplication(GameServer.gameFrame, config);
-        	        
-        	}
-        });
-        
-        if(GameFrame.players == null) {
-        	
-
-            playerCountLabel = new JLabel("Joueurs en ligne: 0" );
-        }else {
-
-        	playerCountLabel = new JLabel("Joueurs en ligne: " + GameFrame.players.size());
-        }
-        playerCountLabel.setBounds(IConfig.LARGEUR_FENETRE/2 - 150 , IConfig.LONGUEUR_FENETRE/2 - 50 + 150, 300, 100);
-        add(playerCountLabel);
-        
-      
-        
-        
-        JButton config = new JButton("Configuration");
-        config.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		Configuration c = new Configuration();
-        		c.setVisible(true);
-        	}
-        });
-        
-        config.setBounds((IConfig.LARGEUR_FENETRE/2 - 150),(IConfig.LONGUEUR_FENETRE/2 +100),300,100);
+        startButton.setAlignmentX(Component.CENTER_ALIGNMENT); 
+        startButton.addActionListener(e -> {
+           	GameServer.gameFrame = new GameFrame(GameServer.game);
+           	LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+           	config.title = "InfectoFoli";
+           	config.width = IConfig.LARGEUR_FENETRE;
+           	config.height = IConfig.LONGUEUR_FENETRE;
+           	new LwjglApplication(GameServer.gameFrame, config);
             
-        
+            setVisible(false);
+        });
 
+        JButton configButton = new JButton("Configuration");
+        configButton.setAlignmentX(Component.CENTER_ALIGNMENT); 
+        configButton.addActionListener(e -> new Configuration().setVisible(true));
+
+        nbPlayers = new JLabel("Joueurs en ligne: **Chargement**");
+        nbPlayers.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        Panel.add(Box.createVerticalGlue()); 
+        Panel.add(startButton);
+        Panel.add(Box.createRigidArea(new Dimension(0, 10))); 
+        Panel.add(configButton);
+        Panel.add(Box.createRigidArea(new Dimension(0, 10))); 
+        Panel.add(nbPlayers);
+        Panel.add(Box.createVerticalGlue()); 
         
-        startButton.setBounds((IConfig.LARGEUR_FENETRE/2 - 150),(IConfig.LONGUEUR_FENETRE/2 - 50),300,100);
-        add(config);
-        add(startButton);
-        add(playerCountLabel);
+        getContentPane().add(Panel, BorderLayout.CENTER);
+        new Timer(5000, this::majPlayers).start();
+
+        setVisible(true);
     }
     
-
+    private void majPlayers(ActionEvent event) {
+        int players = GameServer.players.size();
+        nbPlayers.setText("Joueurs en ligne: " + players);
+    }
     
 }

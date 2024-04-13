@@ -36,7 +36,9 @@ public class GameServer {
         game = new Game(players);
         lobby = new IntroFrame();
         lobby.setVisible(true);
-        
        
     }
+    
+    
+
 }
