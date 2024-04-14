@@ -19,16 +19,21 @@ public class IntroFrame extends JFrame {
 	public IntroFrame() {
         setTitle("Game Settings");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-        setUndecorated(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+
         JPanel Panel = new JPanel();
         Panel.setLayout(new BoxLayout(Panel, BoxLayout.Y_AXIS));
         Panel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        Panel.setBackground(Color.GRAY); 
-        
+        Panel.setBackground(new Color(70, 70, 70));
+
         JButton startButton = new JButton("Commencer");
-        startButton.setAlignmentX(Component.CENTER_ALIGNMENT); 
+        startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        startButton.setBackground(new Color(26, 188, 156));
+        startButton.setForeground(Color.WHITE);
+        startButton.setBorderPainted(false);
+        startButton.setFocusPainted(false);
+
         startButton.addActionListener(e -> {
            	GameServer.gameFrame = new GameFrame(GameServer.game);
            	LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
@@ -41,11 +46,19 @@ public class IntroFrame extends JFrame {
         });
 
         JButton configButton = new JButton("Configuration");
-        configButton.setAlignmentX(Component.CENTER_ALIGNMENT); 
+        configButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        configButton.setBackground(new Color(26, 188, 156));
+        configButton.setForeground(Color.WHITE);
+        configButton.setBorderPainted(false);
+        configButton.setFocusPainted(false);
+
         configButton.addActionListener(e -> new Configuration().setVisible(true));
 
         nbPlayers = new JLabel("Joueurs en ligne: **Chargement**");
         nbPlayers.setAlignmentX(Component.CENTER_ALIGNMENT);
+        nbPlayers.setForeground(new Color(236, 240, 241));
+        nbPlayers.setFont(new Font("Arial", Font.BOLD, 18));
 
         Panel.add(Box.createVerticalGlue()); 
         Panel.add(startButton);

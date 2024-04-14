@@ -14,7 +14,10 @@ public class Configuration extends JFrame {
         setTitle("Settings");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(6, 1)); 
+        setUndecorated(true);
+        setVisible(true);
+
+        setLayout(new GridLayout(6, 1));
         addSlider("Radius", IConfig.RADIUS, 0, 20);
         addSlider("Speed", (int)(IConfig.SPEED * 100), 0, 50);
         addSlider("Cooldown", IConfig.cooldown, 1, 10);
@@ -24,8 +27,15 @@ public class Configuration extends JFrame {
         JButton exit = new JButton("Terminer");
         exit.addActionListener(e -> setVisible(false));
         JPanel exitPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+        exit.setBackground(new Color(26, 188, 156));
+        exit.setForeground(Color.WHITE);
+        exit.setBorderPainted(false);
+        exit.setFocusPainted(false);
+
         exitPanel.add(exit);
         add(exitPanel);
+        exitPanel.setBackground(new Color(70, 70, 70));
 
         setVisible(true);
     }
@@ -33,7 +43,10 @@ public class Configuration extends JFrame {
     private void addSlider(String name, int initialValue, int min, int max) {
         JLabel label = new JLabel(name + ": " + initialValue);
         JSlider slider = new JSlider(min, max, initialValue);
-        
+        label.setForeground(new Color(236, 240, 241));
+        label.setFont(new Font("Arial", Font.BOLD, 18));
+        slider.setBackground(new Color(70, 70, 70));
+
         slider.addChangeListener(e -> {
             int value = ((JSlider) e.getSource()).getValue();
             label.setText(name + ": " + value);
@@ -63,6 +76,8 @@ public class Configuration extends JFrame {
         panel.add(label);
         panel.add(slider);
         add(panel);
+        panel.setBackground(new Color(70, 70, 70));
+
     }
 
 }
