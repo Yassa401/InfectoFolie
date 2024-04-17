@@ -78,5 +78,4 @@ public class IntroFrame extends JFrame {
         int players = GameServer.players.size();
         nbPlayers.setText("Joueurs en ligne: " + players);
     }
-    
 }

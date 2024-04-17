@@ -264,7 +264,9 @@ public class GameFrame extends ApplicationAdapter{
     
     private void play() {
     	clickHandler();
-    	
+    	if(!Chrono.isRunning() && game.canPlay) {
+    		
+    	}
     	if(!Chrono.isRunning() && game.getLivingPlayers().size() > 0 && game.canPlay) {   // Fin d'une manche
     		
 			game.updateStatus();		
@@ -286,7 +288,7 @@ public class GameFrame extends ApplicationAdapter{
 			Chrono.running = true;
 			launchTimerThread();
 			
-			if(game.Victoire()) {
+			if(game.Victoire() && game.getLivingPlayers().size() == 1) {
 	    		System.out.println("Victoire du joueur : "+game.getLivingPlayers().get(0).getNumPlayer());
 	    		Chrono.running = false;  
 	    		game.canPlay = false;
@@ -299,12 +301,11 @@ public class GameFrame extends ApplicationAdapter{
                 
 	    	}
 			else {
-				Chrono.running = true;  
+				game.canPlay = true;
+				Chrono.running = true;
 				launchTimerThread();
-	    		game.canPlay = true;
-	    		
 			}
-    	}
+			
     	
     	if(!Chrono.isRunning() && game.getPlayers().size() > 1 && !game.canPlay && game.inPause) {   // Fin d'une pause
     		game.inPause = false;
@@ -324,6 +325,7 @@ public class GameFrame extends ApplicationAdapter{
 			launchTimerThread();
 		}
     }
+}
     
     /**
     * Dessine un rectangle avec des coins arrondis (pas de méthode native pour ça) 

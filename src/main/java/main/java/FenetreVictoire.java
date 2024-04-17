@@ -20,7 +20,7 @@ public class FenetreVictoire extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(500, 100, 300, 150); // Augmentation de la largeur pour accueillir les boutons
 
-        cred.setText("<html><font color='black'>" + i + "</font></html>");
+        cred.setText("<html><font color='black'>Le joueur " + i + " a gagné !!!</font></html>");
         cred.setFont(new Font("Arial", Font.PLAIN, 24));
 
         // Centrer le label horizontalement
@@ -62,10 +62,13 @@ public class FenetreVictoire extends JFrame {
 
         
         recommencer.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {            
+            public void actionPerformed(ActionEvent e) {   
+            	 
+                /*GameServer.gameFrame.dispose(); 
+                
                 IntroFrame introFrame = new IntroFrame();
-                introFrame.setVisible(true);
-            	serv.partieCommence = false ;
+                introFrame.setVisible(true);*/
+                GameServer.partieCommence = false ;
                 dispose();
             }
         });
