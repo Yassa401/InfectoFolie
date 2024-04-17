@@ -1,9 +1,12 @@
 package main.java;
 
 import java.awt.geom.Rectangle2D;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.swing.SwingUtilities;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -22,7 +25,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class GameFrame extends ApplicationAdapter{
 	private ShapeRenderer shapeRenderer;
     private Viewport viewport;
-    private Map<String, Player> players ;
+    public static Map<String, Player> players ;
     public static List<Rectangle2D> murs;
     
     public static Rectangle2D murHaut = new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2, IConfig.LONGUEUR_FENETRE/2-10, IConfig.LARGEUR_FENETRE, 10); // Mur supérieur
@@ -50,7 +53,7 @@ public class GameFrame extends ApplicationAdapter{
         murs.add(murDroit); // Mur droitG
 		
         murs.add(new Rectangle2D.Float(- IConfig.LARGEUR_FENETRE/8 +240 ,IConfig.LONGUEUR_FENETRE/4 ,IConfig.LARGEUR_FENETRE/6 + 100,10));
-         murs.add(new Rectangle2D.Float(IConfig.LARGEUR_FENETRE/3 -250,(float)(-IConfig.LONGUEUR_FENETRE/30 - 200), 10, IConfig.LONGUEUR_FENETRE/3 ));
+        murs.add(new Rectangle2D.Float(IConfig.LARGEUR_FENETRE/3 -250,(float)(-IConfig.LONGUEUR_FENETRE/30 - 200), 10, IConfig.LONGUEUR_FENETRE/3 ));
         
         murs.add(new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/3,(float)(-IConfig.LONGUEUR_FENETRE/30), 10, IConfig.LONGUEUR_FENETRE/3));
         murs.add(new Rectangle2D.Float(- IConfig.LARGEUR_FENETRE/8 - 200 ,-IConfig.LONGUEUR_FENETRE/4 ,IConfig.LARGEUR_FENETRE/6 + 100,10));
@@ -322,6 +325,6 @@ public class GameFrame extends ApplicationAdapter{
         shapeRenderer.arc(x + width - radius, y + height - radius, radius, 0f, 90f);
         shapeRenderer.arc(x + radius, y + height - radius, radius, 90f, 90f);
     }
-    
-    
+
+   
 }
