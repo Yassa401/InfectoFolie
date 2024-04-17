@@ -285,6 +285,25 @@ public class GameFrame extends ApplicationAdapter{
 			// Lancement de la pause
 			Chrono.running = true;
 			launchTimerThread();
+			
+			if(game.Victoire()) {
+	    		System.out.println("Victoire du joueur : "+game.getLivingPlayers().get(0).getNumPlayer());
+	    		Chrono.running = false;  
+	    		game.canPlay = false;
+	    		game.inPause = false;
+	            Chrono.doRound(); 
+	            Chrono.stopTimer(); 
+                FenetreVictoire f = new FenetreVictoire(game.getLivingPlayers().get(0).getNumPlayer());
+                game.getLivingPlayers().clear();
+                GameFrame.players.clear();
+                
+	    	}
+			else {
+				Chrono.running = true;  
+				launchTimerThread();
+	    		game.canPlay = true;
+	    		
+			}
     	}
     	
     	if(!Chrono.isRunning() && game.getPlayers().size() > 1 && !game.canPlay && game.inPause) {   // Fin d'une pause

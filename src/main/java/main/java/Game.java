@@ -25,6 +25,7 @@ public class Game {
 		return players;
 	}
 
+	
 	public void setPlayers(Map<String, Player> players) {
 		this.players = players;
 	}
@@ -157,4 +158,13 @@ public class Game {
 		p.setCouleur(p.getColorInit());
 		p.setStatut(0);
 	}
+	
+	public boolean Victoire() {
+	    int nbSurvivant = Integer.parseInt(getNbUninfectedPlayers());
+	    int nbInfecte = Integer.parseInt(getNbInfectedPlayers());
+	    
+	    // Condition de victoire : un seul survivant et aucun infecté
+	    return nbSurvivant == 1 && nbInfecte == 0;
+	}
+
 }
