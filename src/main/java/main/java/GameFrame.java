@@ -1,12 +1,10 @@
 package main.java;
 
 import java.awt.geom.Rectangle2D;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.SwingUtilities;
+import java.util.Timer;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -40,6 +38,7 @@ public class GameFrame extends ApplicationAdapter{
     
     protected Game game;
     private Rectangle2D startButton; 
+    private ColorUpdater colorUpdater;
     
     GameFrame(Game g){
     	this.game = g;
@@ -71,8 +70,11 @@ public class GameFrame extends ApplicationAdapter{
 	     // initialisation de la police
 	    font = new BitmapFont();
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        
+        // initialiser colorUpdateer
+        colorUpdater = new ColorUpdater();
+        new Thread(colorUpdater).start();
     }
-    
     
     @Override
     public void render () {
@@ -82,9 +84,10 @@ public class GameFrame extends ApplicationAdapter{
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
         
         // Dessiner le fond de la fenêtre (pendant la peuse)
-        if (game.inPause) {
+        if (game.inPause) { System.out.println("In pause ...................");
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.setColor(0.85f, 0.85f, 0.85f, 0.5f); // Couleur gris clair semi-transparent
+            //shapeRenderer.setColor(0.85f, 0.85f, 0.85f, 0.5f); // Couleur gris clair semi-transparent
+            shapeRenderer.setColor(colorUpdater.getCurrentColor()); 
             shapeRenderer.rect(-IConfig.LARGEUR_FENETRE / 2, (float)(-IConfig.LONGUEUR_FENETRE/2.5), IConfig.LARGEUR_FENETRE, IConfig.LONGUEUR_FENETRE);
             shapeRenderer.end();
         }
@@ -118,6 +121,9 @@ public class GameFrame extends ApplicationAdapter{
     @Override
     public void dispose () {
         shapeRenderer.dispose();
+        
+        // arrêter le thread des couleurs
+        colorUpdater.stop();
         
         font.dispose();
         batch.dispose();
@@ -273,7 +279,7 @@ public class GameFrame extends ApplicationAdapter{
     private void play() {
     	clickHandler();
     	
-    	if(!Chrono.isRunning() && game.getLivingPlayers().size() > 0 && game.canPlay) {   // Fin d'une manche
+    	if(!Chrono.isRunning() && game.getLivingPlayers().size() > 0 && game.canPlay && !game.inPause) {   // Fin d'une manche
     		
 			game.updateStatus();		
 			
@@ -296,6 +302,13 @@ public class GameFrame extends ApplicationAdapter{
     	}
     	
     	if(!Chrono.isRunning() && game.getPlayers().size() > 1 && !game.canPlay && game.inPause) {   // Fin d'une pause
+    		// attendre une demi seconde
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
     		game.inPause = false;
     		game.canPlay = true;
     		
