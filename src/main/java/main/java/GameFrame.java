@@ -81,6 +81,14 @@ public class GameFrame extends ApplicationAdapter{
 
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
         
+        // Dessiner le fond de la fenêtre (pendant la peuse)
+        if (game.inPause) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(0.85f, 0.85f, 0.85f, 0.5f); // Couleur gris clair semi-transparent
+            shapeRenderer.rect(-IConfig.LARGEUR_FENETRE / 2, (float)(-IConfig.LONGUEUR_FENETRE/2.5), IConfig.LARGEUR_FENETRE, IConfig.LONGUEUR_FENETRE);
+            shapeRenderer.end();
+        }
+        
         // les mûrs
         drawWalls();
         
