@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
         zone: joystickContainer,
         mode: "static",
         position: { top: "80%", left: "50%" },
-        color: "#000000",
+        color: "#1ABC9C",
         restOpacity: 0.5,
         fadeTime: 250,
         threshold: 0.04
