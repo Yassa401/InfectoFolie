@@ -68,6 +68,8 @@ public class FenetreVictoire extends JFrame {
                 
                 IntroFrame introFrame = new IntroFrame();
                 introFrame.setVisible(true);*/
+            	
+            	
                 GameServer.partieCommence = false ;
                 dispose();
             }

@@ -264,10 +264,8 @@ public class GameFrame extends ApplicationAdapter{
     
     private void play() {
     	clickHandler();
-    	if(!Chrono.isRunning() && game.canPlay) {
-    		
-    	}
-    	if(!Chrono.isRunning() && game.getLivingPlayers().size() > 0 && game.canPlay) {   // Fin d'une manche
+    	
+    	if(!Chrono.isRunning() && game.getLivingPlayers().size() > 0 && game.canPlay && !game.inPause && !game.Victoire()) {   // Fin d'une manche
     		
 			game.updateStatus();		
 			
@@ -287,27 +285,30 @@ public class GameFrame extends ApplicationAdapter{
 			// Lancement de la pause
 			Chrono.running = true;
 			launchTimerThread();
-			
-			if(game.Victoire() && game.getLivingPlayers().size() == 1) {
-	    		System.out.println("Victoire du joueur : "+game.getLivingPlayers().get(0).getNumPlayer());
-	    		Chrono.running = false;  
-	    		game.canPlay = false;
-	    		game.inPause = false;
-	            Chrono.doRound(); 
-	            Chrono.stopTimer(); 
-                FenetreVictoire f = new FenetreVictoire(game.getLivingPlayers().get(0).getNumPlayer());
-                game.getLivingPlayers().clear();
-                GameFrame.players.clear();
-                
-	    	}
-			else {
-				game.canPlay = true;
-				Chrono.running = true;
-				launchTimerThread();
+    	}
+    	if(Chrono.isRunning() && game.Victoire()&&  game.getLivingPlayers().size() >= 0) {
+    		System.out.println("Victoire du joueur : "+game.getLivingPlayers().get(0).getNumPlayer());
+    		Chrono.running = false;  
+    		game.canPlay = false;
+    		game.inPause = false;
+            Chrono.doRound(); 
+            Chrono.stopTimer(); 
+            FenetreVictoire f = new FenetreVictoire(game.getLivingPlayers().get(0).getNumPlayer());
+            game.getLivingPlayers().clear();
+            GameFrame.players.clear();
+            
+            
+    	}
+	
+    	
+    	if(!Chrono.isRunning() && game.getPlayers().size() > 1 && !game.canPlay && game.inPause && !game.Victoire()) {   // Fin d'une pause
+    		// attendre une demi seconde
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 			
-    	
-    	if(!Chrono.isRunning() && game.getPlayers().size() > 1 && !game.canPlay && game.inPause) {   // Fin d'une pause
     		game.inPause = false;
     		game.canPlay = true;
     		
@@ -325,7 +326,7 @@ public class GameFrame extends ApplicationAdapter{
 			launchTimerThread();
 		}
     }
-}
+
     
     /**
     * Dessine un rectangle avec des coins arrondis (pas de méthode native pour ça) 
