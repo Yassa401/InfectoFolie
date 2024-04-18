@@ -10,21 +10,27 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 public class IntroFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JLabel nbPlayers;
-
+	private BufferedImage backgroundImage;
+	private Image image;
 	public IntroFrame() {
         setTitle("Game Settings");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        
+
+        
         JPanel Panel = new JPanel();
         Panel.setLayout(new BoxLayout(Panel, BoxLayout.Y_AXIS));
         Panel.setAlignmentX(Component.CENTER_ALIGNMENT);
         Panel.setBackground(new Color(70, 70, 70));
+        
 
         JButton startButton = new JButton("Commencer");
         startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -37,7 +43,7 @@ public class IntroFrame extends JFrame {
         startButton.addActionListener(e -> {
            	GameServer.gameFrame = new GameFrame(GameServer.game);
            	LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-           	config.title = "InfectoFoli";
+           	config.title = "InfectoFolie";
            	config.width = IConfig.LARGEUR_FENETRE;
            	config.height = IConfig.LONGUEUR_FENETRE;
            	new LwjglApplication(GameServer.gameFrame, config);
@@ -78,5 +84,6 @@ public class IntroFrame extends JFrame {
         int players = GameServer.players.size();
         nbPlayers.setText("Joueurs en ligne: " + players);
     }
+    
     
 }

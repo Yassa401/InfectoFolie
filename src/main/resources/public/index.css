@@ -56,11 +56,12 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-    background-image: url('./img.png');
-    background-color: rgb(70, 70, 70);
-    background-size: 430px 900px;;
-    background-position: center;  color: rgb(236, 240, 241);
-}
+  background-image: url('./IF1.webp'); 
+  background-color: rgb(70, 70, 70); 
+  background-size: cover; 
+  background-position: center; 
+  background-repeat: no-repeat; 
+  color: rgb(236, 240, 241); }
 
 button {
   position: relative;
