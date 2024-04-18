@@ -31,7 +31,20 @@ public class IntroFrame extends JFrame {
         Panel.setAlignmentX(Component.CENTER_ALIGNMENT);
         Panel.setBackground(new Color(70, 70, 70));
         
+        
+        JButton con = new JButton("Autoriser les connexions");
+        con.setAlignmentX(Component.CENTER_ALIGNMENT);
+        con.setBackground(new Color(26, 188, 156));
+        con.setForeground(Color.WHITE);
+        con.setBorderPainted(false);
+        con.setFocusPainted(false);
+        
+        con.addActionListener(e -> {
+           	GameServer.partieCommence = false;
+        });
 
+        
+        
         JButton startButton = new JButton("Commencer");
         startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -71,6 +84,10 @@ public class IntroFrame extends JFrame {
         Panel.add(Box.createRigidArea(new Dimension(0, 10))); 
         Panel.add(configButton);
         Panel.add(Box.createRigidArea(new Dimension(0, 10))); 
+        Panel.add(con);
+        Panel.add(Box.createRigidArea(new Dimension(0, 10))); 
+        
+        
         Panel.add(nbPlayers);
         Panel.add(Box.createVerticalGlue()); 
         
