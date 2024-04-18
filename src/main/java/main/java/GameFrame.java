@@ -4,10 +4,15 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
+
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -23,7 +28,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class GameFrame extends ApplicationAdapter{
 	private ShapeRenderer shapeRenderer;
     private Viewport viewport;
-    private Map<String, Player> players ;
+    private Music backgroundMusic;  
+    
+    public static Map<String, Player> players ;
     public static List<Rectangle2D> murs;
     
     public static Rectangle2D murHaut = new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2, IConfig.LONGUEUR_FENETRE/2-10, IConfig.LARGEUR_FENETRE, 10); // Mur supérieur
@@ -37,8 +44,9 @@ public class GameFrame extends ApplicationAdapter{
     GlyphLayout layout;	// pour obtenir la taille du texte afin de dessiner un cercle/rect autour
     
     protected Game game;
-    private Rectangle2D startButton; 
+    private Rectangle2D startButton;
     private boolean isFullScreen = false;
+    private ColorUpdater colorUpdater;
     
     GameFrame(Game g){
     	this.game = g;
@@ -52,7 +60,7 @@ public class GameFrame extends ApplicationAdapter{
         murs.add(murDroit); // Mur droitG
 		
         murs.add(new Rectangle2D.Float(- IConfig.LARGEUR_FENETRE/8 +240 ,IConfig.LONGUEUR_FENETRE/4 ,IConfig.LARGEUR_FENETRE/6 + 100,10));
-         murs.add(new Rectangle2D.Float(IConfig.LARGEUR_FENETRE/3 -250,(float)(-IConfig.LONGUEUR_FENETRE/30 - 200), 10, IConfig.LONGUEUR_FENETRE/3 ));
+        murs.add(new Rectangle2D.Float(IConfig.LARGEUR_FENETRE/3 -250,(float)(-IConfig.LONGUEUR_FENETRE/30 - 200), 10, IConfig.LONGUEUR_FENETRE/3 ));
         
         murs.add(new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/3,(float)(-IConfig.LONGUEUR_FENETRE/30), 10, IConfig.LONGUEUR_FENETRE/3));
         murs.add(new Rectangle2D.Float(- IConfig.LARGEUR_FENETRE/8 - 200 ,-IConfig.LONGUEUR_FENETRE/4 ,IConfig.LARGEUR_FENETRE/6 + 100,10));
@@ -67,11 +75,23 @@ public class GameFrame extends ApplicationAdapter{
         batch = new SpriteBatch();
         layout = new GlyphLayout();
         
-	     // initialisation de la police
+        try {
+        	
+            Music backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("public/infecto.mp3"));
+            backgroundMusic.setLooping(true);
+            backgroundMusic.play();
+        } catch (Exception e) {
+            e.printStackTrace(); 
+        }
+
+        // initialisation de la police
 	    font = new BitmapFont();
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        
+        // initialiser colorUpdateer
+        colorUpdater = new ColorUpdater();
+        new Thread(colorUpdater).start();
     }
-    
     
     @Override
     public void render () {
@@ -79,6 +99,15 @@ public class GameFrame extends ApplicationAdapter{
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
+        
+        // Dessiner le fond de la fenêtre (pendant la peuse)
+        if (game.inPause) { System.out.println("In pause ...................");
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            //shapeRenderer.setColor(0.85f, 0.85f, 0.85f, 0.5f); // Couleur gris clair semi-transparent
+            shapeRenderer.setColor(colorUpdater.getCurrentColor()); 
+            shapeRenderer.rect(-IConfig.LARGEUR_FENETRE / 2, (float)(-IConfig.LONGUEUR_FENETRE/2.5), IConfig.LARGEUR_FENETRE, IConfig.LONGUEUR_FENETRE);
+            shapeRenderer.end();
+        }
         
         // les mûrs
         drawWalls();
@@ -114,7 +143,16 @@ public class GameFrame extends ApplicationAdapter{
 
     @Override
     public void dispose () {
+    	
+    	if (backgroundMusic != null) {
+            backgroundMusic.stop();
+            backgroundMusic.dispose();
+        }
+    	
         shapeRenderer.dispose();
+        
+        // arrêter le thread des couleurs
+        colorUpdater.stop();
         
         font.dispose();
         batch.dispose();
@@ -276,7 +314,7 @@ public class GameFrame extends ApplicationAdapter{
     private void play() {
     	clickHandler();
     	
-    	if(!Chrono.isRunning() && game.getLivingPlayers().size() > 0 && game.canPlay) {   // Fin d'une manche
+    	if(!Chrono.isRunning() && game.getLivingPlayers().size() > 0 && game.canPlay && !game.inPause) {   // Fin d'une manche
     		
 			game.updateStatus();		
 			
@@ -299,6 +337,13 @@ public class GameFrame extends ApplicationAdapter{
     	}
     	
     	if(!Chrono.isRunning() && game.getPlayers().size() > 1 && !game.canPlay && game.inPause) {   // Fin d'une pause
+    		// attendre une demi seconde
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
     		game.inPause = false;
     		game.canPlay = true;
     		
@@ -336,6 +381,6 @@ public class GameFrame extends ApplicationAdapter{
         shapeRenderer.arc(x + width - radius, y + height - radius, radius, 0f, 90f);
         shapeRenderer.arc(x + radius, y + height - radius, radius, 90f, 90f);
     }
-    
-    
+
+   
 }
