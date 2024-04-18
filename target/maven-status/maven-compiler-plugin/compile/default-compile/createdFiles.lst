@@ -1,3 +1,13 @@
+<<<<<<< HEAD
+main\java\IConfig.class
+main\java\Chrono.class
+main\java\WebSocketHandler$1.class
+main\java\WebSocketHandler.class
+main\java\Player.class
+main\java\Game.class
+main\java\GameFrame.class
+main\java\GameServer.class
+=======
 main/java/IntroFrame.class
 main/java/Player.class
 main/java/ColorUpdater.class
@@ -9,3 +19,4 @@ main/java/GameServer.class
 main/java/Game.class
 main/java/Chrono.class
 main/java/WebSocketHandler.class
+>>>>>>> 66d92d5c232179b7e76c9b203aa0bb10a57cb85b
