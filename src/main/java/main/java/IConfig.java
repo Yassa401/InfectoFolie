@@ -7,7 +7,7 @@ public class IConfig {
 	
 	public static int RADIUS = 18 ;
 	
-	public static double SPEED = 0.25 ;
+	public static double SPEED = 0.12 ;
 
 	public static int widthObs = 100;
 	public static int heightObs = 10;
