@@ -34,6 +34,12 @@ public class GameServer {
         Spark.awaitInitialization();
         
         game = new Game(players);
+        GameServer.gameFrame = new GameFrame(GameServer.game);
+        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+        config.title = "InfectoFoli";
+        config.width = IConfig.LARGEUR_FENETRE;
+        config.height = IConfig.LONGUEUR_FENETRE;
+        new LwjglApplication(GameServer.gameFrame, config);
         lobby = new IntroFrame();
         lobby.setVisible(true);
        
