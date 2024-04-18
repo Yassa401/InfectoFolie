@@ -19,9 +19,9 @@ public class FenetreVictoire extends JFrame {
         super("Félicitations");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(500, 100, 300, 150); // Augmentation de la largeur pour accueillir les boutons
-
-        cred.setText("<html><font color='black'>Le joueur " + i + " a gagné !!!</font></html>");
-        cred.setFont(new Font("Arial", Font.PLAIN, 24));
+        getContentPane().setBackground(new Color(50, 50, 50));
+        cred.setText("<html><font color='white'>Le joueur " + i + " a gagné !!!</font></html>");
+        cred.setFont(new Font("Arial", Font.BOLD, 24));
 
         // Centrer le label horizontalement
         int labelWidth = cred.getPreferredSize().width;
@@ -31,31 +31,33 @@ public class FenetreVictoire extends JFrame {
 
         cred.setBounds(labelX, labelY, labelWidth, labelHeight);
 
-        JPanel boutonsPanel = new JPanel();
-        boutonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER)); // Alignement des boutons au centre
+        JPanel bouton = new JPanel();
+        bouton.setLayout(new FlowLayout(FlowLayout.CENTER)); 
 
         recommencer = new JButton("Recommencer");
         quitter = new JButton("Quitter");
 
-        boutonsPanel.add(recommencer);
-        boutonsPanel.add(quitter);
+        bouton.add(recommencer);
+        bouton.add(quitter);
 
         // Ajoutez les boutons au contentPane
-        getContentPane().setLayout(null); // Layout null pour positionner manuellement les composants
+        getContentPane().setLayout(null); 
         getContentPane().add(cred);
-        getContentPane().add(boutonsPanel);
+        getContentPane().add(bouton);
 
-       
-        boutonsPanel.setBounds(0, getHeight() - 80, getWidth(), 50); // Ajustez la position et la taille du panel des boutons
-       
-        recommencer.setBackground(Color.GREEN);
+        Color green = new Color(0, 128, 0); // RVB: (0, 128, 0)
+        bouton.setBounds(0, getHeight() - 80, getWidth(), 50); 
+        bouton.setBackground(Color.ORANGE);
+        recommencer.setBackground(green);
         recommencer.setForeground(Color.WHITE);
         
         quitter.setBackground(Color.RED);
         quitter.setForeground(Color.WHITE);
-       
+        recommencer.setFont(new Font("Arial", Font.BOLD, 14)); 
+        quitter.setFont(new Font("Arial", Font.BOLD, 14));
         quitter.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+           
+        public void actionPerformed(ActionEvent e) {
                 System.exit(0); // Ferme l'application
             }
         });
@@ -69,7 +71,8 @@ public class FenetreVictoire extends JFrame {
                 IntroFrame introFrame = new IntroFrame();
                 introFrame.setVisible(true);*/
             	
-            	
+            	/*IntroFrame introFrame = new IntroFrame();
+                introFrame.setVisible(true);*/
                 GameServer.partieCommence = false ;
                 dispose();
             }
