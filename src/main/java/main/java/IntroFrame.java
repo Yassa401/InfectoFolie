@@ -16,8 +16,6 @@ import java.io.IOException;
 public class IntroFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JLabel nbPlayers;
-	private BufferedImage backgroundImage;
-	private Image image;
 	public IntroFrame() {
         setTitle("Game Settings");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
