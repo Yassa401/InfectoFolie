@@ -56,9 +56,9 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-    background-image: url('./img.png');
+    background-image: url('./IF_2.jpg');
     background-color: rgb(70, 70, 70);
-    background-size: 430px 900px;;
+    background-size: 430px 900px;
     background-position: center;  color: rgb(236, 240, 241);
 }
 
