@@ -8,6 +8,8 @@ import java.util.Timer;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -23,6 +25,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class GameFrame extends ApplicationAdapter{
 	private ShapeRenderer shapeRenderer;
     private Viewport viewport;
+    private Music backgroundMusic;  
+    
     public static Map<String, Player> players ;
     public static List<Rectangle2D> murs;
     
@@ -67,7 +71,16 @@ public class GameFrame extends ApplicationAdapter{
         batch = new SpriteBatch();
         layout = new GlyphLayout();
         
-	     // initialisation de la police
+        try {
+        	
+            Music backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("public/infecto.mp3"));
+            backgroundMusic.setLooping(true);
+            backgroundMusic.play();
+        } catch (Exception e) {
+            e.printStackTrace(); 
+        }
+
+        // initialisation de la police
 	    font = new BitmapFont();
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         
@@ -120,6 +133,12 @@ public class GameFrame extends ApplicationAdapter{
 
     @Override
     public void dispose () {
+    	
+    	if (backgroundMusic != null) {
+            backgroundMusic.stop();
+            backgroundMusic.dispose();
+        }
+    	
         shapeRenderer.dispose();
         
         // arrêter le thread des couleurs
