@@ -141,10 +141,26 @@ public class Player {
         	)) {
     		return true;
     	}
+        else{
+            for (Rectangle2D mur : GameFrame.murs) {
+                // Collision détectée
+                // Teste avec les deux nouvelles coordonnees d'abord
+                if(mur.intersects(newX, newY, getRadius(),getRadius())) {
+                    // Teste chacun des coordonnées comme ça l'autre peut avoir une nouvelle valeur
+                    // si ça ne rentre pas dans l'obstacle (ça rend le déplacement plus fluide)
+                    if (mur.intersects(newX, getY(), getRadius(), getRadius())) {
+                        if(mur.intersects(getX(), newY, getRadius(), getRadius())) {
+                            return true ;
+                        }else {
+                            y = newY;
+                            return true;
+                        }
+                    }else {
+                        x = newX ;
+                        return true;
+                    }
+                }
 
-        for (Rectangle2D mur : GameFrame.murs) {
-            if (mur.intersects(newX, newY, getRadius(), getRadius())) {
-                return true;
             }
         }
 
