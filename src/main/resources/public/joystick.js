@@ -3,18 +3,19 @@ document.addEventListener("DOMContentLoaded", function () {
     const joystick = nipplejs.create({
         zone: joystickContainer,
         mode: "static",
-        position: { top: "80%", left: "50%" },
+        position: { top: "75%", left: "50%" },
         color: "#1ABC9C",
         restOpacity: 0.5,
         fadeTime: 250,
-        threshold: 0.04
+        threshold: 0.04,
+        size: 300
     });
 
     // Se connecte à la websocket du serveur une seule fois à l'ouverture de la page
     const socket = new WebSocket("ws://" + window.location.hostname + ":" + window.location.port +"/ws");
 
     joystick.on("move", function (event, data) {
-        const angle = (data.angle.degree + 90) % 360;
+        const angle = (data.angle.degree) % 360;
         const distance = data.distance;
 
 

@@ -4,15 +4,9 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
-
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.files.FileHandle;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -32,12 +26,16 @@ public class GameFrame extends ApplicationAdapter{
     
     public static Map<String, Player> players ;
     public static List<Rectangle2D> murs;
-    
+
     public static Rectangle2D murHaut = new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2, IConfig.LONGUEUR_FENETRE/2-10, IConfig.LARGEUR_FENETRE, 10); // Mur supérieur
     public static Rectangle2D murGauche =new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2,(float)(-IConfig.LONGUEUR_FENETRE/2.5), 10, IConfig.LONGUEUR_FENETRE); // Mur gauche
     public static Rectangle2D murBas = new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2, (float)(-IConfig.LONGUEUR_FENETRE/2.5), IConfig.LARGEUR_FENETRE, 10); // Mur inférieur
     public static Rectangle2D murDroit = new Rectangle2D.Float(IConfig.LARGEUR_FENETRE/2-10, (float)(-IConfig.LONGUEUR_FENETRE/2.5), 10, IConfig.LONGUEUR_FENETRE); // Mur droitG
 
+    public static Rectangle2D obs1 = new Rectangle2D.Float(- IConfig.LARGEUR_FENETRE/8 +240 ,IConfig.LONGUEUR_FENETRE/4 ,IConfig.LARGEUR_FENETRE/6 + 100,10);
+    public static Rectangle2D obs2 = new Rectangle2D.Float(IConfig.LARGEUR_FENETRE/3 -250,(float)(-IConfig.LONGUEUR_FENETRE/30 - 200), 10, IConfig.LONGUEUR_FENETRE/3 );
+    public static Rectangle2D obs3 = new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/3,(float)(-IConfig.LONGUEUR_FENETRE/30), 10, IConfig.LONGUEUR_FENETRE/3);
+    public static Rectangle2D obs4 = new Rectangle2D.Float(- IConfig.LARGEUR_FENETRE/8 - 200 ,-IConfig.LONGUEUR_FENETRE/4 ,IConfig.LARGEUR_FENETRE/6 + 100,10);
     BitmapFont font;
     Chrono chrono;
     SpriteBatch batch;  // pour dessiner les polices	
@@ -51,20 +49,17 @@ public class GameFrame extends ApplicationAdapter{
     GameFrame(Game g){
     	this.game = g;
     	this.players = g.getPlayers();
-    	
+
     	murs = new ArrayList<>();
         // Initialisation des murs
     	murs.add(murHaut); // Mur supérieur
         murs.add(murGauche); // Mur gauche
         murs.add(murBas); // Mur inférieur
         murs.add(murDroit); // Mur droitG
-		
-        murs.add(new Rectangle2D.Float(- IConfig.LARGEUR_FENETRE/8 +240 ,IConfig.LONGUEUR_FENETRE/4 ,IConfig.LARGEUR_FENETRE/6 + 100,10));
-        murs.add(new Rectangle2D.Float(IConfig.LARGEUR_FENETRE/3 -250,(float)(-IConfig.LONGUEUR_FENETRE/30 - 200), 10, IConfig.LONGUEUR_FENETRE/3 ));
-        
-        murs.add(new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/3,(float)(-IConfig.LONGUEUR_FENETRE/30), 10, IConfig.LONGUEUR_FENETRE/3));
-        murs.add(new Rectangle2D.Float(- IConfig.LARGEUR_FENETRE/8 - 200 ,-IConfig.LONGUEUR_FENETRE/4 ,IConfig.LARGEUR_FENETRE/6 + 100,10));
-        
+        murs.add(obs1);
+        murs.add(obs2);
+        murs.add(obs3);
+        murs.add(obs4);
     }
     
     @Override
@@ -101,7 +96,7 @@ public class GameFrame extends ApplicationAdapter{
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
         
         // Dessiner le fond de la fenêtre (pendant la peuse)
-        if (game.inPause) { System.out.println("In pause ...................");
+        if (game.inPause) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             //shapeRenderer.setColor(0.85f, 0.85f, 0.85f, 0.5f); // Couleur gris clair semi-transparent
             shapeRenderer.setColor(colorUpdater.getCurrentColor()); 
