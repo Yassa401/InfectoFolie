@@ -69,17 +69,7 @@ public class WebSocketHandler{
         	@Override
         	public void run() {
         		// vérifier si le timer est en cours d'exécution
-        		if(Chrono.isRunning()) {
-	        		// envoie du timer au client
-	        		JSONObject jsonObj = new JSONObject();
-	        		jsonObj.put("timer", Chrono.getSecondes()); //
-                    // System.out.println(Chrono.getSecondes());
-	        		try {
-	        			session.getRemote().sendString(jsonObj.toString());
-	        		} catch (IOException e) {
-	        			e.printStackTrace();
-	        		}
-        		}
+        		if(Chrono.isRunning()) {}
         	}
         }, 0, 20);
     }
