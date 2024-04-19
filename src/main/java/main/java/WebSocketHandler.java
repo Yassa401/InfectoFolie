@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -69,17 +68,11 @@ public class WebSocketHandler{
         	@Override
         	public void run() {
         		// vérifier si le timer est en cours d'exécution
-        		if(Chrono.isRunning()) {
-	        		// envoie du timer au client
-	        		JSONObject jsonObj = new JSONObject();
-	        		jsonObj.put("timer", Chrono.getSecondes()); //
-                    // System.out.println(Chrono.getSecondes());
-	        		try {
-	        			session.getRemote().sendString(jsonObj.toString());
-	        		} catch (IOException e) {
-	        			e.printStackTrace();
-	        		}
-        		}
+                if(Chrono.isRunning()) {
+                    JSONObject jsonObj = new JSONObject();
+                    jsonObj.put("timer", Chrono.getSecondes());
+                    session.getRemote().sendStringByFuture(jsonObj.toString()); // Notez "sendStringByFuture" ici
+                }
         	}
         }, 0, 20);
     }
@@ -111,7 +104,12 @@ public class WebSocketHandler{
         //System.out.println("\n\n\nplayerID " + session.getRemoteAddress().toString() + "\n\n\n") ;
 
         // Utiliser les valeurs extraites pour déplacer le joueur
-        GameServer.players.get(session.getRemoteAddress().toString()).move(angle, distance);
+        String playerAddress = session.getRemoteAddress().toString();
+        Player player = GameServer.players.get(playerAddress);
+
+        if (player != null) { // Vérification avant d'utiliser l'objet
+            player.move(angle, distance);
+        }
 
     }
     

@@ -1,9 +1,6 @@
 package main.java;
 
-
 import javax.swing.*;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import java.awt.*;
 
 public class IntroFrame extends JFrame {
@@ -14,13 +11,10 @@ public class IntroFrame extends JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-
         JPanel Panel = new JPanel();
         Panel.setLayout(new BoxLayout(Panel, BoxLayout.Y_AXIS));
         Panel.setAlignmentX(Component.CENTER_ALIGNMENT);
         Panel.setBackground(new Color(70, 70, 70));
-
-
         
         JButton startButton = new JButton("Commencer");
         startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -50,8 +44,6 @@ public class IntroFrame extends JFrame {
         Panel.add(Box.createRigidArea(new Dimension(0, 10))); 
         Panel.add(configButton);
         Panel.add(Box.createRigidArea(new Dimension(0, 10)));
-        
-
         Panel.add(Box.createVerticalGlue()); 
         
         getContentPane().add(Panel, BorderLayout.CENTER);

@@ -5,9 +5,9 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.StdErrLog;
 import spark.Spark;
-
 import java.util.HashMap;
 import java.util.Map;
+
 public class GameServer {
 
     static final Map<String, WebSocketHandler> clients = new HashMap<>();

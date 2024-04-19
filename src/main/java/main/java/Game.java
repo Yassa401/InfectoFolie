@@ -3,10 +3,7 @@ package main.java;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Random;
-
 import com.badlogic.gdx.graphics.Color;
 
 public class Game {
@@ -24,7 +21,6 @@ public class Game {
 	public Map<String, Player> getPlayers() {
 		return players;
 	}
-
 	
 	public void setPlayers(Map<String, Player> players) {
 		this.players = players;
@@ -90,8 +86,6 @@ public class Game {
 		else {
 			// il y a qu'un seul
 			GameServer.partieCommence = false;
-
-
 		}
 		return nb2infec;
 	}

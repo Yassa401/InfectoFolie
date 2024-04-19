@@ -1,7 +1,6 @@
 package main.java;
 
 import com.badlogic.gdx.graphics.Color;
-
 import java.util.Random;
 
 public class ColorUpdater implements Runnable {

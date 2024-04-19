@@ -3,12 +3,10 @@ package main.java;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.util.ArrayList;
-
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.* ;
+
 public class FenetreVictoire extends JFrame {
 	GameServer serv;
     JButton recommencer;

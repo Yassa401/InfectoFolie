@@ -1,8 +1,8 @@
 package main.java;
 
 import com.badlogic.gdx.graphics.Color;
-
 import java.awt.geom.Rectangle2D;
+import java.util.List;
 import java.util.Random;
 
 public class Player {
@@ -98,74 +98,60 @@ public class Player {
                     Game.healPlayer(this);
                 }
 
-                double angleDePoussée = Math.atan2(this.y - autrePlayer.getY(), this.x - autrePlayer.getX());
-                int forceDeRepulsion = 2;
-
-                // Calculer le déplacement possible après répulsion
-                int repulsedX = this.x + (int)(forceDeRepulsion * Math.cos(angleDePoussée));
-                int repulsedY = this.y + (int)(forceDeRepulsion * Math.sin(angleDePoussée));
-
-                // Vérifier si après répulsion, il y a collision avec un mur
-                if (!verifCollisionMur(repulsedX, repulsedY)) {
-                    // Pas de collision avec un mur, appliquer la répulsion
-                    this.x = repulsedX;
-                    this.y = repulsedY;
-                }
-
-                // Appliquer la force de répulsion opposée sur l'autre joueur si pas de collision avec un mur
-                int autreRepulsedX = autrePlayer.getX() - (int)(forceDeRepulsion * Math.cos(angleDePoussée));
-                int autreRepulsedY = autrePlayer.getY() - (int)(forceDeRepulsion * Math.sin(angleDePoussée));
-                if (!verifCollisionMur(autreRepulsedX, autreRepulsedY)) {
-                    // Pas de collision avec un mur, appliquer la répulsion
-                    autrePlayer.setX(autreRepulsedX);
-                    autrePlayer.setY(autreRepulsedY);
-                }
-
+                handleRepulsion(autrePlayer);
                 return; // Annuler toute action supplémentaire et sortir de la méthode
             }
         }
 
-        // Si aucun des autrePlayer n'est en collision, vérifier si nous pouvons bouger sans frapper un mur
-        if (!verifCollisionMur(newX, newY)) {
-            // Pas de collision avec un mur, appliquer le nouveau déplacement
-            this.setX(newX);
-            this.setY(newY);
+        if (!isCollidingWithWalls(newX, y, GameFrame.murs)) {
+            this.x = newX;
+        }
+        if (!isCollidingWithWalls(x, newY, GameFrame.murs)) {
+            this.y = newY;
         }
     }
 
-    public boolean verifCollisionMur(int newX, int newY) {
-    	if((GameFrame.murHaut.intersects(getX(), newY, getRadius(), getRadius()) ||
-    		GameFrame.murBas.intersects(getX(), newY, getRadius(), getRadius()) ) &&
-    		(GameFrame.murDroit.intersects(newX, getY(), getRadius(), getRadius()) ||
-    		GameFrame.murGauche.intersects(newX, getY(), getRadius(),getRadius())
-        	)) {
-    		return true;
-    	}
-        else{
-            for (Rectangle2D mur : GameFrame.murs) {
-                // Collision détectée
-                // Teste avec les deux nouvelles coordonnees d'abord
-                if(mur.intersects(newX, newY, getRadius(),getRadius())) {
-                    // Teste chacun des coordonnées comme ça l'autre peut avoir une nouvelle valeur
-                    // si ça ne rentre pas dans l'obstacle (ça rend le déplacement plus fluide)
-                    if (mur.intersects(newX, getY(), getRadius(), getRadius())) {
-                        if(mur.intersects(getX(), newY, getRadius(), getRadius())) {
-                            return true ;
-                        }else {
-                            y = newY;
-                            return true;
-                        }
-                    }else {
-                        x = newX ;
-                        return true;
-                    }
-                }
+    private void handleRepulsion(Player autrePlayer) {
+        // Trouvons l'angle de poussée entre les joueurs, de 'this' à 'autrePlayer'
+        double angleDePoussée = Math.atan2(autrePlayer.getY() - this.y, autrePlayer.getX() - this.x);
 
+        // Définissons une force de répulsion (plus ce nombre est élevé, plus la répulsion est forte)
+        int forceDeRepulsion = 2;
+
+        // Appliquons cette force aux deux joueurs, dans des directions opposées
+        int repulsedXThis = this.x - (int)(forceDeRepulsion * Math.cos(angleDePoussée));
+        int repulsedYThis = this.y - (int)(forceDeRepulsion * Math.sin(angleDePoussée));
+        int repulsedXAutre = autrePlayer.getX() + (int)(forceDeRepulsion * Math.cos(angleDePoussée));
+        int repulsedYAutre = autrePlayer.getY() + (int)(forceDeRepulsion * Math.sin(angleDePoussée));
+
+        // Assurons-nous que la répulsion n'entraîne pas les joueurs dans un mur
+        if (!isCollidingWithWalls(repulsedXThis, this.y, GameFrame.murs)) {
+            this.x = repulsedXThis;
+        }
+        if (!isCollidingWithWalls(this.x, repulsedYThis, GameFrame.murs)) {
+            this.y = repulsedYThis;
+        }
+        if (!isCollidingWithWalls(repulsedXAutre, autrePlayer.getY(), GameFrame.murs)) {
+            autrePlayer.setX(repulsedXAutre);
+        }
+        if (!isCollidingWithWalls(autrePlayer.getX(), repulsedYAutre, GameFrame.murs)) {
+            autrePlayer.setY(repulsedYAutre);
+        }
+    }
+
+    public boolean isCollidingWithWalls(int newX, int newY, List<Rectangle2D> murs) {
+        // Créez un rectangle correspondant à la nouvelle position du joueur avec le rayon pour détecter les collisions
+        Rectangle2D playerRect = new Rectangle2D.Float(newX - radius, newY - radius, radius * 2, radius * 2);
+
+        // Vérifiez la collision avec chaque mur
+        for (Rectangle2D mur : murs) {
+            if (mur.intersects(playerRect)) {
+                return true;
             }
         }
-
         return false;
     }
+
 
     /**
      * Calculer la ndistance entre autrePlayer et le player acutel
@@ -216,4 +202,3 @@ public class Player {
     }
 
 }
-

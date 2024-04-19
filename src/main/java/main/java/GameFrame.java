@@ -31,7 +31,6 @@ public class GameFrame extends ApplicationAdapter{
     public static Rectangle2D murGauche =new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2,(float)(-IConfig.LONGUEUR_FENETRE/2.5), 10, IConfig.LONGUEUR_FENETRE); // Mur gauche
     public static Rectangle2D murBas = new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2, (float)(-IConfig.LONGUEUR_FENETRE/2.5), IConfig.LARGEUR_FENETRE, 10); // Mur inférieur
     public static Rectangle2D murDroit = new Rectangle2D.Float(IConfig.LARGEUR_FENETRE/2-10, (float)(-IConfig.LONGUEUR_FENETRE/2.5), 10, IConfig.LONGUEUR_FENETRE); // Mur droitG
-
     public static Rectangle2D obs1 = new Rectangle2D.Float(- IConfig.LARGEUR_FENETRE/8 +240 ,IConfig.LONGUEUR_FENETRE/4 ,IConfig.LARGEUR_FENETRE/6 + 100,10);
     public static Rectangle2D obs2 = new Rectangle2D.Float(IConfig.LARGEUR_FENETRE/3 -250,(float)(-IConfig.LONGUEUR_FENETRE/30 - 200), 10, IConfig.LONGUEUR_FENETRE/3 );
     public static Rectangle2D obs3 = new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/3,(float)(-IConfig.LONGUEUR_FENETRE/30), 10, IConfig.LONGUEUR_FENETRE/3);
