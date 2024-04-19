@@ -52,13 +52,7 @@ public class IntroFrame extends JFrame {
         startButton.setFocusPainted(false);
 
         startButton.addActionListener(e -> {
-           	GameServer.gameFrame = new GameFrame(GameServer.game);
-           	LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-           	config.title = "InfectoFolie";
-           	config.width = IConfig.LARGEUR_FENETRE;
-           	config.height = IConfig.LONGUEUR_FENETRE;
-           	new LwjglApplication(GameServer.gameFrame, config);
-            
+
             setVisible(false);
         });
 
@@ -99,6 +93,5 @@ public class IntroFrame extends JFrame {
         int players = GameServer.players.size();
         nbPlayers.setText("Joueurs en ligne: " + players);
     }
-    
-    
+
 }
