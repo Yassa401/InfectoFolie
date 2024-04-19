@@ -10,22 +10,39 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 public class IntroFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JLabel nbPlayers;
-
 	public IntroFrame() {
         setTitle("Game Settings");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        
+
+        
         JPanel Panel = new JPanel();
         Panel.setLayout(new BoxLayout(Panel, BoxLayout.Y_AXIS));
         Panel.setAlignmentX(Component.CENTER_ALIGNMENT);
         Panel.setBackground(new Color(70, 70, 70));
+        
+        
+        JButton con = new JButton("Autoriser les connexions");
+        con.setAlignmentX(Component.CENTER_ALIGNMENT);
+        con.setBackground(new Color(26, 188, 156));
+        con.setForeground(Color.WHITE);
+        con.setBorderPainted(false);
+        con.setFocusPainted(false);
+        
+        con.addActionListener(e -> {
+           	GameServer.partieCommence = false;
+        });
 
+        
+        
         JButton startButton = new JButton("Commencer");
         startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -35,6 +52,7 @@ public class IntroFrame extends JFrame {
         startButton.setFocusPainted(false);
 
         startButton.addActionListener(e -> {
+
             setVisible(false);
         });
 
@@ -58,6 +76,10 @@ public class IntroFrame extends JFrame {
         Panel.add(Box.createRigidArea(new Dimension(0, 10))); 
         Panel.add(configButton);
         Panel.add(Box.createRigidArea(new Dimension(0, 10))); 
+        Panel.add(con);
+        Panel.add(Box.createRigidArea(new Dimension(0, 10))); 
+        
+        
         Panel.add(nbPlayers);
         Panel.add(Box.createVerticalGlue()); 
         
@@ -71,4 +93,5 @@ public class IntroFrame extends JFrame {
         int players = GameServer.players.size();
         nbPlayers.setText("Joueurs en ligne: " + players);
     }
+
 }

@@ -20,7 +20,7 @@ public class GameServer {
     static LwjglApplication application ;
 
     // Si true, empêche les joueurs de se connecter au jeu
-    static boolean partieCommence = false ;
+    static boolean partieCommence = true ;
 
     public static void main(String[] args) {
 

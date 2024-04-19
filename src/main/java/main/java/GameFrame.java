@@ -1,15 +1,18 @@
 package main.java;
 
 import java.awt.geom.Rectangle2D;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.SwingUtilities;
+import java.util.Timer;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
+
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -25,6 +28,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class GameFrame extends ApplicationAdapter{
 	private ShapeRenderer shapeRenderer;
     private Viewport viewport;
+    private Music backgroundMusic;  
+    
     public static Map<String, Player> players ;
     public static List<Rectangle2D> murs;
     
@@ -39,7 +44,9 @@ public class GameFrame extends ApplicationAdapter{
     GlyphLayout layout;	// pour obtenir la taille du texte afin de dessiner un cercle/rect autour
     
     protected Game game;
-    private Rectangle2D startButton; 
+    private Rectangle2D startButton;
+    private boolean isFullScreen = false;
+    private ColorUpdater colorUpdater;
     
     GameFrame(Game g){
     	this.game = g;
@@ -68,11 +75,23 @@ public class GameFrame extends ApplicationAdapter{
         batch = new SpriteBatch();
         layout = new GlyphLayout();
         
-	     // initialisation de la police
+        try {
+        	
+            Music backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("public/infecto.mp3"));
+            backgroundMusic.setLooping(true);
+            backgroundMusic.play();
+        } catch (Exception e) {
+            e.printStackTrace(); 
+        }
+
+        // initialisation de la police
 	    font = new BitmapFont();
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        
+        // initialiser colorUpdateer
+        colorUpdater = new ColorUpdater();
+        new Thread(colorUpdater).start();
     }
-    
     
     @Override
     public void render () {
@@ -80,6 +99,15 @@ public class GameFrame extends ApplicationAdapter{
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
+        
+        // Dessiner le fond de la fenêtre (pendant la peuse)
+        if (game.inPause) { System.out.println("In pause ...................");
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            //shapeRenderer.setColor(0.85f, 0.85f, 0.85f, 0.5f); // Couleur gris clair semi-transparent
+            shapeRenderer.setColor(colorUpdater.getCurrentColor()); 
+            shapeRenderer.rect(-IConfig.LARGEUR_FENETRE / 2, (float)(-IConfig.LONGUEUR_FENETRE/2.5), IConfig.LARGEUR_FENETRE, IConfig.LONGUEUR_FENETRE);
+            shapeRenderer.end();
+        }
         
         // les mûrs
         drawWalls();
@@ -105,11 +133,26 @@ public class GameFrame extends ApplicationAdapter{
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+        
+        if (IConfig.LARGEUR_FENETRE < width) {
+            isFullScreen = true;
+        } else {
+            isFullScreen = false;
+        }
     }
 
     @Override
     public void dispose () {
+    	
+    	if (backgroundMusic != null) {
+            backgroundMusic.stop();
+            backgroundMusic.dispose();
+        }
+    	
         shapeRenderer.dispose();
+        
+        // arrêter le thread des couleurs
+        colorUpdater.stop();
         
         font.dispose();
         batch.dispose();
@@ -186,8 +229,8 @@ public class GameFrame extends ApplicationAdapter{
     	// récupéer le nb joueurs nonInf/inf/dead
         String nbUninfected = this.game.getNbUninfectedPlayers();
         String nbInfected = this.game.getNbInfectedPlayers();
-        String nbDead = this.game.getNbDeadPlayers(); //this.game.getNbDeadPlayers();
-        
+        String nbDead = this.game.getNbDeadPlayers();
+
     	String texteUninfected = nbUninfected;
         String texteInfected = nbInfected;
         String texteDead = nbDead;
@@ -201,8 +244,8 @@ public class GameFrame extends ApplicationAdapter{
         float[] coordsDead = {(float) (-IConfig.LARGEUR_FENETRE/2 + IConfig.LARGEUR_FENETRE/3.1), -IConfig.LONGUEUR_FENETRE/2 + IConfig.LONGUEUR_FENETRE/16};
         
         // Calcul des coordonnées du bouton en fonction de la taille actuelle de la fenêtre
-        startButton = new Rectangle2D.Float(viewport.getWorldWidth() / 4.33f, -viewport.getWorldHeight() / 2 + 10, viewport.getWorldWidth() / 8.67f, viewport.getWorldHeight() / 13.33f);
-        
+        startButton = new Rectangle2D.Float(viewport.getWorldWidth() / 4.33f, -viewport.getWorldHeight() / 2 + viewport.getWorldHeight()/80, viewport.getWorldWidth() / 8.67f, viewport.getWorldHeight() / 13.33f);
+                
         // dessiner le timer
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.BLACK); 
@@ -235,13 +278,19 @@ public class GameFrame extends ApplicationAdapter{
     }
     
     private void clickHandler() {
-    	if(Gdx.input.justTouched()) {
+    	if(Gdx.input.justTouched() && !GameServer.partieCommence && game.getPlayers().size() > 1) {
     		// Convertir les coordonnées de la souris en coordonnées de monde
             float mouseX = Gdx.input.getX();
             float mouseY = Gdx.input.getY();
             Vector3 worldCoordinates = new Vector3(mouseX, mouseY, 0); // 0 pas besoin de coordonnées en profondeur
             viewport.getCamera().unproject(worldCoordinates);
-
+            
+            // quand on passer en mode plein écran, on adapte les coordonnées
+            if(isFullScreen) {
+            	worldCoordinates.x += 45; // ? à dynamiser
+            	startButton = new Rectangle2D.Float(viewport.getWorldWidth() / 4.33f, -viewport.getWorldHeight() / 2 + viewport.getWorldHeight()/80, viewport.getWorldWidth() / 10.30f, viewport.getWorldHeight() / 13.33f);
+            }
+            
             // Vérifier si les coordonnées de la souris sont à l'intérieur du rectangle du bouton "startButton"
             if (startButton.contains(worldCoordinates.x, worldCoordinates.y)) {
                 GameServer.partieCommence = true ; // empêcher les joueurs de se connecter quand la partie commence
@@ -264,8 +313,9 @@ public class GameFrame extends ApplicationAdapter{
     
     private void play() {
     	clickHandler();
-    	
+
     	if(!Chrono.isRunning() && game.getLivingPlayers().size() > 0 && game.canPlay && !game.inPause && !game.Victoire()) {   // Fin d'une manche
+
     		
 			game.updateStatus();		
 			
@@ -300,8 +350,10 @@ public class GameFrame extends ApplicationAdapter{
             
     	}
 	
-    	
+
+
     	if(!Chrono.isRunning() && game.getPlayers().size() > 1 && !game.canPlay && game.inPause && !game.Victoire()) {   // Fin d'une pause
+
     		// attendre une demi seconde
 			try {
 				Thread.sleep(500);
