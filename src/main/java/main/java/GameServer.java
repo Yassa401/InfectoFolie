@@ -17,6 +17,8 @@ public class GameServer {
     static GameFrame gameFrame;
     static Game game;
 
+    static LwjglApplication application ;
+
     // Si true, empêche les joueurs de se connecter au jeu
     static boolean partieCommence = true ;
 
@@ -32,8 +34,18 @@ public class GameServer {
         Spark.webSocket("/ws", WebSocketHandler.class);
         Spark.init();
         Spark.awaitInitialization();
-        
-        game = new Game(players);
+
+        // Configuration des dimensions de la fenetre
+        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+        config.title = "InfectoFoli";
+        config.width = IConfig.LARGEUR_FENETRE;
+        config.height = IConfig.LONGUEUR_FENETRE;
+        // Creation de la fenetre de jeu
+        GameServer.game = new Game(GameServer.players);
+        GameServer.gameFrame = new GameFrame(GameServer.game);
+        // Creation de l'application de jeu
+        GameServer.application = new LwjglApplication(GameServer.gameFrame, config);
+
         lobby = new IntroFrame();
         lobby.setVisible(true);
        

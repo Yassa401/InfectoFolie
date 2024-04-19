@@ -31,14 +31,7 @@ public class IntroFrame extends JFrame {
         startButton.setFocusPainted(false);
 
         startButton.addActionListener(e -> {
-           	GameServer.gameFrame = new GameFrame(GameServer.game);
-           	LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-           	config.title = "InfectoFolie";
-           	config.width = IConfig.LARGEUR_FENETRE;
-           	config.height = IConfig.LONGUEUR_FENETRE;
-           	new LwjglApplication(GameServer.gameFrame, config);
-               GameServer.partieCommence = false;
-            setVisible(false);
+                setVisible(false);
         });
 
         JButton configButton = new JButton("Configuration");
@@ -63,7 +56,4 @@ public class IntroFrame extends JFrame {
         getContentPane().add(Panel, BorderLayout.CENTER);
         setVisible(true);
     }
-
-    
-    
 }
