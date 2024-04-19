@@ -1,6 +1,7 @@
 package main.java;
 
 import com.badlogic.gdx.graphics.Color;
+
 import java.awt.geom.Rectangle2D;
 import java.util.Random;
 
@@ -14,7 +15,7 @@ public class Player {
     private final int radius = IConfig.RADIUS ;
 
     private int peutEtreInfect;
-    
+
     private int statut;		// 0 : non-inf, 1 : inf, 2 : mort
     private static int nbPlayers = 0;
     private int numPlayer;
@@ -25,18 +26,18 @@ public class Player {
         this.randomCouleur();
         couleurInit = couleur;
         this.peutEtreInfect = 1000;
-        
+
         this.statut = 0;	// par défaut
         nbPlayers++;
         this.numPlayer = nbPlayers; // numPlayer vaut nbPlayers actuel
     }
-    
+
     public int getX() {
         return this.x;
     }
-    
-    public int setX(int newx){
-        return this.x = newx;
+
+    public void setX(int newx){
+        this.x = newx;
     }
 
     public Color getColorInit(){
@@ -44,31 +45,33 @@ public class Player {
     }
 
     public int getY() { return this.y; }
-    
-    public int setY(int newy){
-        return this.y = newy;
+
+    public void setY(int newy){
+        this.y = newy;
     }
-    
+
     public int getRadius() {
     	return this.radius;
     }
-    
+
     public int getStatut() {
     	return this.statut;
     }
-    
+
     public void setStatut(int s) {
     	this.statut = s;
     }
-    
+
     public int getNumPlayer() {
     	return this.numPlayer;
     }
-    
+
     public void setPeutEtreInfect(int nouvelleValeur) {
-    	this.peutEtreInfect = nouvelleValeur; 
+    	this.peutEtreInfect = nouvelleValeur;
     }
-    
+
+
+
     /**
      * Calculer la nouvelle position selon l'angle du joystick
      * @param angle : angle du joystick ( 0° à 360° )
@@ -94,133 +97,58 @@ public class Player {
                     this.peutEtreInfect = Chrono.getSecondes();
                     Game.healPlayer(this);
                 }
+
                 double angleDePoussée = Math.atan2(this.y - autrePlayer.getY(), this.x - autrePlayer.getX());
-                // Appliquez une petite force pour repousser les joueurs
-                int forceDeRepulsion = 2; // Ajustez cette valeur selon le besoin
-                this.x += forceDeRepulsion * Math.cos(angleDePoussée);
-                this.y += forceDeRepulsion * Math.sin(angleDePoussée);
+                int forceDeRepulsion = 2;
 
-                // Appliquer une force opposée à l'autre joueur
-                autrePlayer.setX((int)(autrePlayer.getX() - forceDeRepulsion * Math.cos(angleDePoussée)));
-                autrePlayer.setY((int)(autrePlayer.getY() - forceDeRepulsion * Math.sin(angleDePoussée)));
+                // Calculer le déplacement possible après répulsion
+                int repulsedX = this.x + (int)(forceDeRepulsion * Math.cos(angleDePoussée));
+                int repulsedY = this.y + (int)(forceDeRepulsion * Math.sin(angleDePoussée));
 
-                // Détecter à nouveau la collision après correction (optionnel)
-                if (!verifCollision(this.x, this.y, autrePlayer)) {
-                    // Plus de collision, appliquez le mouvement
-                    this.setX(newX);
-                    this.setY(newY);
-                    return;
-                } else {
-                    // Il y a encore une collision, ne pas bouger plus loin
-                    return;
+                // Vérifier si après répulsion, il y a collision avec un mur
+                if (!verifCollisionMur(repulsedX, repulsedY)) {
+                    // Pas de collision avec un mur, appliquer la répulsion
+                    this.x = repulsedX;
+                    this.y = repulsedY;
                 }
+
+                // Appliquer la force de répulsion opposée sur l'autre joueur si pas de collision avec un mur
+                int autreRepulsedX = autrePlayer.getX() - (int)(forceDeRepulsion * Math.cos(angleDePoussée));
+                int autreRepulsedY = autrePlayer.getY() - (int)(forceDeRepulsion * Math.sin(angleDePoussée));
+                if (!verifCollisionMur(autreRepulsedX, autreRepulsedY)) {
+                    // Pas de collision avec un mur, appliquer la répulsion
+                    autrePlayer.setX(autreRepulsedX);
+                    autrePlayer.setY(autreRepulsedY);
+                }
+
+                return; // Annuler toute action supplémentaire et sortir de la méthode
             }
         }
-   
-        if (verifCollisionMur(newX, newY)) {
-        	return;     
-        }
 
-        // Apres toutes les verifications
-        this.setX(newX);  this.setY(newY);
+        // Si aucun des autrePlayer n'est en collision, vérifier si nous pouvons bouger sans frapper un mur
+        if (!verifCollisionMur(newX, newY)) {
+            // Pas de collision avec un mur, appliquer le nouveau déplacement
+            this.setX(newX);
+            this.setY(newY);
+        }
     }
 
     public boolean verifCollisionMur(int newX, int newY) {
-        // Create a rectangle that represents the player's new position and area
-        Rectangle2D playerBounds = new Rectangle2D.Float(newX - radius, newY - radius, 2 * radius, 2 * radius);
-        // Check for collision with each wall
+    	if((GameFrame.murHaut.intersects(getX(), newY, getRadius(), getRadius()) ||
+    		GameFrame.murBas.intersects(getX(), newY, getRadius(), getRadius()) ) &&
+    		(GameFrame.murDroit.intersects(newX, getY(), getRadius(), getRadius()) ||
+    		GameFrame.murGauche.intersects(newX, getY(), getRadius(),getRadius())
+        	)) {
+    		return true;
+    	}
 
-        boolean collided = false;
-        if (GameFrame.murHaut.intersects(playerBounds)) {
-            newY =(int) GameFrame.murHaut.getY() - radius - 3;
-            collided = true;
-        }
-        if (GameFrame.murBas.intersects(playerBounds)) {
-            newY =(int) GameFrame.murBas.getY() + radius + 8 ;
-            collided = true;
-        }
-        if (GameFrame.murGauche.intersects(playerBounds)) {
-            newX =(int) GameFrame.murGauche.getX() + radius + 8;
-            collided = true;
-        }
-        if (GameFrame.murDroit.intersects(playerBounds)) {
-            newX =(int) GameFrame.murDroit.getX() - radius - 3;
-            collided = true;
-        }
-
-        if (GameFrame.obs1.intersects(playerBounds)) {
-            // Collision horizontale
-            // Comparer la position y du centre du joueur avec la position y du centre de l'obstacle
-            float centreObstacleY = (float) (GameFrame.obs1.getY() + GameFrame.obs1.getHeight() / 2);
-            if (newY < centreObstacleY) {
-                // Collision sur le côté gauche de l'obstacle
-                newY = (int) GameFrame.obs1.getY() - radius - 2;
-            } else {
-                // Collision sur le côté droit de l'obstacle
-                newY = (int) (GameFrame.obs1.getY() + GameFrame.obs1.getHeight() + radius + 2);
+        for (Rectangle2D mur : GameFrame.murs) {
+            if (mur.intersects(newX, newY, getRadius(), getRadius())) {
+                return true;
             }
-            // Appliquer la position corrigée
-            setY(newY);
-            collided = true;
         }
 
-        if (GameFrame.obs2.intersects(playerBounds)) {
-        // Collision horizontale
-        // Comparer la position x du centre du joueur avec la position x du centre de l'obstacle
-        float centreObstacleX = (float) (GameFrame.obs2.getX() + GameFrame.obs2.getWidth() / 2);
-        if (newX < centreObstacleX) {
-            // Collision sur le côté gauche de l'obstacle
-            newX = (int) GameFrame.obs2.getX() - radius - 2;
-        } else {
-            // Collision sur le côté droit de l'obstacle
-            newX = (int) (GameFrame.obs2.getX() + GameFrame.obs2.getWidth() + radius + 2);
-        }
-        // Appliquer la position corrigée
-        setX(newX);
-            collided = true;
-        }
-
-        if (GameFrame.obs3.intersects(playerBounds)) {
-            // Collision horizontale
-            // Comparer la position x du centre du joueur avec la position x du centre de l'obstacle
-            float centreObstacleX = (float) (GameFrame.obs3.getX() + GameFrame.obs3.getWidth() / 2);
-            if (newX < centreObstacleX) {
-                // Collision sur le côté gauche de l'obstacle
-                newX = (int) GameFrame.obs3.getX() - radius - 2;
-            } else {
-                // Collision sur le côté droit de l'obstacle
-                newX = (int) (GameFrame.obs3.getX() + GameFrame.obs3.getWidth() + radius + 2);
-            }
-            // Appliquer la position corrigée
-            setX(newX);
-            collided = true;
-        }
-
-        if (GameFrame.obs4.intersects(playerBounds)) {
-            // Collision horizontale
-            // Comparer la position y du centre du joueur avec la position y du centre de l'obstacle
-            float centreObstacleY = (float) (GameFrame.obs4.getY() + GameFrame.obs4.getHeight() / 2);
-            if (newY < centreObstacleY) {
-                // Collision sur le côté gauche de l'obstacle
-                newY = (int) GameFrame.obs4.getY() - radius - 2;
-            } else {
-                // Collision sur le côté droit de l'obstacle
-                newY = (int) (GameFrame.obs4.getY() + GameFrame.obs4.getHeight() + radius + 2);
-            }
-            // Appliquer la position corrigée
-            setY(newY);
-            collided = true;
-        }
-
-
-
-        // Mettre à jour la position corrigée si une collision a eu lieu
-        if (collided) {
-            setX(newX);
-            setY(newY);
-        }
-
-        return collided;
+        return false;
     }
 
     /**
