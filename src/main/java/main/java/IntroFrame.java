@@ -31,6 +31,7 @@ public class IntroFrame extends JFrame {
         startButton.setFocusPainted(false);
 
         startButton.addActionListener(e -> {
+                GameServer.partieCommence = false;
                 setVisible(false);
         });
 
