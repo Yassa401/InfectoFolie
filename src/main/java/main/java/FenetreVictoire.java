@@ -65,15 +65,12 @@ public class FenetreVictoire extends JFrame {
         
         recommencer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {   
-            	 
-                /*GameServer.gameFrame.dispose(); 
-                
+            	// Redéclenche la fenetre d'acceuil
                 IntroFrame introFrame = new IntroFrame();
-                introFrame.setVisible(true);*/
-            	
-            	IntroFrame introFrame = new IntroFrame();
                 introFrame.setVisible(true);
+                // Les Joueurs peuvent se reconnecter à nouveau
                 GameServer.partieCommence = false ;
+                // Ferme la fenetre de victoire
                 dispose();
             }
         });
