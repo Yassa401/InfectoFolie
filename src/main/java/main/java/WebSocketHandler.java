@@ -106,6 +106,9 @@ public class WebSocketHandler{
 
         if (player != null) { // Vérification avant d'utiliser l'objet
             player.move(angle, distance);
+        }else{
+            // Ferme la session pour bloquer ses requetes
+            session.close();
         }
 
     }
