@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -68,11 +69,7 @@ public class WebSocketHandler{
         	@Override
         	public void run() {
         		// vérifier si le timer est en cours d'exécution
-                if(Chrono.isRunning()) {
-                    JSONObject jsonObj = new JSONObject();
-                    jsonObj.put("timer", Chrono.getSecondes());
-                    session.getRemote().sendStringByFuture(jsonObj.toString()); // Notez "sendStringByFuture" ici
-                }
+                if(Chrono.isRunning()) {}
         	}
         }, 0, 20);
     }
