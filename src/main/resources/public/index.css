@@ -61,6 +61,7 @@ body {
 }
 
 button {
+  margin-top: 1em;
   position: relative;
   background: rgb(70, 70, 70);
   color: rgb(236, 240, 241);
