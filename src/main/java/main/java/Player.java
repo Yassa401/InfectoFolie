@@ -92,7 +92,7 @@ public class Player {
         // Vérifier les collisions avec les autres joueurs
         for (Player autrePlayer : GameServer.players.values()) {
             if ((autrePlayer != this && verifCollision(newX, newY, autrePlayer))) {
-                if ((this.getStatut() == 1 && autrePlayer.getStatut() != 1) && (autrePlayer.peutEtreInfect - Chrono.getSecondes()) >= IConfig.cooldown ) {
+                if ((this.getStatut() == 1 && autrePlayer.getStatut() == 0) && (autrePlayer.peutEtreInfect - Chrono.getSecondes()) >= IConfig.cooldown ) {
                     Game.infectPlayer(autrePlayer);
                     this.peutEtreInfect = Chrono.getSecondes();
                     Game.healPlayer(this);

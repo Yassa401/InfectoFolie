@@ -338,8 +338,11 @@ public class GameFrame extends ApplicationAdapter{
             Chrono.doRound(); 
             Chrono.stopTimer(); 
             FenetreVictoire f = new FenetreVictoire(game.getLivingPlayers().get(0).getNumPlayer());
+            // vider les listes des joueurs
             game.getLivingPlayers().clear();
             GameFrame.players.clear();
+            GameServer.players.clear();
+            GameServer.clients.clear();
             
             
     	}
