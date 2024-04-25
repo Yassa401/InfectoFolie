@@ -77,8 +77,11 @@ public class WebSocketHandler{
     @OnWebSocketClose
     public void onClose(Session user, int statusCode, String reason) {
         System.out.println("Connection closed: " + user.getRemoteAddress() + " Code: " + statusCode + ", Reason: " + reason);
-        GameServer.clients.remove(user.getRemoteAddress().toString());
-    	GameServer.players.remove(user.getRemoteAddress().toString());
+        playerId = user.getRemoteAddress().toString();
+        if(GameServer.clients.get(playerId) != null)
+            GameServer.clients.remove(playerId);
+        if(GameServer.players.get(playerId) != null)
+    	    GameServer.players.remove(user.getRemoteAddress().toString());
     	
     	// A la fermeture de la connexion, arréter le timer
     	if(timer != null) {
@@ -106,12 +109,11 @@ public class WebSocketHandler{
 
         if (player != null) { // Vérification avant d'utiliser l'objet
             player.move(angle, distance);
+        }else{
+            // Ferme la session pour bloquer ses requetes
+            session.close();
         }
 
     }
-    
-    public org.eclipse.jetty.websocket.api.Session getSession(){
-    	return session ; 
-    }
-    
+
 }
