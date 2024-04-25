@@ -94,17 +94,11 @@ public class GameFrame extends ApplicationAdapter{
 
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
 
-        // Dessiner le fond de la fenêtre (pendant la peuse)
-        if (game.inPause) {
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            //shapeRenderer.setColor(0.85f, 0.85f, 0.85f, 0.5f); // Couleur gris clair semi-transparent
-            shapeRenderer.setColor(colorUpdater.getCurrentColor());
-            shapeRenderer.rect(-IConfig.LARGEUR_FENETRE / 2, (float)(-IConfig.LONGUEUR_FENETRE/2.5), IConfig.LARGEUR_FENETRE, IConfig.LONGUEUR_FENETRE);
-            shapeRenderer.end();
-        }
-        
+
         // les mûrs
         drawWalls();
+        drawPauseFrames();
+
 
         // translater l'origine du "batch" vers le centre de la fenêtre pour que coords shapeRenderer = coords batch 
         Matrix4 translationMatrix = new Matrix4();
@@ -113,10 +107,12 @@ public class GameFrame extends ApplicationAdapter{
 
         play();
 
-        // dessiner les joueurs et le menu bas
+        // dessiner les joueurs, le menu bas, le texte de la pause
         drawPlayers();
         drawBottomMenu();
-        
+        drawPauseText();
+
+
         // faire une translation inverse pour obtenir la matrice d'origine du SpriteBatch
         Matrix4 inverseTranslationMatrix = new Matrix4();
         translationMatrix.translate(-IConfig.LARGEUR_FENETRE / 2, -IConfig.LONGUEUR_FENETRE / 2, 0);
@@ -168,8 +164,9 @@ public class GameFrame extends ApplicationAdapter{
     
     private void drawPlayers() {
     	shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.WHITE);
 
-    	for (Player p : players.values()) {
+        for (Player p : players.values()) {
             if(p.getStatut() != 2) {
                 shapeRenderer.setColor(p.getCouleur());
                 shapeRenderer.circle((float) p.getX(), (float) p.getY(), p.getRadius());
@@ -204,7 +201,40 @@ public class GameFrame extends ApplicationAdapter{
         }
         batch.end();
     }
-    
+
+    void drawPauseFrames() {
+        // Dessiner le fond de la fenêtre (pendant la peuse)
+        if (game.inPause) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(colorUpdater.getCurrentColor());
+            shapeRenderer.rect(-IConfig.LARGEUR_FENETRE / 2, (float)(-IConfig.LONGUEUR_FENETRE/2.5), IConfig.LARGEUR_FENETRE, IConfig.LONGUEUR_FENETRE);
+
+            float pauseTextCoords[] = {-viewport.getWorldWidth() / 4.2f, -viewport.getWorldHeight() / 2 + viewport.getWorldHeight()/8, viewport.getWorldWidth() / 4.00f, viewport.getWorldHeight() / 13.33f};
+            float infoTextCoords[] = {viewport.getWorldWidth() / 25.00f, -viewport.getWorldHeight() / 2 + viewport.getWorldHeight()/8, viewport.getWorldWidth() / 4.00f, viewport.getWorldHeight() / 13.33f};
+
+            shapeRenderer.setColor(0.5f, 0.5f, 0.5f, 1.0f);
+            this.roundedRect((float) pauseTextCoords[0], (float) pauseTextCoords[1], (float) pauseTextCoords[2], (float) pauseTextCoords[3], 10);
+            this.roundedRect((float) infoTextCoords[0], (float) infoTextCoords[1], (float) infoTextCoords[2], (float) infoTextCoords[3], 10);
+            shapeRenderer.end();
+        }
+    }
+
+    void drawPauseText() {
+        if(game.inPause) {
+            float pauseTextCoords[] = {-viewport.getWorldWidth() / 4.2f, -viewport.getWorldHeight() / 2 + viewport.getWorldHeight()/8};
+            float infoTextCoords[] = {viewport.getWorldWidth() / 25.00f, -viewport.getWorldHeight() / 2 + viewport.getWorldHeight()/8};
+            String pauseText = "Pause de 5s";
+            String infoText = "Infection de " + game.getNbPlayers2Infect() + " joueur(s)";
+
+            batch.begin();
+            font.setColor(Color.WHITE);
+            font.draw(batch, pauseText, pauseTextCoords[0] - pauseTextCoords[0] / 5, pauseTextCoords[1] + 40);
+            font.draw(batch, infoText, infoTextCoords[0] + 20, infoTextCoords[1] + 40);
+            batch.end();
+        }
+    }
+
+
     void actualiseJoueurs(Map<String, Player> players) {
     	this.players = players ;
     }
