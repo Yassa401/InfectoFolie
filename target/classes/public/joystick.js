@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Se connecte à la websocket du serveur une seule fois à l'ouverture de la page
     const socket = new WebSocket("ws://" + window.location.hostname + ":" + window.location.port +"/ws");
 
+    // Envoi de requete lorsque le joueur bouge le joystick
     joystick.on("move", function (event, data) {
         const angle = (data.angle.degree) % 360;
         const distance = data.distance;
@@ -43,21 +44,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         
 	});
-	
-	socket.addEventListener("open", function(event){
-		setInterval(envoyerRequete,20);	
-	});
-	
-	// envoyer une requete chaque intervalle de temps
-	function envoyerRequete(){
-		var angle = Math.floor(Math.random()*360) + 1;
-		var distance = Math.floor(Math.random()*50) + 1 ;
-		
-		const message = { type: "joystick", angle, distance };
-		sendWebSocketMessage(message);
-		
-	}
-	
+
 });
 
+// Affiche l'adresse ip du client (utilisé comme clé dans les listes players et clients)
 console.log(window.location.hostname);
