@@ -30,6 +30,16 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log(message);
     });
 
+    // Ajouter un gestionnaire d'événement pour l'événement "end" du joystick
+    joystick.on("end", function (event, data) {
+        // Lorsque le joystick est relâché, vous pouvez définir l'angle et la distance à 0
+        const angle = 0;
+        const distance = 0;
+        // Format the data and send it to the server
+        message = { type: "joystick", angle, distance };
+        console.log(message);
+    });
+
     function sendWebSocketMessage(message) {
         if (socket.readyState === WebSocket.OPEN) {
             if(message != null) {
