@@ -17,9 +17,10 @@ public class ColorUpdater implements Runnable {
 
         while (running) {
             // Générer une nouvelle couleur aléatoire semi-transparente
-        	float r = random.nextFloat() * 0.19f + 0.8f; // rouge entre 0.8 et 0.99
-            float g = random.nextFloat() * 0.19f + 0.8f; 
-            float b = random.nextFloat() * 0.19f + 0.8f; 
+            float r = random.nextFloat() * 0.24f + 0.75f; // rouge entre 0.8 et 0.99
+            float g = random.nextFloat() * 0.24f + 0.75f;
+            float b = random.nextFloat() * 0.24f + 0.75f;
+
             currentColor = new Color(r, g, b, 0.5f);
 
             // Pause de 100ms
