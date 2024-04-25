@@ -11,12 +11,12 @@ public class IConfig {
 
 	public static int widthObs = 100;
 	public static int heightObs = 10;
-
 	public static int cooldown = 2;
-
 	public static int time = 20000;
 	public static int pauseTime = 5000;
-	
+    public static float pourcentageInfectes = 30;
+
+
     public static void setSpeed(double newValue) {
         SPEED = newValue;
     }

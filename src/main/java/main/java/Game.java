@@ -67,19 +67,15 @@ public class Game {
 		
 		if(nbPlayers > 1) {
 			if(nbPlayers <= 5) {
-				nb2infec = 1;
-			}
-			else if(nbPlayers <= 20) {
-				nb2infec = 3;
-			}
-			else if(nbPlayers <= 40) {
-				nb2infec = 5;
-			}
-			else if(nbPlayers <= 70) {
-				nb2infec = 7;
-			}
-			else if(nbPlayers <= 100) {
-				nb2infec = 10;
+				if(nbPlayers >= 3) {
+					nb2infec = 2;
+				} else {
+					nb2infec = 1;
+				}
+			}else {
+				nb2infec = (int) (nbPlayers * (IConfig.pourcentageInfectes / 100));
+				//System.out.println(nb2infec + " ou " + (nbPlayers * (IConfig.pourcentageInfectes / 100)));
+				//System.out.println(nbPlayers + " ou " + (IConfig.pourcentageInfectes / 100));
 			}
 		}
 
