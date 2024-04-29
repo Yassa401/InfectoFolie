@@ -1,4 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // VARIABLES GLOBALES
+    // variable pour stocker les données de joystick et envoyé en websocket
+    var message = null;
+    var executionID ;
+
     const joystickContainer = document.getElementById("joystick-container");
     const joystick = nipplejs.create({
         zone: joystickContainer,
@@ -21,20 +26,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         // Format the data and send it to the server
-        const message = { type: "joystick", angle, distance };
+        message = { type: "joystick", angle, distance };
         console.log(message);
-        sendWebSocketMessage(message);
+    });
+
+    // Ajouter un gestionnaire d'événement pour l'événement "end" du joystick
+    joystick.on("end", function (event, data) {
+        // Lorsque le joystick est relâché, vous pouvez définir l'angle et la distance à 0
+        const angle = 0;
+        const distance = 0;
+        // Format the data and send it to the server
+        message = { type: "joystick", angle, distance };
+        console.log(message);
     });
 
     function sendWebSocketMessage(message) {
         if (socket.readyState === WebSocket.OPEN) {
-            socket.send(JSON.stringify(message));
-            console.log("message envoyé");
+            if(message != null) {
+                socket.send(JSON.stringify(message));
+                //console.log("message envoyé : " + message);
+            }
         } else {
             console.error("WebSocket connection is closed.");
         }
     }
-    
+
+    // Envoi de requetes après l'ouverture de la websocket
+    socket.addEventListener("open", function(event){
+        executionID = setInterval(function() { sendWebSocketMessage(message)}, 20);
+    });
+
     // récupérer et afficher le numéro joueur
 	socket.addEventListener("message", (event) => {
 		const data = JSON.parse(event.data);
@@ -42,8 +63,14 @@ document.addEventListener("DOMContentLoaded", function () {
         if (data.playerNumber) {
             document.querySelector(".circle").textContent = data.playerNumber;
         }
-        
 	});
+
+    // Arrete l'envoi de requetes lorsque la connexion websocket est fermé
+    socket.addEventListener("close", ( event ) => {
+        // Arret d'envoi de requetes
+        console.log("session fermé");
+        clearInterval(executionID);
+    });
 
 });
 
