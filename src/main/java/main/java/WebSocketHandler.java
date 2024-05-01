@@ -34,8 +34,8 @@ public class WebSocketHandler{
             do {
                 collision = false;
 
-                x = r.nextInt(IConfig.LARGEUR_FENETRE / 2 + 590) - (int) (IConfig.LARGEUR_FENETRE / 2) + 30;
-                y = r.nextInt(IConfig.LONGUEUR_FENETRE / 2 + 260) - (int) (IConfig.LONGUEUR_FENETRE / 2) + 110;
+                x = r.nextInt(IConfig.LARGEUR_FENETRE / 2 + 590) - (IConfig.LARGEUR_FENETRE / 2) + 30;
+                y = r.nextInt(IConfig.LONGUEUR_FENETRE / 2 + 260) - (IConfig.LONGUEUR_FENETRE / 2) + 110;
 
                 for (Player otherPlayer : GameServer.players.values()){
                     int distanceX = x - otherPlayer.getX();
@@ -77,7 +77,9 @@ public class WebSocketHandler{
     @OnWebSocketClose
     public void onClose(Session user, int statusCode, String reason) {
         System.out.println("Connection closed: " + user.getRemoteAddress() + " Code: " + statusCode + ", Reason: " + reason);
-        playerId = user.getRemoteAddress().toString();
+        String playerId = null ;
+        if(user.getRemoteAddress() != null)
+            playerId = user.getRemoteAddress().toString();
         if(GameServer.clients.get(playerId) != null)
             GameServer.clients.remove(playerId);
         if(GameServer.players.get(playerId) != null)
@@ -107,10 +109,11 @@ public class WebSocketHandler{
         String playerAddress = session.getRemoteAddress().toString();
         Player player = GameServer.players.get(playerAddress);
 
-        if (player != null) { // Vérification avant d'utiliser l'objet
+        if (player != null && player.getStatut() != 2) { // Vérification avant d'utiliser l'objet
             player.move(angle, distance);
         }else{
             // Ferme la session pour bloquer ses requetes
+            System.out.println("Session fermé !");
             session.close();
         }
 
