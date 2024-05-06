@@ -89,7 +89,8 @@ public class GameFrame extends ApplicationAdapter{
     
     @Override
     public void render () {
-        Gdx.gl.glClearColor(245, 236, 236, 0);
+
+        Gdx.gl.glClearColor(0.955f, 0.924f, 0.808f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);

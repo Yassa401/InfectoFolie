@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
     // VARIABLES GLOBALES
     var executionID ;
+    var movementID ;
+    var angle = 0 ;
+    var distance  = 0 ;
 
     // Se connecte à la websocket du serveur une seule fois à l'ouverture de la page
     const socket = new WebSocket("ws://" + window.location.hostname + ":" + window.location.port +"/ws");
@@ -38,11 +41,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // envoyer une requete chaque intervalle de temps
     function envoyerRequete(){
-        var angle = Math.floor(Math.random()*360) + 1;
-        var distance = Math.floor(Math.random()*50) + 1 ;
 
         const message = { type: "joystick", angle, distance };
         sendWebSocketMessage(message);
+
+    }
+
+    // genere un mouvement aléatoire
+    function genereMovement(){
+        angle = Math.floor(Math.random()*360) + 1;
+        distance = Math.floor(Math.random()*25) + 25 ;
 
     }
 
@@ -51,5 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("fonction activé");
         // Envoi de requete chaque 20ms
         executionID = setInterval(envoyerRequete,20);
+        movementID = setInterval(genereMovement,1000);
+
     }
 });

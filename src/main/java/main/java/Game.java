@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.Map;
 import com.badlogic.gdx.graphics.Color;
 
+import javax.swing.*;
+
 public class Game {
 	private Map<String, Player> players ;
 	private DecimalFormat decimalFormat = new DecimalFormat("000");
@@ -73,6 +75,14 @@ public class Game {
 					nb2infec = 1;
 				}
 			}else {
+				if(nbPlayers >= 50) {
+					IConfig.setSpeed(0.4);
+				} else if (nbPlayers >= 20) {
+					IConfig.setSpeed(0.6);
+				} else if (nbPlayers >= 10) {
+					IConfig.setSpeed(0.8);
+				}
+
 				nb2infec = (int) (nbPlayers * (IConfig.pourcentageInfectes / 100));
 				//System.out.println(nb2infec + " ou " + (nbPlayers * (IConfig.pourcentageInfectes / 100)));
 				//System.out.println(nbPlayers + " ou " + (IConfig.pourcentageInfectes / 100));
@@ -123,6 +133,7 @@ public class Game {
 				p.setStatut(2);
 			}
 		}
+		//IConfig.setSpeed(IConfig.SPEED + 1);
 	}
 	
 	// infecte un joueurs (changer son statut et sa couleur)

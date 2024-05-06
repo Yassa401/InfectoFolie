@@ -1,6 +1,8 @@
 package main.java;
 
 import com.badlogic.gdx.graphics.Color;
+
+import javax.swing.*;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.Random;
@@ -82,8 +84,8 @@ public class Player {
         double radians = Math.toRadians(angle);
 
         // Calculer les déplacements sur les axes x et y
-        int deltaX = (int) (distance * speed * Math.cos(radians));
-        int deltaY = (int) (distance * speed * Math.sin(radians));
+        int deltaX = (int) (distance * IConfig.SPEED * Math.cos(radians));
+        int deltaY = (int) (distance * IConfig.SPEED * Math.sin(radians));
 
         // Appliquer le déplacement temporairement
         int newX = x + deltaX;
