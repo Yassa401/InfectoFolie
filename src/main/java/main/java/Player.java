@@ -93,15 +93,17 @@ public class Player {
 
         // Vérifier les collisions avec les autres joueurs
         for (Player autrePlayer : GameServer.players.values()) {
-            if ((autrePlayer != this && verifCollision(newX, newY, autrePlayer))) {
-                if ((this.getStatut() == 1 && autrePlayer.getStatut() == 0) && (autrePlayer.peutEtreInfect - Chrono.getSecondes()) >= IConfig.cooldown ) {
-                    Game.infectPlayer(autrePlayer);
-                    this.peutEtreInfect = Chrono.getSecondes();
-                    Game.healPlayer(this);
-                }
+            if(autrePlayer.getStatut() != 2 && this.getStatut() != 2){
+                if ((autrePlayer != this && verifCollision(newX, newY, autrePlayer))) {
+                    if ((this.getStatut() == 1 && autrePlayer.getStatut() == 0) && (autrePlayer.peutEtreInfect - Chrono.getSecondes()) >= IConfig.cooldown ) {
+                        Game.infectPlayer(autrePlayer);
+                        this.peutEtreInfect = Chrono.getSecondes();
+                        Game.healPlayer(this);
+                    }
 
-                handleRepulsion(autrePlayer);
-                return; // Annuler toute action supplémentaire et sortir de la méthode
+                    handleRepulsion(autrePlayer);
+                    return; // Annuler toute action supplémentaire et sortir de la méthode
+                }
             }
         }
 

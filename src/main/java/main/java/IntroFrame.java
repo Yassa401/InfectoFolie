@@ -26,7 +26,7 @@ public class IntroFrame extends JFrame {
 
         startButton.addActionListener(e -> {
                 GameServer.partieCommence = false;
-                setVisible(false);
+                setVisible(true);
         });
 
         JButton configButton = new JButton("Configuration");

@@ -69,6 +69,7 @@ public class Game {
 		
 		if(nbPlayers > 1) {
 			if(nbPlayers <= 5) {
+				IConfig.setSpeed(0.12);
 				if(nbPlayers >= 3) {
 					nb2infec = 2;
 				} else {
@@ -76,11 +77,13 @@ public class Game {
 				}
 			}else {
 				if(nbPlayers >= 50) {
-					IConfig.setSpeed(0.4);
+					IConfig.setSpeed(0.04);
+				} else if (nbPlayers >= 35) {
+					IConfig.setSpeed(0.05);
 				} else if (nbPlayers >= 20) {
-					IConfig.setSpeed(0.6);
+					IConfig.setSpeed(0.06);
 				} else if (nbPlayers >= 10) {
-					IConfig.setSpeed(0.8);
+					IConfig.setSpeed(0.08);
 				}
 
 				nb2infec = (int) (nbPlayers * (IConfig.pourcentageInfectes / 100));

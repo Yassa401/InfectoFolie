@@ -23,7 +23,7 @@ public class WebSocketHandler{
     
     @OnWebSocketConnect
     public void onConnect(Session user) throws Exception {
-        if(!GameServer.partieCommence) {
+        if(!GameServer.partieCommence && GameServer.players.size() < IConfig.maxJoueurs) {
             System.out.println("New connection: " + user.getRemoteAddress());
             this.session = user;
             this.playerId = user.getRemoteAddress().toString();
