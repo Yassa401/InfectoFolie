@@ -23,7 +23,7 @@ public class WebSocketHandler{
     
     @OnWebSocketConnect
     public void onConnect(Session user) throws Exception {
-        if(!GameServer.partieCommence) {
+        if(!GameServer.partieCommence && GameServer.players.size() < IConfig.maxJoueurs) {
             System.out.println("New connection: " + user.getRemoteAddress());
             this.session = user;
             this.playerId = user.getRemoteAddress().toString();
@@ -34,8 +34,8 @@ public class WebSocketHandler{
             do {
                 collision = false;
 
-                x = r.nextInt(IConfig.LARGEUR_FENETRE / 2 + 590) - (int) (IConfig.LARGEUR_FENETRE / 2) + 30;
-                y = r.nextInt(IConfig.LONGUEUR_FENETRE / 2 + 260) - (int) (IConfig.LONGUEUR_FENETRE / 2) + 110;
+                x = r.nextInt(IConfig.LARGEUR_FENETRE / 2 + 590) - (IConfig.LARGEUR_FENETRE / 2) + 30;
+                y = r.nextInt(IConfig.LONGUEUR_FENETRE / 2 + 260) - (IConfig.LONGUEUR_FENETRE / 2) + 110;
 
                 for (Player otherPlayer : GameServer.players.values()){
                     int distanceX = x - otherPlayer.getX();
@@ -69,17 +69,7 @@ public class WebSocketHandler{
         	@Override
         	public void run() {
         		// vérifier si le timer est en cours d'exécution
-        		if(Chrono.isRunning()) {
-	        		// envoie du timer au client
-	        		JSONObject jsonObj = new JSONObject();
-	        		jsonObj.put("timer", Chrono.getSecondes()); //
-                    // System.out.println(Chrono.getSecondes());
-	        		try {
-	        			session.getRemote().sendString(jsonObj.toString());
-	        		} catch (IOException e) {
-	        			e.printStackTrace();
-	        		}
-        		}
+                if(Chrono.isRunning()) {}
         	}
         }, 0, 20);
     }
@@ -87,8 +77,13 @@ public class WebSocketHandler{
     @OnWebSocketClose
     public void onClose(Session user, int statusCode, String reason) {
         System.out.println("Connection closed: " + user.getRemoteAddress() + " Code: " + statusCode + ", Reason: " + reason);
-        GameServer.clients.remove(user.getRemoteAddress().toString());
-    	GameServer.players.remove(user.getRemoteAddress().toString());
+        String playerId = null ;
+        if(user.getRemoteAddress() != null)
+            playerId = user.getRemoteAddress().toString();
+        if(GameServer.clients.get(playerId) != null)
+            GameServer.clients.remove(playerId);
+        if(GameServer.players.get(playerId) != null)
+    	    GameServer.players.remove(user.getRemoteAddress().toString());
     	
     	// A la fermeture de la connexion, arréter le timer
     	if(timer != null) {
@@ -111,12 +106,17 @@ public class WebSocketHandler{
         //System.out.println("\n\n\nplayerID " + session.getRemoteAddress().toString() + "\n\n\n") ;
 
         // Utiliser les valeurs extraites pour déplacer le joueur
-        GameServer.players.get(session.getRemoteAddress().toString()).move(angle, distance);
+        String playerAddress = session.getRemoteAddress().toString();
+        Player player = GameServer.players.get(playerAddress);
+
+        if (player != null && player.getStatut() != 2) { // Vérification avant d'utiliser l'objet
+            player.move(angle, distance);
+        }else{
+            // Ferme la session pour bloquer ses requetes
+            System.out.println("Session fermé !");
+            session.close();
+        }
 
     }
-    
-    public org.eclipse.jetty.websocket.api.Session getSession(){
-    	return session ; 
-    }
-    
+
 }

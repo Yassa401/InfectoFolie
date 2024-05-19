@@ -10,7 +10,7 @@ public class Chrono {
 
     private static int totalTime = IConfig.time;
     private static long remainingTime = totalTime;
-    private static String timer = "00.00.20.000";
+    private static String timer = "00.00.00.000";
     private static int hours = 0, minutes = 0;
     private static int seconds = 0;	// en static pour l'envoyer au client
     

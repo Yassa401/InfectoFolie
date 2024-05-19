@@ -3,11 +3,10 @@ package main.java;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Random;
-
 import com.badlogic.gdx.graphics.Color;
+
+import javax.swing.*;
 
 public class Game {
 	private Map<String, Player> players ;
@@ -24,7 +23,7 @@ public class Game {
 	public Map<String, Player> getPlayers() {
 		return players;
 	}
-
+	
 	public void setPlayers(Map<String, Player> players) {
 		this.players = players;
 	}
@@ -70,27 +69,32 @@ public class Game {
 		
 		if(nbPlayers > 1) {
 			if(nbPlayers <= 5) {
-				nb2infec = 1;
-			}
-			else if(nbPlayers <= 20) {
-				nb2infec = 3;
-			}
-			else if(nbPlayers <= 40) {
-				nb2infec = 5;
-			}
-			else if(nbPlayers <= 70) {
-				nb2infec = 7;
-			}
-			else if(nbPlayers <= 100) {
-				nb2infec = 10;
+				IConfig.setSpeed(0.12);
+				if(nbPlayers >= 3) {
+					nb2infec = 2;
+				} else {
+					nb2infec = 1;
+				}
+			}else {
+				if(nbPlayers >= 50) {
+					IConfig.setSpeed(0.04);
+				} else if (nbPlayers >= 35) {
+					IConfig.setSpeed(0.05);
+				} else if (nbPlayers >= 20) {
+					IConfig.setSpeed(0.06);
+				} else if (nbPlayers >= 10) {
+					IConfig.setSpeed(0.08);
+				}
+
+				nb2infec = (int) (nbPlayers * (IConfig.pourcentageInfectes / 100));
+				//System.out.println(nb2infec + " ou " + (nbPlayers * (IConfig.pourcentageInfectes / 100)));
+				//System.out.println(nbPlayers + " ou " + (IConfig.pourcentageInfectes / 100));
 			}
 		}
 
 		else {
 			// il y a qu'un seul
 			GameServer.partieCommence = false;
-
-
 		}
 		return nb2infec;
 	}
@@ -132,6 +136,7 @@ public class Game {
 				p.setStatut(2);
 			}
 		}
+		//IConfig.setSpeed(IConfig.SPEED + 1);
 	}
 	
 	// infecte un joueurs (changer son statut et sa couleur)
@@ -157,4 +162,13 @@ public class Game {
 		p.setCouleur(p.getColorInit());
 		p.setStatut(0);
 	}
+	
+	public boolean Victoire() {
+	    int nbSurvivant = Integer.parseInt(getNbUninfectedPlayers());
+	    int nbInfecte = Integer.parseInt(getNbInfectedPlayers());
+	    
+	    // Condition de victoire : un seul survivant et aucun infecté
+	    return nbSurvivant == 1 && nbInfecte == 0;
+	}
+
 }

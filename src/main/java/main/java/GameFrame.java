@@ -4,9 +4,9 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -22,39 +22,43 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class GameFrame extends ApplicationAdapter{
 	private ShapeRenderer shapeRenderer;
     private Viewport viewport;
-    private Map<String, Player> players ;
-    public static List<Rectangle2D> murs;
+    private Music backgroundMusic;  
     
+    public static Map<String, Player> players ;
+    public static List<Rectangle2D> murs;
+
     public static Rectangle2D murHaut = new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2, IConfig.LONGUEUR_FENETRE/2-10, IConfig.LARGEUR_FENETRE, 10); // Mur supérieur
     public static Rectangle2D murGauche =new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2,(float)(-IConfig.LONGUEUR_FENETRE/2.5), 10, IConfig.LONGUEUR_FENETRE); // Mur gauche
     public static Rectangle2D murBas = new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/2, (float)(-IConfig.LONGUEUR_FENETRE/2.5), IConfig.LARGEUR_FENETRE, 10); // Mur inférieur
     public static Rectangle2D murDroit = new Rectangle2D.Float(IConfig.LARGEUR_FENETRE/2-10, (float)(-IConfig.LONGUEUR_FENETRE/2.5), 10, IConfig.LONGUEUR_FENETRE); // Mur droitG
-
+    public static Rectangle2D obs1 = new Rectangle2D.Float(- IConfig.LARGEUR_FENETRE/8 +240 ,IConfig.LONGUEUR_FENETRE/4 ,IConfig.LARGEUR_FENETRE/6 + 100,10);
+    public static Rectangle2D obs2 = new Rectangle2D.Float(IConfig.LARGEUR_FENETRE/3 -250,(float)(-IConfig.LONGUEUR_FENETRE/30 - 200), 10, IConfig.LONGUEUR_FENETRE/3 );
+    public static Rectangle2D obs3 = new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/3,(float)(-IConfig.LONGUEUR_FENETRE/30), 10, IConfig.LONGUEUR_FENETRE/3);
+    public static Rectangle2D obs4 = new Rectangle2D.Float(- IConfig.LARGEUR_FENETRE/8 - 200 ,-IConfig.LONGUEUR_FENETRE/4 ,IConfig.LARGEUR_FENETRE/6 + 100,10);
     BitmapFont font;
     Chrono chrono;
     SpriteBatch batch;  // pour dessiner les polices	
     GlyphLayout layout;	// pour obtenir la taille du texte afin de dessiner un cercle/rect autour
     
     protected Game game;
-    private Rectangle2D startButton; 
+    private Rectangle2D startButton;
+    private boolean isFullScreen = false;
+    private ColorUpdater colorUpdater;
     
     GameFrame(Game g){
     	this.game = g;
     	this.players = g.getPlayers();
-    	
+
     	murs = new ArrayList<>();
         // Initialisation des murs
     	murs.add(murHaut); // Mur supérieur
         murs.add(murGauche); // Mur gauche
         murs.add(murBas); // Mur inférieur
         murs.add(murDroit); // Mur droitG
-		
-        murs.add(new Rectangle2D.Float(- IConfig.LARGEUR_FENETRE/8 +240 ,IConfig.LONGUEUR_FENETRE/4 ,IConfig.LARGEUR_FENETRE/6 + 100,10));
-         murs.add(new Rectangle2D.Float(IConfig.LARGEUR_FENETRE/3 -250,(float)(-IConfig.LONGUEUR_FENETRE/30 - 200), 10, IConfig.LONGUEUR_FENETRE/3 ));
-        
-        murs.add(new Rectangle2D.Float(-IConfig.LARGEUR_FENETRE/3,(float)(-IConfig.LONGUEUR_FENETRE/30), 10, IConfig.LONGUEUR_FENETRE/3));
-        murs.add(new Rectangle2D.Float(- IConfig.LARGEUR_FENETRE/8 - 200 ,-IConfig.LONGUEUR_FENETRE/4 ,IConfig.LARGEUR_FENETRE/6 + 100,10));
-        
+        murs.add(obs1);
+        murs.add(obs2);
+        murs.add(obs3);
+        murs.add(obs4);
     }
     
     @Override
@@ -65,33 +69,51 @@ public class GameFrame extends ApplicationAdapter{
         batch = new SpriteBatch();
         layout = new GlyphLayout();
         
-	     // initialisation de la police
+        try {
+        	
+            Music backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("public/infecto.mp3"));
+            backgroundMusic.setLooping(true);
+            backgroundMusic.play();
+        } catch (Exception e) {
+            e.printStackTrace(); 
+        }
+
+        // initialisation de la police
 	    font = new BitmapFont();
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        
+        // initialiser colorUpdateer
+        colorUpdater = new ColorUpdater();
+        new Thread(colorUpdater).start();
     }
-    
     
     @Override
     public void render () {
-        Gdx.gl.glClearColor(245, 236, 236, 0);
+
+        Gdx.gl.glClearColor(0.955f, 0.924f, 0.808f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
-        
+
+
         // les mûrs
         drawWalls();
-        
+        drawPauseFrames();
+
+
         // translater l'origine du "batch" vers le centre de la fenêtre pour que coords shapeRenderer = coords batch 
         Matrix4 translationMatrix = new Matrix4();
         translationMatrix.translate(IConfig.LARGEUR_FENETRE / 2, IConfig.LONGUEUR_FENETRE / 2, 0);
         batch.setTransformMatrix(translationMatrix);
 
         play();
-        
-        // dessiner les joueurs et le menu bas
+
+        // dessiner les joueurs, le menu bas, le texte de la pause
         drawPlayers();
         drawBottomMenu();
-        
+        drawPauseText();
+
+
         // faire une translation inverse pour obtenir la matrice d'origine du SpriteBatch
         Matrix4 inverseTranslationMatrix = new Matrix4();
         translationMatrix.translate(-IConfig.LARGEUR_FENETRE / 2, -IConfig.LONGUEUR_FENETRE / 2, 0);
@@ -102,11 +124,26 @@ public class GameFrame extends ApplicationAdapter{
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+        
+        if (IConfig.LARGEUR_FENETRE < width) {
+            isFullScreen = true;
+        } else {
+            isFullScreen = false;
+        }
     }
 
     @Override
     public void dispose () {
+    	
+    	if (backgroundMusic != null) {
+            backgroundMusic.stop();
+            backgroundMusic.dispose();
+        }
+    	
         shapeRenderer.dispose();
+        
+        // arrêter le thread des couleurs
+        colorUpdater.stop();
         
         font.dispose();
         batch.dispose();
@@ -128,8 +165,9 @@ public class GameFrame extends ApplicationAdapter{
     
     private void drawPlayers() {
     	shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-    	
-    	for (Player p : players.values()) {
+        shapeRenderer.setColor(Color.WHITE);
+
+        for (Player p : players.values()) {
             if(p.getStatut() != 2) {
                 shapeRenderer.setColor(p.getCouleur());
                 shapeRenderer.circle((float) p.getX(), (float) p.getY(), p.getRadius());
@@ -164,7 +202,40 @@ public class GameFrame extends ApplicationAdapter{
         }
         batch.end();
     }
-    
+
+    void drawPauseFrames() {
+        // Dessiner le fond de la fenêtre (pendant la peuse)
+        if (game.inPause) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(colorUpdater.getCurrentColor());
+            shapeRenderer.rect(-IConfig.LARGEUR_FENETRE / 2, (float)(-IConfig.LONGUEUR_FENETRE/2.5), IConfig.LARGEUR_FENETRE, IConfig.LONGUEUR_FENETRE);
+
+            float pauseTextCoords[] = {-viewport.getWorldWidth() / 4.2f, -viewport.getWorldHeight() / 2 + viewport.getWorldHeight()/8, viewport.getWorldWidth() / 4.00f, viewport.getWorldHeight() / 13.33f};
+            float infoTextCoords[] = {viewport.getWorldWidth() / 25.00f, -viewport.getWorldHeight() / 2 + viewport.getWorldHeight()/8, viewport.getWorldWidth() / 4.00f, viewport.getWorldHeight() / 13.33f};
+
+            shapeRenderer.setColor(0.5f, 0.5f, 0.5f, 1.0f);
+            this.roundedRect((float) pauseTextCoords[0], (float) pauseTextCoords[1], (float) pauseTextCoords[2], (float) pauseTextCoords[3], 10);
+            this.roundedRect((float) infoTextCoords[0], (float) infoTextCoords[1], (float) infoTextCoords[2], (float) infoTextCoords[3], 10);
+            shapeRenderer.end();
+        }
+    }
+
+    void drawPauseText() {
+        if(game.inPause) {
+            float pauseTextCoords[] = {-viewport.getWorldWidth() / 4.2f, -viewport.getWorldHeight() / 2 + viewport.getWorldHeight()/8};
+            float infoTextCoords[] = {viewport.getWorldWidth() / 25.00f, -viewport.getWorldHeight() / 2 + viewport.getWorldHeight()/8};
+            String pauseText = "Pause de 5s";
+            String infoText = "Infection de " + game.getNbPlayers2Infect() + " joueur(s)";
+
+            batch.begin();
+            font.setColor(Color.WHITE);
+            font.draw(batch, pauseText, pauseTextCoords[0] - pauseTextCoords[0] / 5, pauseTextCoords[1] + 40);
+            font.draw(batch, infoText, infoTextCoords[0] + 20, infoTextCoords[1] + 40);
+            batch.end();
+        }
+    }
+
+
     void actualiseJoueurs(Map<String, Player> players) {
     	this.players = players ;
     }
@@ -183,8 +254,8 @@ public class GameFrame extends ApplicationAdapter{
     	// récupéer le nb joueurs nonInf/inf/dead
         String nbUninfected = this.game.getNbUninfectedPlayers();
         String nbInfected = this.game.getNbInfectedPlayers();
-        String nbDead = this.game.getNbDeadPlayers(); //this.game.getNbDeadPlayers();
-        
+        String nbDead = this.game.getNbDeadPlayers();
+
     	String texteUninfected = nbUninfected;
         String texteInfected = nbInfected;
         String texteDead = nbDead;
@@ -198,8 +269,8 @@ public class GameFrame extends ApplicationAdapter{
         float[] coordsDead = {(float) (-IConfig.LARGEUR_FENETRE/2 + IConfig.LARGEUR_FENETRE/3.1), -IConfig.LONGUEUR_FENETRE/2 + IConfig.LONGUEUR_FENETRE/16};
         
         // Calcul des coordonnées du bouton en fonction de la taille actuelle de la fenêtre
-        startButton = new Rectangle2D.Float(viewport.getWorldWidth() / 4.33f, -viewport.getWorldHeight() / 2 + 10, viewport.getWorldWidth() / 8.67f, viewport.getWorldHeight() / 13.33f);
-        
+        startButton = new Rectangle2D.Float(viewport.getWorldWidth() / 4.33f, -viewport.getWorldHeight() / 2 + viewport.getWorldHeight()/80, viewport.getWorldWidth() / 8.67f, viewport.getWorldHeight() / 13.33f);
+                
         // dessiner le timer
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.BLACK); 
@@ -230,15 +301,21 @@ public class GameFrame extends ApplicationAdapter{
         batch.end();
         
     }
-    
+
     private void clickHandler() {
-    	if(Gdx.input.justTouched()) {
+    	if(Gdx.input.justTouched() && !GameServer.partieCommence && game.getPlayers().size() > 1) {
     		// Convertir les coordonnées de la souris en coordonnées de monde
             float mouseX = Gdx.input.getX();
             float mouseY = Gdx.input.getY();
             Vector3 worldCoordinates = new Vector3(mouseX, mouseY, 0); // 0 pas besoin de coordonnées en profondeur
             viewport.getCamera().unproject(worldCoordinates);
-
+            
+            // quand on passer en mode plein écran, on adapte les coordonnées
+            if(isFullScreen) {
+            	worldCoordinates.x += 45; // ? à dynamiser
+            	startButton = new Rectangle2D.Float(viewport.getWorldWidth() / 4.33f, -viewport.getWorldHeight() / 2 + viewport.getWorldHeight()/80, viewport.getWorldWidth() / 10.30f, viewport.getWorldHeight() / 13.33f);
+            }
+            
             // Vérifier si les coordonnées de la souris sont à l'intérieur du rectangle du bouton "startButton"
             if (startButton.contains(worldCoordinates.x, worldCoordinates.y)) {
                 GameServer.partieCommence = true ; // empêcher les joueurs de se connecter quand la partie commence
@@ -261,8 +338,9 @@ public class GameFrame extends ApplicationAdapter{
     
     private void play() {
     	clickHandler();
-    	
-    	if(!Chrono.isRunning() && game.getLivingPlayers().size() > 0 && game.canPlay) {   // Fin d'une manche
+
+    	if(!Chrono.isRunning() && game.getLivingPlayers().size() > 0 && game.canPlay && !game.inPause && !game.Victoire()) {   // Fin d'une manche
+
     		
 			game.updateStatus();		
 			
@@ -283,8 +361,34 @@ public class GameFrame extends ApplicationAdapter{
 			Chrono.running = true;
 			launchTimerThread();
     	}
-    	
-    	if(!Chrono.isRunning() && game.getPlayers().size() > 1 && !game.canPlay && game.inPause) {   // Fin d'une pause
+    	if(Chrono.isRunning() && game.Victoire()&&  game.getLivingPlayers().size() >= 0) {
+    		System.out.println("Victoire du joueur : "+game.getLivingPlayers().get(0).getNumPlayer());
+    		Chrono.running = false;  
+    		game.canPlay = false;
+    		game.inPause = false;
+            Chrono.doRound(); 
+            Chrono.stopTimer(); 
+            FenetreVictoire f = new FenetreVictoire(game.getLivingPlayers().get(0).getNumPlayer());
+            // vider les listes des joueurs
+            game.getLivingPlayers().clear();
+            GameFrame.players.clear();
+            GameServer.players.clear();
+            GameServer.clients.clear();
+            
+            
+    	}
+	
+
+
+    	if(!Chrono.isRunning() && game.getPlayers().size() > 1 && !game.canPlay && game.inPause && !game.Victoire()) {   // Fin d'une pause
+
+    		// attendre une demi seconde
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
     		game.inPause = false;
     		game.canPlay = true;
     		
@@ -302,6 +406,7 @@ public class GameFrame extends ApplicationAdapter{
 			launchTimerThread();
 		}
     }
+
     
     /**
     * Dessine un rectangle avec des coins arrondis (pas de méthode native pour ça) 
@@ -322,6 +427,6 @@ public class GameFrame extends ApplicationAdapter{
         shapeRenderer.arc(x + width - radius, y + height - radius, radius, 0f, 90f);
         shapeRenderer.arc(x + radius, y + height - radius, radius, 90f, 90f);
     }
-    
-    
+
+   
 }
