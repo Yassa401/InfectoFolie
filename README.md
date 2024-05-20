@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Notre jeu peut accueillir plusieurs joueurs, allant de 2 jusqu'à 100 participants. L'idée de jeu est la suivante : pour une partie de 20 joueurs, chaque participant joue pour soi. La partie débute avec 3 joueurs infectés choisis au hasard. Les infectés doivent transmettre leur maladie à des survivants, qui guérissent en répétant le même processus jusqu'à la fin de la manche, d'une durée de 20 secondes. À la fin de ce délai, les infectés meurent. On relance la partie avec 17 joueurs (20-3), toujours avec 3 infectés choisis au hasard, et le même processus se répète jusqu'à ce qu'il ne reste que 5 joueurs. À ce stade, un joueur est infecté au lieu de trois, dans le but d'aboutir à un seul gagnant à la fin de la partie.
+Notre jeu peut accueillir plusieurs joueurs, allant de 2 jusqu'à 45 participants (modifiable). L'idée de jeu est la suivante : pour une partie de 20 joueurs, chaque participant joue pour soi. La partie débute avec 3 joueurs infectés choisis au hasard. Les infectés doivent transmettre leur maladie à des survivants, qui guérissent en répétant le même processus jusqu'à la fin de la manche, d'une durée de 20 secondes. À la fin de ce délai, les infectés meurent. On relance la partie avec 17 joueurs (20-3), toujours avec 3 infectés choisis au hasard, et le même processus se répète jusqu'à ce qu'il ne reste que 5 joueurs. À ce stade, un joueur est infecté au lieu de trois, dans le but d'aboutir à un seul gagnant à la fin de la partie.
 
 ## Paramètres de jeu
 
